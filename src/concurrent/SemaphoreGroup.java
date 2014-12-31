@@ -1,6 +1,8 @@
+package concurrent;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 
 /** Represents a group of semaphores identified by distinct strings
  * Supports basic acquire and release operations. Other operations could be added as necessary
@@ -8,31 +10,86 @@ import java.util.concurrent.Semaphore;
  */
 public class SemaphoreGroup {
 
+	/** True iff this is fair - wakes threads in the order they wait */
+	private final boolean fair;
+
 	/** The total number of permits available to this, as it was constructed */
 	private final HashMap<String, Integer> permits;
-	
+
 	/** The semaphores in this group, by their identifier */
 	private final HashMap<String, Semaphore> semaphores;
 
-    /** The semaphore monitoring use of operations in this SemaphoreGroup */
-	private final Semaphore operationLock;
+	/** The semaphore monitoring use of operations in this SemaphoreGroup */
+	private final ReentrantLock operationLock;
 
-    /** A map of threads to permits they currently own */
+	/** A map of threads to permits they currently own */
 	private final HashMap<Thread, Map<String, Integer>> threads;
 
-    /** Set to true to see printing output of threads acquiring and releasing */
-	private static final boolean DEBUG = true;
-	
+	/** The threads waiting to acquire this */
+	private final List<Thread> waitingThreads;
+
+	/** Set to true to see printing output of threads acquiring and releasing */
+	private static final boolean DEBUG = false;
+
 	/** Creates a SemaphoreGroup. All semaphores are initialized as unfair.
 	 * @param permits - the Number of permits for each identifier string
+	 * @param fair - true iff this Semaphore is fair (wakes threads in the order they wait
 	 */
-	public SemaphoreGroup(Map<String, Integer> permits) {
+	public SemaphoreGroup(Map<String, Integer> permits, boolean fair) {
 		this.permits = new HashMap<String, Integer>(permits);
-		operationLock = new Semaphore(1);
+		this.fair = fair;
+		operationLock = new ReentrantLock();
 		semaphores = new HashMap<String, Semaphore>();
 		threads = new HashMap<Thread, Map<String, Integer>>();
+		waitingThreads = Collections.synchronizedList(new LinkedList<Thread>());
 		for(String s : permits.keySet()){
 			semaphores.put(s, new Semaphore(permits.get(s)));
+		}
+	}
+
+	/** Locks the operationLock if it isn't already locked by this thread
+	 * Use at the start of any complex operation
+	 */
+	private void startOperation(){
+		if(! operationLock.isHeldByCurrentThread()) operationLock.lock();
+		if(DEBUG) System.out.println("Acquired " + Thread.currentThread().getName());
+	}
+
+	/** Unlocks the operationLock
+	 * Use at the end of any complex operation in a finally block
+	 */
+	private void endOperation(){
+		if(operationLock.isHeldByCurrentThread()) operationLock.unlock();
+		if(DEBUG) System.out.println("Released " + Thread.currentThread().getName());
+	}
+	
+	/** Pauses the current thread because it can't access the semaphore at this time */
+	private void pauseThread() throws InterruptedException{
+		if(fair){
+			Thread t = Thread.currentThread();
+			synchronized(t){
+				t.wait();
+			}
+		} else{
+			synchronized(operationLock){
+				operationLock.wait();
+			}
+		}
+	}
+	
+	/** Resumes a thread to try to access the semaphore again */
+	private void resumeThread(){
+		if(fair){
+			synchronized(waitingThreads){
+				Thread t = waitingThreads.get(0);
+				synchronized(t){
+					t.notify();
+				}
+			}
+		} else{
+			synchronized(operationLock){
+				operationLock.notify();
+			}
 		}
 	}
 
@@ -46,8 +103,7 @@ public class SemaphoreGroup {
 	public void acquire(Map<String, Integer> permits) 
 			throws InterruptedException, IllegalArgumentException{
 		try{
-			operationLock.acquire();
-			if(DEBUG) System.out.println("Acquired " + Thread.currentThread().getName());
+			startOperation();
 			for(Map.Entry<String, Integer> e : permits.entrySet()){
 				Semaphore s = semaphores.get(e.getKey());
 				if(s == null){
@@ -56,13 +112,17 @@ public class SemaphoreGroup {
 				if(e.getValue() < 0)
 					throw new IllegalArgumentException("Illegal Permit Value " + e.getValue() + " Must be positive");
 				if(s.availablePermits() < e.getValue()){
-					operationLock.release();
-					if(DEBUG) System.out.println("Released " + Thread.currentThread().getName());
+					endOperation();
 					//Not enough permits - wait on semaphore until someone releases, then try again
-					synchronized(operationLock){
-						operationLock.wait();
+					synchronized(waitingThreads){ 
+						waitingThreads.remove(Thread.currentThread()); //Make sure this thread goes to the back
+						waitingThreads.add(Thread.currentThread());
 					}
+					pauseThread();
 					acquire(permits);
+					synchronized(waitingThreads){
+						waitingThreads.remove(Thread.currentThread());
+					}
 					return;
 				}
 			}
@@ -87,8 +147,24 @@ public class SemaphoreGroup {
 			}
 		}
 		finally{
-			operationLock.release();			
-			if(DEBUG) System.out.println("Released " + Thread.currentThread().getName());
+			endOperation();
+		}
+	}
+
+	/** Attempts to acquire all permits available. Returns
+	 * the acquired permits. May return an empty map if no permits were available.
+	 * @return - The acquired permits. Will never be null, but may be empty.
+	 * @throws InterruptedException - see Semaphore.acquire
+	 */
+	public Map<String, Integer> drain() throws InterruptedException{
+		try{
+			startOperation();
+			Map<String, Integer> m = getAvailablePermits();
+			acquire(m);
+			return m;
+		}
+		finally{
+			endOperation();
 		}
 	}
 
@@ -99,8 +175,7 @@ public class SemaphoreGroup {
 	 */
 	public void release(Map<String, Integer> permits) throws InterruptedException{
 		try{
-			operationLock.acquire();
-			if(DEBUG) System.out.println("Acquired " + Thread.currentThread().getName());
+			startOperation();
 			Thread t = Thread.currentThread();
 
 			//Check to see if this thread has any permits at all
@@ -122,35 +197,27 @@ public class SemaphoreGroup {
 				System.out.println(threads.toString().replaceAll("},", "}\n"));
 			}
 
-
 			//Ok, notify a thread wanting to acquire
-			synchronized(operationLock){
-				operationLock.notify();
-			}
+			resumeThread();
 		}finally{
-			operationLock.release();
-			if(DEBUG) System.out.println("Released " + Thread.currentThread().getName());
+			endOperation();
 		}
 	}
-	
+
 	/** Releases all permits this currently owns for all identifiers within this Semaphore Group
 	 * @throws InterruptedException - see Semaphore.acquire
 	 */
 	public void releaseAll() throws InterruptedException{
 		try{
-			operationLock.acquire();
-			if(DEBUG) System.out.println("Acquired " + Thread.currentThread().getName());
+			startOperation();
 			Thread t = Thread.currentThread();
 			if(! threads.containsKey(t)) return;
 			HashMap<String, Integer> permits = new HashMap<String, Integer>(threads.get(t));
-			operationLock.release();
-			if(DEBUG) System.out.println("Released " + Thread.currentThread().getName());
 			release(permits);
 		}finally{
-			operationLock.release();
-			if(DEBUG) System.out.println("Released " + Thread.currentThread().getName());
+			endOperation();
 		}
-		
+
 	}
 
 	/** Returns the permits (by identifier) this SemaphoreGroup still has available. */
@@ -161,12 +228,29 @@ public class SemaphoreGroup {
 		}
 		return available;
 	}
-	
+
 	/** Returns the set of valid identifying strings for this semaphore group */
 	public Set<String> getIdentifyingStrings(){
 		return semaphores.keySet();
 	}
-	
+
+	/** Returns a collection containing threads that may be waiting to acquire */
+	public Collection<Thread> getQueuedThreads(){
+		synchronized(waitingThreads){
+			return new LinkedList<Thread>(waitingThreads);
+		}
+	}
+
+	/** Returns an estimate of the number of threads waiting to acquire this SemaphoreGroup */
+	public int getQueueLength(){
+		return waitingThreads.size();
+	}
+
+	/** Returns iff this is fair */
+	public boolean isFair(){
+		return fair;
+	}
+
 	/** Returns the available permits out of the total as the toString */
 	@Override
 	public String toString(){

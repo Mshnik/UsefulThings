@@ -1,5 +1,4 @@
-package threads;
-
+package concurrent;
 /** Threads that wish to have their progress monitored in some fashion may
  * implement the Monitorable interface to do so. This allows a TimeRemainingWorker
  * to monitor its progress and periodically send time remaining updates to the thread.

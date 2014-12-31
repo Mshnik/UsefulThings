@@ -1,4 +1,5 @@
-package threads;
+package concurrent;
+
 
 /** Monitors the progress of the inputed Monitorable and periodically sends time remaining updates to the Monitorable
  * 
@@ -65,9 +66,10 @@ public class TimeRemainingWorker extends Thread{
 		return running;
 	}
 	
-	/** Stops this TimeRemainingWorker and causes its thread to die. Task is marked as incomplete */
+	/** Interrupts this TimeRemainingWorker and causes its thread to die. Task is marked as incomplete */
 	public void cancel(){
 		running = false;
+		interrupt();
 	}
 	
 	/** Returns the updateInterval in seconds */
@@ -128,8 +130,9 @@ public class TimeRemainingWorker extends Thread{
 	 * While running is true, waits updateInterval seconds. Then, finds the new completion value from the Monitorable.
 	 * Uses this value along with the previous completionValue to find a new linear line to the completedValue.
 	 * Uses the x coordinate of this intersect to determine the amount of time remaining, and notifies the Monitorable of this amount.
+	 * Terminates if interrupted at any time
 	 */
-	public void run(){
+	public final void run(){
 		running = true;
 		startTime = System.currentTimeMillis();
 		while(running){					//While the process is running
@@ -137,7 +140,7 @@ public class TimeRemainingWorker extends Thread{
 			try {
 				sleep(updateInterval*1000);						//Sleep for update seconds before calculating
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				break;	//stop doing computation if interrupted
 			}
 
 			//x[1] - x[0] = The time elapsed since last update

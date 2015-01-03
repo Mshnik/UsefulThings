@@ -1,5 +1,8 @@
 package graph;
 
+import graph.interf.Edge;
+import graph.interf.Vertex;
+
 public class SimpleEdge implements Edge {
 
 	private int capacity;

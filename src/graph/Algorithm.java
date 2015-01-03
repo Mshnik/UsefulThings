@@ -1,5 +1,10 @@
 package graph;
 
+import graph.interf.Edge;
+import graph.interf.Graph;
+import graph.interf.Vertex;
+import graph.interf.Weighted;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -9,13 +14,13 @@ import java.util.LinkedList;
 public class Algorithm {
 
 	/** Attempts to find the shortest path in g from start to goal
-	 * @param g - the graph to search. Returns null if g contains negative edge weights
 	 * @param start - a vertex in g, the start of the path
 	 * @param goal - a vertex in g, the end of the path
 	 * @return - the path as a list, where return[0] is start and return[last] is goal.
 	 *           returns null if start or goal isn't in g, or there is no such path.
 	 */
-	public static LinkedList<Vertex> dijkstra(Graph g, Vertex start, Vertex goal){
+	public static <E extends Edge> LinkedList<Vertex> dijkstra(Graph<? extends Vertex, E> g, Vertex start, Vertex goal){
+		Graph g = start.getGraph();
 		//Check preconditions
 		if(start.getGraph() != g || goal.getGraph() != g)
 			return null;

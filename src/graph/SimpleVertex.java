@@ -1,5 +1,9 @@
 package graph;
 
+import graph.interf.Edge;
+import graph.interf.Graph;
+import graph.interf.Vertex;
+
 import java.awt.Point;
 import java.util.Set;
 

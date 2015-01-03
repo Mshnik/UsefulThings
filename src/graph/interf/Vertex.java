@@ -1,4 +1,4 @@
-package graph;
+package graph.interf;
 
 import java.awt.Point;
 import java.util.Set;

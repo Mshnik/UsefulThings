@@ -1,12 +1,13 @@
 package grid;
 
+import grid.Location.LocationBuilder;
+import grid.Location.LocationOutOfBoundsException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-
-public class Grid extends HashMap<Location, Tile>{
-
+public class Grid<T extends Tile> extends HashMap<Location, T>{
 
 	/***/
 	private static final long serialVersionUID = 1L;
@@ -29,31 +30,98 @@ public class Grid extends HashMap<Location, Tile>{
 		maxVals = Arrays.copyOf(max, max.length);
 	}
 	
-	/** Initializes a full grid of default tiles
-	 * @param min - an array of min coordinate values
-	 * @param max - an array of max coordinate values
-	 * @param labels - the labels on the corrdinates for all tiles in this Grid
+	/** Returns the minimum values for coordinates in this grid */
+	public int[] getMinVals(){
+		return Arrays.copyOf(minVals, minVals.length);
+	}
+	
+	/** Returns the maximum values for coordinates in this grid */
+	public int[] getMaxVals(){
+		return Arrays.copyOf(maxVals, maxVals.length);
+	}
+	
+	/** Puts the given tile at the given location.
+	 * @param loc - the key to put at
+	 * @param t - the value to put. t.loc must equal loc.
+	 * @throws IllegalArgumentException if: <br>
+	 * 				loc isn't the right length for locations in this grid <br>
+	 * 				{@code ! t.loc.equals(loc)} <br>
+	 * @throws LocationOutOfBoundsException if loc is OOB for this grid
 	 */
-	public Grid(int[] min, int[] max, String[] labels){
-		this(min, max);
-		if(labels.length != min.length)
-			throw new IllegalArgumentException("Incompatibile labels " + labels + " with min " + min);
-		
-		//Set default properties
-		Tile.wipeBuilder().setLocationLabels(labels);
-		
-		for(Integer[] v : buildCoordinates(min, max)){
-			Tile t = Tile.getBuilder().setLocation(v).build();
-			addTile(t);
-		}	
+	@Override
+	public T put(Location loc, T t) throws IllegalArgumentException, LocationOutOfBoundsException{
+		if(loc.getLength() != minVals.length)
+			throw new IllegalArgumentException("Location " + loc + " not compatibile with Grid " + this);
+		if(! loc.equals(t.loc))
+			throw new IllegalArgumentException("Can't put Tile " + t + " at wrong location " + loc);
+		if(loc.underMin(minVals) || loc.overMax(maxVals))
+			throw new LocationOutOfBoundsException("Can't put at Location " + loc + ": OOB");
+		return super.put(loc, t);
 	}
 	
-	private static ArrayList<Integer[]> buildCoordinates(int[] minVal, int[] maxVal){
-		if(minVal.length != maxVal.length)
-			throw new IllegalArgumentException("Incompatibile min " + minVal +", max " + maxVal + " arrs");
-		return recBuild(new Integer[minVal.length], new ArrayList<Integer[]>(), 0, minVal, maxVal);
+	/** Adds t to this grid. Calls {@code put(t.loc, t)}. Can't overwrite a tile though */
+	public boolean addTile(T t) throws NotInGridException{
+		if(containsKey(t.loc))
+			throw new NotInGridException("Can't add " + t + " already have tile at "
+					+ t.loc + "; remove tile " + get(t.loc) + " first.");
+		put(t.loc, t);
+		return true;
 	}
 	
+	/** Removes {@code t} from this grid, throwing exception if t isn't in this grid */
+	public boolean removeTile(T t) throws NotInGridException{
+		if(! containsKey(t.loc))
+			throw new NotInGridException("Can't Remove " + t + "; not in this grid");
+		
+		remove(t.loc);
+		return true;
+	}
+	
+	/** Returns the neighbors (adjacent tiles) of {@code t}.
+	 * @param t - the tile to get neighbors of
+	 * @param diagonals - true if tiles that are diagonal from t (more than one delta) should be included
+	 * 					  false for just cardinal directions
+	 * @return - the neighbors of t
+	 * @throws NotInGridException - if t isn't contained in this grid
+	 */
+	public ArrayList<T> getNeighbors(T t, boolean diagonals) throws NotInGridException{
+		if(! containsKey(t.loc))
+			throw new NotInGridException("Can't get neighbors of " + t + "; not in this grid");
+		ArrayList<T> neighbors = new ArrayList<>();
+		if(diagonals){
+			ArrayList<int[]> is = recBuild(new ArrayList<int[]>(), t.loc.getVals(), 
+					new int[]{-1, 0, 1}, 0);
+			LocationBuilder lb = Location.initBuilder(minVals, maxVals, t.loc.getLabels());
+			for(int[] i : is){
+				try{
+					T t2 = get(lb.build(i));
+					if(t2 != null && t2 != t) neighbors.add(t2);
+				}catch(LocationOutOfBoundsException e){}
+			}
+		} else{
+			for(int i = 0; i < minVals.length; i++){
+				T t2 = get(t.loc.cloneWithChange(i, 1));
+				if(t2 != null) neighbors.add(t2);
+				t2 = get(t.loc.cloneWithChange(i, -1));
+				if(t2 != null) neighbors.add(t2);
+			}
+		}
+		return neighbors;
+	}
+	
+	/** Returns all coordinate groups that are in bounds for this grid */
+	public ArrayList<Integer[]> buildCoordinates(){
+		return recBuild(new Integer[minVals.length], new ArrayList<Integer[]>(), 0, minVals, maxVals);
+	}
+	
+	/** Recursively builds int arrays within the given ranges
+	 * @param template
+	 * @param built
+	 * @param depth
+	 * @param minVal
+	 * @param maxVal
+	 * @return
+	 */
 	private static ArrayList<Integer[]> recBuild(Integer[] template, 
 			ArrayList<Integer[]> built, int depth, int[] minVal, int[] maxVal){
 		if(depth == minVal.length){
@@ -68,31 +136,35 @@ public class Grid extends HashMap<Location, Tile>{
 		return built;
 	}
 	
-	@Override
-	public Tile put(Location loc, Tile t) throws IllegalArgumentException{
-		if(loc.getLength() != minVals.length)
-			throw new IllegalArgumentException("Location " + loc + " not compatibile with Grid " + this);
-		if(! loc.equals(t.loc))
-			throw new IllegalArgumentException("Can't put Tile " + t + " at wrong location " + loc);
-		if(loc.underMin(minVals) || loc.overMax(maxVals))
-			throw new IllegalArgumentException("Can't put at Location " + loc + ": OOB");
-		return super.put(loc, t);
+	/** Recursively builds int arrays
+	 * @param built - the arrays built thus far
+	 * @param template - the array being buit
+	 * @param deltas - the deltas to apply to each index of the template
+	 * @param index - the current index. Also keeps track of recursion depth
+	 * @return - many int arrays. Yeah.
+	 */
+	private static ArrayList<int[]> recBuild(ArrayList<int[]> built, 
+			int[] template, int[] deltas, int index){
+		if(index == template.length){
+			built.add(template);
+			return built;
+		}
+		for(int d : deltas){
+			int[] templateNew = Arrays.copyOf(template, template.length);
+			templateNew[index] += d;
+			recBuild(built, templateNew, deltas, index+1);
+		}
+		return built;
 	}
 	
-	public boolean addTile(Tile t) throws RuntimeException{
-		if(containsKey(t.loc))
-			throw new RuntimeException("Can't add " + t + " already have tile at "
-					+ t.loc + "; remove tile " + get(t.loc) + " first.");
-		put(t.loc, t);
-		return true;
-	}
-	
-	public boolean removeTile(Tile t) throws RuntimeException{
-		if(! containsKey(t.loc))
-			throw new RuntimeException("Can't Remove " + t + "; not in this grid");
+	static class NotInGridException extends RuntimeException{
+		/***/
+		private static final long serialVersionUID = 1L;
+
+		public NotInGridException(String s){
+			super(s);
+		}
 		
-		remove(t.loc);
-		return true;
 	}
 	
 }

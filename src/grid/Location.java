@@ -5,9 +5,56 @@ import java.util.HashMap;
 
 public class Location implements Cloneable{
 
+	public static LocationBuilder initBuilder(int[] minVals, int[] maxVals, String[] labels){
+		return new LocationBuilder(minVals, maxVals, labels);
+	}
+	
+	public static class LocationBuilder{
+		private int[] minVals;
+		private int[] maxVals;
+		private String[] labels;
+		
+		private LocationBuilder(int[] minVals, int[] maxVals, String[] s){
+			this.minVals = minVals;
+			this.maxVals = maxVals;
+			labels = s;
+		}
+		
+		public Location build(int[] vals) throws LocationOutOfBoundsException{
+			Location l = new Location(labels, vals);
+			if(l.underMin(minVals) || l.overMax(maxVals))
+				throw new LocationOutOfBoundsException();
+			return l;
+		}
+		
+		public Location build(Integer... vals) throws LocationOutOfBoundsException{
+			int[] x = new int[vals.length];
+			for(int i = 0; i< vals.length; i++){
+				x[i] = vals[i];
+			}
+			Location l = new Location(labels, x);
+			if(l.underMin(minVals) || l.overMax(maxVals))
+				throw new LocationOutOfBoundsException();
+			return l;
+		}
+	}
+	
+	public static class LocationOutOfBoundsException extends RuntimeException{
+		/***/
+		private static final long serialVersionUID = 1L;
+
+		public LocationOutOfBoundsException(){
+			super();
+		}
+		
+		public LocationOutOfBoundsException(String msg){
+			super(msg);
+		}
+	}
+	
 	private HashMap<String, Integer> valsMap;
 	private String[] labels;
-	private Integer[] vals;
+	private int[] vals;
 	
 	/** Constructs a Location Object
 	 * @param labels - the labels for the ints of this Location.
@@ -15,7 +62,7 @@ public class Location implements Cloneable{
 	 * 				must be the same number of inputs as the length of this.getLabelArray(),
 	 * 				the length of which may depend by implementation
 	 */
-	public Location(String[] labels, Integer... vals){
+	private Location(String[] labels, int[] vals){
 		if(vals.length != labels.length)
 			throw new IllegalArgumentException("Vals array " + vals + 
 					" and Labels array " + labels + " unequal length.");
@@ -34,13 +81,27 @@ public class Location implements Cloneable{
 		return new Location(labels, vals);
 	}
 	
+	/** Constructs a location object that is a clone of this one 
+	 * with the given index changed by the given value 
+	 * @param index - the index to change
+	 * @param delta - the amount to change by
+	 * @throws ArrayIndexOutOfBoundsException - if index is OOB
+	 */
+	public Location cloneWithChange(int index, int delta) throws ArrayIndexOutOfBoundsException{
+		Location l = clone();
+		l.vals[index] += delta;
+		l.valsMap.put(l.labels[index], l.vals[index]);
+		return l;
+	}
+	
+	/** Returns the labels of this Location */
+	public final String[] getLabels(){
+		return Arrays.copyOf(labels, labels.length);
+	}
+	
 	/** Returns the location this corresponds to */
 	public final int[] getVals(){
-		int[] i = new int[vals.length];
-		for(int x = 0; x < i.length; x++){
-			i[x] = vals[x];
-		}
-		return i;
+		return Arrays.copyOf(vals, vals.length);
 	}
 	
 	/** Returns the length (number of vals) of this Location */
@@ -102,6 +163,6 @@ public class Location implements Cloneable{
 	@Override
 	public final boolean equals(Object o){
 		if(! (o instanceof Location)) return false;
-		return Arrays.deepEquals(vals, ((Location)o).vals);
+		return Arrays.equals(vals, ((Location)o).vals);
 	}
 }

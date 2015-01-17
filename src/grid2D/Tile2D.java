@@ -10,12 +10,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import grid.Grid;
-import grid.Location;
 import grid.Tile;
 
 public class Tile2D extends Tile implements Shape{
-
-	private static final String[] LABELS = {"row", "col"};
 	
 	public static final int ROW_INDEX = 0;
 	public static final int COL_INDEX = 1;
@@ -38,7 +35,7 @@ public class Tile2D extends Tile implements Shape{
 	 
 	/***/
 	public Tile2D(Grid<Tile2D> g, int row, int col){
-		super(g, Location.initBuilder(g.getMinVals(), g.getMaxVals(), LABELS).build(row, col));
+		super(g, row, col);
 		this.row = row;
 		this.col = col;
 	}	

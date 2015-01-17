@@ -4,13 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import grid.Grid;
 
@@ -48,11 +43,8 @@ public class Board extends JPanel {
 		this.ySpace = ySpace;
 		this.background = background;
 		
-		int[] maxVals = grid.getMaxVals();
-		int[] minVals = grid.getMinVals();
-		
-		int width = maxVals[Tile2D.COL_INDEX] - minVals[Tile2D.COL_INDEX];
-		int height = maxVals[Tile2D.ROW_INDEX] - minVals[Tile2D.ROW_INDEX];
+		int width = grid.getBounds()[1];
+		int height = grid.getBounds()[0];
 		
 		setPreferredSize(new Dimension(width * 50, height * 50));
 		
@@ -74,18 +66,16 @@ public class Board extends JPanel {
 	
 	/** Fixes the graphic qualities of the grid this is displaying whenever this is resized */
 	private void fixGraphicAttributes(){
-		int[] maxVals = grid.getMaxVals();
-		int[] minVals = grid.getMinVals();
 		
-		int width = maxVals[Tile2D.COL_INDEX] - minVals[Tile2D.COL_INDEX] + 1;
-		int height = maxVals[Tile2D.ROW_INDEX] - minVals[Tile2D.ROW_INDEX] + 1;
+		int width = grid.getBounds()[Tile2D.COL_INDEX];
+		int height = grid.getBounds()[Tile2D.ROW_INDEX];
 		
 		int tileWidth = (getWidth() - xMargin * 2) / width;
 		int tileHeight = (getHeight() - yMargin * 2) / height;
 		
-		for(Tile2D t : grid.values()){
-			int col = t.col - minVals[Tile2D.COL_INDEX];
-			int row = t.row - minVals[Tile2D.ROW_INDEX];
+		for(Tile2D t : grid){
+			int col = t.col;
+			int row = t.row;
 			t.x = col * tileWidth + xSpace/2 + xMargin;
 			t.y = row * tileHeight + ySpace/2 + yMargin;
 			t.width = tileWidth - xSpace;
@@ -101,7 +91,7 @@ public class Board extends JPanel {
 			g2d.fillRect(0, 0, getWidth(), getHeight());
 		}
 		
-		for(Tile2D t : grid.values()){
+		for(Tile2D t : grid){
 			t.draw(g2d);
 		}
 	}
@@ -110,9 +100,9 @@ public class Board extends JPanel {
 		JFrame f = new JFrame();
 		
 		
-		Grid<Tile2D> g = new Grid<Tile2D>(new int[]{0, 0}, new int[]{5,5});
+		Grid<Tile2D> g = new Grid<Tile2D>(5, 5);
 		for(Integer[] i : g.buildCoordinates()){
-			g.addTile(new Tile2D(g, i[0], i[1]));
+			g.add(new Tile2D(g, i[0], i[1]));
 		}
 		
 		f.add(new Board(g, 50, 50, 5, 5, Color.RED));

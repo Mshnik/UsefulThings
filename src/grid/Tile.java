@@ -4,7 +4,7 @@ package grid;
 public class Tile{
 
 	/** The location of this tile in its grid */
-	protected final Location loc;
+	protected final Integer[] loc;
 	
 	/** The Grid this Tile belongs to */
 	public final Grid grid;
@@ -12,8 +12,8 @@ public class Tile{
 	/** True if this tile is currently "selected" */
 	protected boolean selected;
 	
-	public Tile(Grid g, Location l){
-		loc = l;
+	public Tile(Grid g, Integer... location){
+		loc = location;
 		grid = g;
 	}
 	

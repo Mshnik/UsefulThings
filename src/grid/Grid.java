@@ -12,6 +12,7 @@ public class Grid<T extends Tile> implements Iterable<T>{
 	public final int dimension;
 	
 	/** Initializes an empty grid
+	 * @param bounds - the bounds of this grid. This also determines the dimensionaity of the grid
 	 */
 	public Grid(Integer... bounds){
 		dimension = bounds.length;
@@ -22,6 +23,9 @@ public class Grid<T extends Tile> implements Iterable<T>{
 		vals = recCreateArrays(0);
 	}
 	
+	/** Creates arrays of the given depth, up to the length of bounds
+	 * Used as a helper during construction, shouldn't be used otherwise.
+	 */
 	private Object[] recCreateArrays(int depth){
 		if(depth == bounds.length) return null;
 		
@@ -37,26 +41,62 @@ public class Grid<T extends Tile> implements Iterable<T>{
 		return Arrays.copyOf(bounds, bounds.length);
 	}
 	
+	/** Returns the tile at the given location
+	 * @param loc - the location as a set of coordinates to find a tile
+	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB, or too many coordinates
+	 * @throws ClassCastException if too few coordinates
+	 * @return the tile at the given location, or null if none.
+	 */
 	public T get(Integer... loc){
 		return recGetTile (vals, 0, loc);
 	}
 	
+	/** Returns true iff there is a tile at the given location
+	 * @param loc - the location as a set of coordinates to find a tile
+	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB, or too many coordinates
+	 * @throws ClassCastException if too few coordinates
+	 * @return the tile at the given location, or null if none.
+	 */
 	public boolean containsAt(Integer... loc){
 		return get(loc) != null;
 	}
 	
+	/** Returns true iff this grid contains t at its location.
+	 * Note that if t was added to this grid, but then had its location changed, this will return false.
+	 * @param t - the tile to look for
+	 * @return true iff t is in this grid.
+	 */
 	public boolean contains(T t){
-		return t == get(t.loc);
+		return t == get(t.getLocation());
 	}
 	
+	/** Adds the given tile to this grid, at its location. This will overwrite any previous tile at 
+	 * that location
+	 * @param t - the tile to add
+	 */
 	public void add(T t){
-		recSetTile(vals, 0, t.loc, t);
+		recSetTile(vals, 0, t.getLocation(), t);
 	}
 	
-	public void remove(T t){
-		recSetTile(vals, 0, t.loc, null);
+	/** Removes the given tile from this grid, if present
+	 * @param t - the tile to attempt to remove
+	 * @return true iff t was removed
+	 */
+	public boolean remove(T t){
+		T t2 = get(t.getLocation());
+		if(t == t2){
+			recSetTile(vals, 0, t.getLocation(), null);
+			return true;
+		}
+		return false;
 	}
 	
+	/** Recursive helper for getting a tile from the grid
+	 * @param arr - the current array to search
+	 * @param depth - the current depth in the search
+	 * @param loc - the full set of coordinates to search on
+	 * @return - the tile at the given location, or null iff none
+	 */
 	@SuppressWarnings("unchecked")
 	private T recGetTile(Object[] arr, int depth, Integer[] loc){
 		int index = loc[depth];
@@ -67,6 +107,12 @@ public class Grid<T extends Tile> implements Iterable<T>{
 		}
 	}
 	
+	/** Recursive helper for setting a tile on the grid
+	 * @param arr - the current array to search
+	 * @param depth - the current depth in the search
+	 * @param loc - the full set of coordinates to search on
+	 * @param t - the tile to set. Can be null to clear the given position
+	 */
 	private void recSetTile(Object[] arr, int depth, Integer[] loc, T t){
 		int index = loc[depth];
 		if(depth == dimension - 1) {
@@ -157,15 +203,25 @@ public class Grid<T extends Tile> implements Iterable<T>{
 //		return built;
 //	}
 
+	/** Returns a deep string of the array represented by this grid as
+	 * its toString
+	 */
 	public String toString(){
 		return Arrays.deepToString(vals);
 	}
 	
+	/** Returns an Iterator over the tiles in this grid
+	 * Iterates in order of most inner dimensions first
+	 */
 	@Override
 	public Iterator<T> iterator() {
 		return new GridIterator();
 	}
 	
+	/** A class for iterating over a grid
+	 * @author MPatashnik
+	 *
+	 */
 	class GridIterator implements Iterator<T>{
 		private Integer[] pos;
 		private boolean next;

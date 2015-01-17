@@ -12,13 +12,15 @@ import java.awt.geom.Rectangle2D;
 import grid.Grid;
 import grid.Tile;
 
-public class Tile2D extends Tile implements Shape{
+public class Tile2D implements Tile,  Shape{
 	
 	public static final int ROW_INDEX = 0;
 	public static final int COL_INDEX = 1;
 	
 	public final int row;
 	public final int col;
+	
+	private Grid<? extends Tile2D> g;
 	
 	/** The x graphic location of this tile (top left corner). Should only be used for graphic functionality */
 	double x;
@@ -32,19 +34,26 @@ public class Tile2D extends Tile implements Shape{
 	/** The graphic height of this tile */
 	double height;
 	
-	 
 	/***/
 	public Tile2D(Grid<Tile2D> g, int row, int col){
-		super(g, row, col);
+		this.g = g;
 		this.row = row;
 		this.col = col;
 	}	
 	
+	public Grid<? extends Tile2D> getGrid(){
+		return g;
+	}
+	
+	public Integer[] getLocation(){
+		return new Integer[]{row, col};
+	}
+	
 	/** Draws this Tile2D graphically */
 	public void draw(Graphics2D g2d){
-		if(selected)
-			g2d.setColor(Color.GREEN);
-		else if( (row + col) % 2 == 0)
+//		if(selected)
+//			g2d.setColor(Color.GREEN);
+		if( (row + col) % 2 == 0)
 			g2d.setColor(Color.black);
 		else
 			g2d.setColor(Color.white);

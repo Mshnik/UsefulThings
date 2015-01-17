@@ -1,29 +1,13 @@
 package grid;
 
 @SuppressWarnings("rawtypes")
-public class Tile{
+public interface Tile{
 
-	/** The location of this tile in its grid */
-	protected final Integer[] loc;
+	/** Returns the location of this Tile in the grid it is stored in.
+	 * Shouldn't change once instantiated
+	 */
+	public Integer[] getLocation();
 	
-	/** The Grid this Tile belongs to */
-	public final Grid grid;
-	
-	/** True if this tile is currently "selected" */
-	protected boolean selected;
-	
-	public Tile(Grid g, Integer... location){
-		loc = location;
-		grid = g;
-	}
-	
-	/** Returns iff this tile is selected */
-	public boolean isSelected(){
-		return selected;
-	}
-	
-	/** Toggles the selected status of this tile */
-	public void toggleSelected(){
-		selected = ! selected;
-	}
+	/** Returns the Grid this Tile is stored in, if any */
+	public Grid getGrid();
 }

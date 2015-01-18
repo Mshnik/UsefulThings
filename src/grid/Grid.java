@@ -2,17 +2,25 @@ package grid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
-public class Grid<T extends Tile> implements Iterable<T>{
+public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	
-	private Object[] vals;
+	private final Object[] vals;
 	private final int[] bounds;
+	
+	/** The dimensionality of this Grid - how many coordinates a location has */
 	public final int dimension;
 	
+	private int size;
+	
 	/** Initializes an empty grid
-	 * @param bounds - the bounds of this grid. This also determines the dimensionaity of the grid
+	 * @param bounds - the bounds of this grid. This also determines the dimensionality of the grid
 	 */
 	public Grid(Integer... bounds){
 		dimension = bounds.length;
@@ -21,12 +29,15 @@ public class Grid<T extends Tile> implements Iterable<T>{
 			this.bounds[i] = bounds[i];
 		}
 		vals = recCreateArrays(0);
+		size = 0;
 	}
 	
 	/** Creates arrays of the given depth, up to the length of bounds
 	 * Used as a helper during construction, shouldn't be used otherwise.
 	 */
 	private Object[] recCreateArrays(int depth){
+		if(vals != null)
+			throw new RuntimeException("Can't call recCreateArrays not at construction time");
 		if(depth == bounds.length) return null;
 		
 		Object[] vals = new Object[bounds[depth]];
@@ -41,54 +52,181 @@ public class Grid<T extends Tile> implements Iterable<T>{
 		return Arrays.copyOf(bounds, bounds.length);
 	}
 	
+	/** Returns the size (number of tiles) in the grid */
+	public int size(){
+		return size;
+	}
+	
+	/** Returns true iff this grid is empty (size == 0) */
+	public boolean isEmpty(){
+		return size() == 0;
+	}
+	
 	/** Returns the tile at the given location
 	 * @param loc - the location as a set of coordinates to find a tile
-	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB, or too many coordinates
-	 * @throws ClassCastException if too few coordinates
+	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB
+	 * @throws IllegalDimensionException if number of coordinates provided is incorrect
 	 * @return the tile at the given location, or null if none.
 	 */
 	public T get(Integer... loc){
+		if(loc.length != dimension)
+			throw new IllegalDimensionException(loc.length, this);
 		return recGetTile (vals, 0, loc);
+	}
+	
+	/** Returns all tiles in this grid, in order of iteration */
+	public Collection<T> getAll(){
+		LinkedList<T> l = new LinkedList<T>();
+		for(T t : this){
+			l.add(t);
+		}
+		return l;
+	}
+	
+	@Override
+	public Object[] toArray() {
+		Object[] arr = new Object[size];
+		int i = 0;
+		for(Tile t : this){
+			arr[i] = t;
+			i++;
+		}
+		return arr;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <X> X[] toArray(X[] a) {
+		X[] a2 = null;
+		if(a.length >= size)
+			a2 = a;
+		else
+			a2 = Arrays.copyOf(a, size);
+		int i = 0;
+		for(T t : this){
+			a2[i] = (X)t;
+			i++;
+		}
+		return a2;
+	}
+	
+	/** Returns a map representation of this grid: location of a tile -> tile */
+	public Map<Integer[], T> toMap(){
+		HashMap<Integer[], T> m = new HashMap<>();
+		for(T t : this){
+			m.put(t.getLocation(), t);
+		}
+		return m;
 	}
 	
 	/** Returns true iff there is a tile at the given location
 	 * @param loc - the location as a set of coordinates to find a tile
-	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB, or too many coordinates
-	 * @throws ClassCastException if too few coordinates
+	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB
+	 * @throws IllegalDimensionException if number of coordinates provided is incorrect
 	 * @return the tile at the given location, or null if none.
 	 */
 	public boolean containsAt(Integer... loc){
+		if(loc.length != dimension)
+			throw new IllegalDimensionException(loc.length, this);
 		return get(loc) != null;
 	}
 	
-	/** Returns true iff this grid contains t at its location.
-	 * Note that if t was added to this grid, but then had its location changed, this will return false.
-	 * @param t - the tile to look for
-	 * @return true iff t is in this grid.
+	/** Returns true iff this grid contains o at its location.
+	 * Note that if o was added to this grid, but then had its location changed, this will return false.
+	 * @param o - the object (must be instance of Tile) to look for
+	 * @return true iff o is in this grid.
 	 */
-	public boolean contains(T t){
-		return t == get(t.getLocation());
+	public boolean contains(Object o){
+		if(! (o instanceof Tile)) return false;
+		return (Tile)o == get(((Tile)o).getLocation());
+	}
+	
+	/** Returns true iff this grid contains all of the objects in c */
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		for(Object o : c){
+			if(! contains(o)) return false;
+		}
+		return true;
 	}
 	
 	/** Adds the given tile to this grid, at its location. This will overwrite any previous tile at 
 	 * that location
 	 * @param t - the tile to add
+	 * @return true if this grid changed as a result of this addition
 	 */
-	public void add(T t){
+	public boolean add(T t){
+		if(get(t.getLocation()) == t) return false;
+		if(! containsAt(t.getLocation()))
+			size++;
 		recSetTile(vals, 0, t.getLocation(), t);
+		return true;
+	}
+	
+	/** Adds each of the tiles in the collection to this grid. @see Grid.add(t)
+	 * @return true - if the grid changed as a result of these additions*/
+	public boolean addAll(Collection<? extends T> c){
+		boolean b = false;
+		for(T t : c){
+			b = add(t) || b;
+		}
+		return b;
 	}
 	
 	/** Removes the given tile from this grid, if present
-	 * @param t - the tile to attempt to remove
-	 * @return true iff t was removed
+	 * @param o - the Object (must be instance of tile) to attempt to remove
+	 * @return true iff o was removed.
 	 */
-	public boolean remove(T t){
+	public boolean remove(Object o){
+		if(! (o instanceof Tile)) return false;
+		Tile t = (Tile)o;
 		T t2 = get(t.getLocation());
 		if(t == t2){
 			recSetTile(vals, 0, t.getLocation(), null);
+			size--;
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean removeAll(Collection<?> c){
+		boolean b = true;
+		for(Object t : c){
+			b = remove(t) && b;
+		}
+		return b;
+	}
+	
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		boolean b = false;
+		for(Tile t : toArray(new Tile[0])){
+			if(! c.contains(t)){
+				b = remove(t) || b;
+			}
+		}
+		return b;
+	}
+	
+	@Override
+	public void clear() {
+		for(Tile t : toArray(new Tile[0])){
+			remove(t);
+		}
+	}
+	
+	/** Clears a tile from the given position 
+	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB
+	 * @throws IllegalDimensionException if number of coordinates provided is incorrect
+	 **/
+	public T remove(Integer... pos){
+		if(pos.length != dimension)
+			throw new IllegalDimensionException(pos.length, this);
+		T t = get(pos);
+		if(t != null){
+			remove(t);
+		}
+		return t;
 	}
 	
 	/** Recursive helper for getting a tile from the grid
@@ -210,6 +348,21 @@ public class Grid<T extends Tile> implements Iterable<T>{
 		return Arrays.deepToString(vals);
 	}
 	
+	/** Two grids are equal if they represent the same elements
+	 * @see {@code Arrays.deepEquals(vals, o.vals)}
+	 */
+	public boolean equals(Object o){
+		if(! (o instanceof Grid<?>)) return false;
+		Grid<?> g = (Grid<?>)o;
+		return Arrays.deepEquals(vals, g.vals);
+	}
+	
+	/** Hashes a grid based of of its elements
+	 * @see {@code Arrays.deepHashCode(vals)}*/
+	public int hashCode(){
+		return Arrays.deepHashCode(vals);
+	}
+	
 	/** Returns an Iterator over the tiles in this grid
 	 * Iterates in order of most inner dimensions first
 	 */
@@ -218,20 +371,63 @@ public class Grid<T extends Tile> implements Iterable<T>{
 		return new GridIterator();
 	}
 	
-	/** A class for iterating over a grid
+	/** Returns a copy of this Grid - contains the same elements. */
+	public Grid<T> clone(){
+		Integer[] i = new Integer[dimension];
+		for(int z  = 0; z < dimension; z++){
+			i[z] = bounds[z];
+		}
+		Grid<T> g = new Grid<T>(i);
+		g.addAll(this);
+		
+		return g;
+	}
+	
+	/** Returns a copy of this Grid with the given bounds.
+	 * Must be the same number of bounds as this, but can be resized.
+	 * Elements that are now out of bounds will not be added.
+	 * @param bounds - the bounds of the new grid
+	 * @return
+	 */
+	public Grid<T> clone(Integer... bounds){
+		Grid<T> g = new Grid<T>(bounds);
+		for(T t : this){
+			try{
+				g.add(t);
+			}catch(ArrayIndexOutOfBoundsException e){}
+		}
+		return g;
+	}
+	
+	@SuppressWarnings("serial")
+	static class IllegalDimensionException extends RuntimeException{
+		public IllegalDimensionException(int d, Grid<?> g){
+			super("Illegal Dimension: " + d + " for Grid with dimension " + g.dimension);
+		}
+	}
+	
+	/** A class for iterating over a grid.
+	 * Doesn't through concurrent modification exceptions, but has unspecified
+	 * behavior if there is concurrent modification
 	 * @author MPatashnik
 	 *
 	 */
 	class GridIterator implements Iterator<T>{
+		
+		/** The position in the grid this iterator is currently looking at */
 		private Integer[] pos;
+		
+		/** True if there is another entry in the grid */
 		private boolean next;
 		
+		/** Constructs a GridIterator
+		 */
 		public GridIterator(){
 			pos = new Integer[dimension];
 			for(int i = 0; i < dimension; i++){
 				pos[i] = 0;
 			}
-			next = true;
+			next = dimension > 0 && size > 0;
 		}
 
 		@Override
@@ -247,9 +443,16 @@ public class Grid<T extends Tile> implements Iterable<T>{
 			}
 			T t = get(pos);
 			next = recInc(dimension - 1);
+			while(next && ! containsAt(pos)){
+				next = recInc(dimension - 1);
+			}
 			return t;
 		}
 		
+		/** Helper method for moving the position array to the next position
+		 * @param depth - the depth of position (index in arr) to alter
+		 * @return - true if there is another position, false if the end of the grid has been reached
+		 */
 		private boolean recInc(int depth){
 			if(depth == -1)
 				return false;
@@ -261,6 +464,7 @@ public class Grid<T extends Tile> implements Iterable<T>{
 			return true;
 		}
 
+		/** Removes the tile this iterator is currently on and moves to the next tile */
 		@Override
 		public void remove() {
 			T t = next();
@@ -269,5 +473,4 @@ public class Grid<T extends Tile> implements Iterable<T>{
 		
 		
 	}
-	
 }

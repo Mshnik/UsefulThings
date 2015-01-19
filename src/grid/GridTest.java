@@ -130,6 +130,10 @@ public class GridTest {
 		assertEquals(1, g.size());
 		assertEquals(t, t2);
 		assertTrue(! g.containsAt(0, 0));
+		
+		g.clear();
+		checkInvariants(g);
+		assertEquals(0, g.size());
 	}
 	
 	@Test
@@ -157,7 +161,36 @@ public class GridTest {
 		}
 		
 		assertEquals(m, g.toMap());
-
+	}
+	
+	@Test
+	public void testEqualityAndHashing(){
+		Grid<IntTile> g = new Grid<>(10, 10);
+		Grid<IntTile> g2 = new Grid<>(10, 10);
+		Grid<IntTile> g3 = new Grid<>(5, 5); //oddball
+		
+		assertTrue(g.equals(g2));
+		assertTrue(g.hashCode() == g2.hashCode());
+		assertTrue(! g.equals(g3));
+		assertTrue(g.hashCode() != g3.hashCode());
+		
+		IntTile t = new IntTile(new Integer[]{0, 0}, 2);
+		g.add(t);
+		
+		assertTrue(! g.equals(g2));
+		assertTrue( g.hashCode() != g2.hashCode());
+		
+		g2.add(t);
+		g3.add(t);
+		
+		assertTrue(g.equals(g2));
+		assertTrue(g.hashCode() == g2.hashCode());
+		assertTrue(! g.equals(g3));
+		assertTrue(g.hashCode() != g3.hashCode());
+		
+		assertEquals(g, g.clone());
+		assertEquals(g3, g3.clone());
+		assertEquals(g3, g.clone(5,5));
 	}
 
 }

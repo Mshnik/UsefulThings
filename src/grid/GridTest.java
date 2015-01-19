@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -98,6 +100,17 @@ public class GridTest {
 		assertTrue(g.contains(t3));
 		assertTrue(g.contains(t2));
 		assertEquals(2, g.size());
+		
+		//Add OOB
+		ok = false;
+		try{
+			g.add(new IntTile(new Integer[]{11, 5}, 2));
+		}catch(ArrayIndexOutOfBoundsException e){
+			ok = true;
+		}
+		assertTrue(ok);
+		checkInvariants(g);
+		assertEquals(2, g.size());
 	}
 	
 	@Test
@@ -117,6 +130,34 @@ public class GridTest {
 		assertEquals(1, g.size());
 		assertEquals(t, t2);
 		assertTrue(! g.containsAt(0, 0));
+	}
+	
+	@Test
+	public void testConversion(){
+		Grid<IntTile> g = new Grid<>(10, 10);
+		
+		IntTile t = new IntTile(new Integer[]{0, 0}, 1);
+		IntTile t2 = new IntTile(new Integer[]{0, 1}, 2);
+		IntTile t3 = new IntTile(new Integer[]{1, 0}, 3);
+		IntTile t4 = new IntTile(new Integer[]{1, 1}, 4);
+		
+		g.add(t);
+		g.add(t2);
+		g.add(t3);
+		g.add(t4);
+		
+		IntTile[] a = {t, t2, t3, t4};
+		for(int i = 0; i < g.size(); i++){
+			assertEquals(a[i], g.toArray(new IntTile[0])[i]);
+		}
+		
+		HashMap<List<Integer>, IntTile> m = new HashMap<>();
+		for(IntTile x : a){
+			m.put(Arrays.asList(x.getLocation()), x);
+		}
+		
+		assertEquals(m, g.toMap());
+
 	}
 
 }

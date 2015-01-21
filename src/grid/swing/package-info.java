@@ -5,4 +5,4 @@
  * @author MPatashnik
  *
  */
-package grid2D;
+package grid.swing;

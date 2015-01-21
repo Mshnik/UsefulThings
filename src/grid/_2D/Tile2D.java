@@ -1,4 +1,6 @@
-package grid;
+package grid._2D;
+
+import grid.Tile;
 
 public interface Tile2D extends Tile {
 

@@ -1,4 +1,6 @@
-package grid;
+package grid._2D;
+
+import grid.Direction;
 
 public class Direction2D extends Direction {
 
@@ -23,5 +25,16 @@ public class Direction2D extends Direction {
 	public Direction2D clone(){
 		return new Direction2D(this);
 	}
+	
+	public boolean isCardinal(){
+		return this.equals(LEFT) || this.equals(RIGHT) || 
+				this.equals(UP) || this.equals(DOWN);
+	}
+	
+	public boolean isCardinalOrCorner(){
+		return isCardinal() || this.equals(UP_LEFT) || this.equals(UP_RIGHT)
+				|| this.equals(DOWN_LEFT) || this.equals(DOWN_RIGHT);
+	}
+	
 	
 }

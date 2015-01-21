@@ -1,4 +1,4 @@
-package grid2D;
+package grid.swing;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,12 +30,12 @@ public class Board extends JPanel {
 	private int ySpace;
 	
 	/** The grid this Board is responsible for drawing */
-	private Grid<Tile2D> grid;
+	private Grid<DrawableTile> grid;
 	
 	/** The background color to draw behind the tiles drawn on this board */
 	private Color background;
 	
-	public Board(Grid<Tile2D> grid, int xMargin, int yMargin, int xSpace, int ySpace, Color background){
+	public Board(Grid<DrawableTile> grid, int xMargin, int yMargin, int xSpace, int ySpace, Color background){
 		this.grid = grid;
 		this.xMargin = xMargin;
 		this.yMargin = yMargin;
@@ -67,13 +67,13 @@ public class Board extends JPanel {
 	/** Fixes the graphic qualities of the grid this is displaying whenever this is resized */
 	private void fixGraphicAttributes(){
 		
-		int width = grid.getBounds()[Tile2D.COL_INDEX];
-		int height = grid.getBounds()[Tile2D.ROW_INDEX];
+		int width = grid.getBounds()[DrawableTile.COL_INDEX];
+		int height = grid.getBounds()[DrawableTile.ROW_INDEX];
 		
 		int tileWidth = (getWidth() - xMargin * 2) / width;
 		int tileHeight = (getHeight() - yMargin * 2) / height;
 		
-		for(Tile2D t : grid){
+		for(DrawableTile t : grid){
 			int col = t.col;
 			int row = t.row;
 			t.x = col * tileWidth + xSpace/2 + xMargin;
@@ -91,7 +91,7 @@ public class Board extends JPanel {
 			g2d.fillRect(0, 0, getWidth(), getHeight());
 		}
 		
-		for(Tile2D t : grid){
+		for(DrawableTile t : grid){
 			t.draw(g2d);
 		}
 	}
@@ -100,9 +100,9 @@ public class Board extends JPanel {
 		JFrame f = new JFrame();
 		
 		
-		Grid<Tile2D> g = new Grid<Tile2D>(5, 5);
+		Grid<DrawableTile> g = new Grid<DrawableTile>(5, 5);
 		for(Integer[] i : g.buildCoordinates()){
-			g.add(new Tile2D(g, i[0], i[1]));
+			g.add(new DrawableTile(g, i[0], i[1]));
 		}
 		
 		f.add(new Board(g, 50, 50, 5, 5, Color.RED));

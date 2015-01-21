@@ -39,4 +39,13 @@ public abstract class Direction implements Cloneable{
 		return Arrays.deepToString(delta);
 	}
 	
+	public int hashCode(){
+		return Arrays.deepHashCode(delta);
+	}
+	
+	public boolean equals(Object o){
+		if(! (o instanceof Direction)) return false;
+		return Arrays.deepEquals(delta, ((Direction) o).delta);
+	}
+	
 }

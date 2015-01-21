@@ -1,4 +1,4 @@
-package grid2D;
+package grid.swing;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,9 +10,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import grid.Grid;
-import grid.Tile;
+import grid._2D.Tile2D;
 
-public class Tile2D implements Tile,  Shape{
+public class DrawableTile implements Tile2D,  Shape{
 	
 	public static final int ROW_INDEX = 0;
 	public static final int COL_INDEX = 1;
@@ -20,7 +20,7 @@ public class Tile2D implements Tile,  Shape{
 	public final int row;
 	public final int col;
 	
-	private Grid<? extends Tile2D> g;
+	private Grid<? extends DrawableTile> g;
 	
 	/** The x graphic location of this tile (top left corner). Should only be used for graphic functionality */
 	double x;
@@ -35,18 +35,26 @@ public class Tile2D implements Tile,  Shape{
 	double height;
 	
 	/***/
-	public Tile2D(Grid<Tile2D> g, int row, int col){
+	public DrawableTile(Grid<DrawableTile> g, int row, int col){
 		this.g = g;
 		this.row = row;
 		this.col = col;
 	}	
 	
-	public Grid<? extends Tile2D> getGrid(){
+	public Grid<? extends DrawableTile> getGrid(){
 		return g;
 	}
 	
 	public Integer[] getLocation(){
 		return new Integer[]{row, col};
+	}
+	
+	public int getRow(){
+		return row;
+	}
+	
+	public int getCol(){
+		return col;
 	}
 	
 	/** Draws this Tile2D graphically */

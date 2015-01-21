@@ -85,6 +85,23 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 		return l;
 	}
 	
+	/** Returns the tile located at the given delta (as a vector) from the base tile
+	 * @param base - the tile to start the vector from (the origin point)
+	 * @param delta - the deltas to apply
+	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB
+	 * @throws IllegalDimensionException if number of coordinates provided is incorrect
+	 * @return - the tile at the given base + delta position
+	 */
+	public T getFrom(Tile base, Integer... delta){
+		if(delta.length != dimension)
+			throw new IllegalDimensionException(delta.length, this);
+		Integer[] d = Arrays.copyOf(base.getLocation(), delta.length);
+		for(int i = 0; i < d.length; i++){
+			d[i] += delta[i];
+		}
+		return get(d);
+	}
+	
 	@Override
 	public Object[] toArray() {
 		Object[] arr = new Object[size];

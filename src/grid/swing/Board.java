@@ -30,12 +30,13 @@ public class Board extends JPanel {
 	private int ySpace;
 	
 	/** The grid this Board is responsible for drawing */
-	private Grid<DrawableTile> grid;
+	private Grid<? extends DrawableTile> grid;
 	
 	/** The background color to draw behind the tiles drawn on this board */
 	private Color background;
 	
-	public Board(Grid<DrawableTile> grid, int xMargin, int yMargin, int xSpace, int ySpace, Color background){
+	public Board(Grid<? extends DrawableTile> grid, int xMargin, int yMargin, 
+			int xSpace, int ySpace, Color background){
 		this.grid = grid;
 		this.xMargin = xMargin;
 		this.yMargin = yMargin;
@@ -47,7 +48,6 @@ public class Board extends JPanel {
 		int height = grid.getBounds()[0];
 		
 		setPreferredSize(new Dimension(width * 50, height * 50));
-		
 		
 		//Register a resize listener to make sure tile graphic attributes are kept up to date
 		addComponentListener(new ComponentListener(){
@@ -67,8 +67,8 @@ public class Board extends JPanel {
 	/** Fixes the graphic qualities of the grid this is displaying whenever this is resized */
 	private void fixGraphicAttributes(){
 		
-		int width = grid.getBounds()[DrawableTile.COL_INDEX];
-		int height = grid.getBounds()[DrawableTile.ROW_INDEX];
+		int width = grid.getBounds()[0];
+		int height = grid.getBounds()[1];
 		
 		int tileWidth = (getWidth() - xMargin * 2) / width;
 		int tileHeight = (getHeight() - yMargin * 2) / height;

@@ -12,38 +12,28 @@ import java.awt.geom.Rectangle2D;
 import grid.Grid;
 import grid._2D.Tile2D;
 
-public class DrawableTile implements Tile2D,  Shape{
-	
-	public static final int ROW_INDEX = 0;
-	public static final int COL_INDEX = 1;
+public class DrawableTile implements Tile2D, Shape{
 	
 	public final int row;
 	public final int col;
 	
-	private Grid<? extends DrawableTile> g;
-	
 	/** The x graphic location of this tile (top left corner). Should only be used for graphic functionality */
-	double x;
+	protected double x;
 	
 	/** The y graphic location of this tile (top left corner). Should only be used for graphic functionality */
-	double y;
+	protected double y;
 	
 	/** The graphic width of this tile */
-	double width;
+	protected double width;
 	
 	/** The graphic height of this tile */
-	double height;
+	protected double height;
 	
 	/***/
-	public DrawableTile(Grid<DrawableTile> g, int row, int col){
-		this.g = g;
+	public DrawableTile(int row, int col){
 		this.row = row;
 		this.col = col;
 	}	
-	
-	public Grid<? extends DrawableTile> getGrid(){
-		return g;
-	}
 	
 	public Integer[] getLocation(){
 		return new Integer[]{row, col};
@@ -59,8 +49,6 @@ public class DrawableTile implements Tile2D,  Shape{
 	
 	/** Draws this Tile2D graphically */
 	public void draw(Graphics2D g2d){
-//		if(selected)
-//			g2d.setColor(Color.GREEN);
 		if( (row + col) % 2 == 0)
 			g2d.setColor(Color.black);
 		else

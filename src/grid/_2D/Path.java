@@ -34,6 +34,10 @@ public class Path<T extends Tile2D> implements Iterable<T>{
 		}
 	}
 	
+	public LinkedList<T> getPath(){
+		return new LinkedList<T>(path);
+	}
+	
 	public Iterator<T> iterator(){
 		return path.iterator();
 	}

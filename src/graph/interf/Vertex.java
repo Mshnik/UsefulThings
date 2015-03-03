@@ -1,10 +1,9 @@
 package graph.interf;
 
-import java.awt.Point;
 import java.util.Set;
 
 /** Designates that instances of the implementing Class represents vertices in a Graph */
-public interface Vertex {
+public interface Vertex{
 	
 	/** Returns the set of Edges that leave this Vertex
 	 * (For all Edge e in this set, e.source() == this).
@@ -13,7 +12,7 @@ public interface Vertex {
 	 * change the result of getEdges(). This is useful for the construction
 	 * of residual graphs.
 	 */
-	public Set<Edge> getOutEdges();
+	public Set<? extends Edge> getOutEdges();
 	
 	/** Returns the set of Edges that enter this Vertex
 	 * (For all Edge e in this set, e.source() == this).
@@ -22,25 +21,5 @@ public interface Vertex {
 	 * change the result of getEdges(). This is useful for the construction
 	 * of residual graphs.
 	 */
-	public Set<Edge> getInEdges();
-	
-	/** Maintain a label for use in preflowPush or other algorithms.
-	 * Shouldn't change outside of setLabel(). Unitialized value should be unimportant */
-	public int getLabel();
-	/** @see getLabel() */
-	public void setLabel(int i);
-	
-	/** A Previous vertex. Useful for path finding algorithms. */
-	public Vertex getPrevious();
-	/** @see getPrevious() */
-	public void setPrevious(Vertex v);
-	
-	/** Coordinates (if any) for this in coordinate space. Useful for GUI applications and the like */
-	public Point getPosition();
-	/** @see getPosition() */
-	public void setPosition(Point p);
-	
-	/** Returns the graph this belongs to */
-	public Graph getGraph();
-	
+	public Set<? extends Edge> getInEdges();
 }

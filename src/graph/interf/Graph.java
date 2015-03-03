@@ -2,7 +2,7 @@ package graph.interf;
 
 import java.util.Set;
 
-public interface Graph<V extends Vertex, E extends Edge> {
+public interface Graph<V, E> {
 
 	/** Returns the vertices in this graph */
 	public Set<V> vertexSet();
@@ -11,10 +11,10 @@ public interface Graph<V extends Vertex, E extends Edge> {
 	public Set<E> edgeSet();
 	
 	/** Returns the set of edges that leave the given vertex */
-	public Set<E> outSet(Vertex v);
+	public Set<E> outSet(V v);
 	
 	/** Returns the set of edges that enter the given vertex */
-	public Set<E> inSet(Vertex v);
+	public Set<E> inSet(V v);
 	
 	/** Adds the given vertex to the graph with no edges.
 	 * If the vertex is already in the graph, only overwrite if overwrite is true
@@ -40,4 +40,6 @@ public interface Graph<V extends Vertex, E extends Edge> {
 	 * Returns true if the edge was removed this way, false if there was no edge to remove.
 	 */
 	public boolean removeEdge(E e);
+	
+	
 }

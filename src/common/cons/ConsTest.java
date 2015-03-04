@@ -164,6 +164,8 @@ public class ConsTest {
 	
 	@Test
 	public void testIteratorsAndArrayConversion(){
+		assertEquals(0, lst.toArray().length);
+		
 		lst = lst.cons(5).cons(4).cons(3).cons(2).cons(1);
 		assertEquals("(1,2,3,4,5)", lst.toString());
 		Object[] correctArr = {1,2,3,4,5};

@@ -3,6 +3,7 @@ package common.cons;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -181,6 +182,23 @@ public class ConsTest {
 		for(int i = 0; i < correctArr.length; i++){
 			assertEquals(correctArr[i], arr2[i]);
 		}
+		
+		Iterator<Integer> iterator = lst.iterator();
+		for(int i = 1; i <= 5; i++){
+			assertTrue(iterator.hasNext());
+			assertEquals(new Integer(i), iterator.next());
+		}
+		assertFalse(iterator.hasNext());
+		
+		iterator = lst.tail.iterator();
+		for(int i = 2; i <= 5; i++){
+			assertTrue(iterator.hasNext());
+			assertEquals(new Integer(i), iterator.next());
+		}
+		assertFalse(iterator.hasNext());
+		
+		iterator = lst.tail.tail.tail.tail.tail.iterator();
+		assertFalse(iterator.hasNext());
 	}
 
 }

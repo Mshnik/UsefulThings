@@ -141,7 +141,7 @@ public class ConsList<E> implements Iterable<E>{
 		
 		@Override
 		public boolean hasNext() {
-			return ! current.isLast();
+			return ! current.isNil();
 		}
 
 		@Override

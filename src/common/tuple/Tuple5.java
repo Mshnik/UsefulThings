@@ -20,7 +20,7 @@ public class Tuple5<A,B,C,D,E> extends AbsTuple {
 		
 		/** Constructs a new tuple of the values (first, second, third, fourth) */
 		public Tuple5(A first, B second, C third, D fourth, E fifth){
-			super(first, second, third, fourth);
+			super(first, second, third, fourth, fifth);
 			_1 = first;
 			_2 = second;
 			_3 = third;

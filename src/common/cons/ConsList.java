@@ -31,6 +31,10 @@ public class ConsList<E> implements Iterable<E>{
 		return val;
 	}
 	
+	public ConsList<E> tail(){
+		return tail;
+	}
+	
 	public boolean isNil(){
 		return tail == null && val == null;
 	}
@@ -74,7 +78,7 @@ public class ConsList<E> implements Iterable<E>{
 	}
 
 	public boolean contains(Object o) {
-		return val != null && val.equals(o) || tail != null && tail.contains(o);
+		return ! isNil() && (Objects.equals(val, o) || ! isLast() && tail.contains(o));
 	}
 
 	public Iterator<E> iterator() {
@@ -124,7 +128,7 @@ public class ConsList<E> implements Iterable<E>{
 	private int indexOf(Object o, int x){
 		if (Objects.equals(val, o)) return x;
 		else if(isLast()) return -1;
-		return tail.indexOf(0, x+1);
+		return tail.indexOf(o, x+1);
 	}
 
 	public static class ConsIterator<E> implements Iterator<E>{

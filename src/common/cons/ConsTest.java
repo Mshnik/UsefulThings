@@ -2,6 +2,8 @@ package common.cons;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,6 +82,105 @@ public class ConsTest {
 		
 		assertFalse(lst22.equals(lst));
 		assertFalse(lst.equals(lst22));
+	}
+	
+	@Test
+	public void testListFuncs(){
+		lst = lst.cons(5).cons(4).cons(3).cons(2).cons(1);
+		assertEquals("(1,2,3,4,5)", lst.toString());
+		
+		assertFalse(lst.isNil());
+		assertFalse(lst.tail.isNil());
+		assertFalse(lst.tail.tail.isNil());
+		assertFalse(lst.tail.tail.tail.isNil());
+		assertFalse(lst.tail.tail.tail.tail.isNil());
+		assertTrue(lst.tail.tail.tail.tail.tail.isNil());
+		
+		assertFalse(lst.isLast());
+		assertFalse(lst.tail.isLast());
+		assertFalse(lst.tail.tail.isLast());
+		assertFalse(lst.tail.tail.tail.isLast());
+		assertTrue(lst.tail.tail.tail.tail.isLast());
+		assertTrue(lst.tail.tail.tail.tail.tail.isLast());
+		
+		assertEquals(5, lst.size());
+		assertEquals(4, lst.tail.size());
+		assertEquals(3, lst.tail.tail.size());
+		assertEquals(2, lst.tail.tail.tail.size());
+		assertEquals(1, lst.tail.tail.tail.tail.size());
+		assertEquals(0, lst.tail.tail.tail.tail.tail.size());
+		
+		assertFalse(lst.isEmpty());
+		assertFalse(lst.tail.isEmpty());
+		assertFalse(lst.tail.tail.isEmpty());
+		assertFalse(lst.tail.tail.tail.isEmpty());
+		assertFalse(lst.tail.tail.tail.tail.isEmpty());
+		assertTrue(lst.tail.tail.tail.tail.tail.isEmpty());
+		
+		assertTrue(lst.contains(1));
+		assertTrue(lst.contains(2));
+		assertTrue(lst.contains(3));
+		assertTrue(lst.contains(4));
+		assertTrue(lst.contains(5));
+		assertFalse(lst.contains(6));
+		assertFalse(lst.contains(null));
+		
+		assertFalse(lst.tail.contains(1));
+		assertTrue(lst.tail.contains(2));
+		assertTrue(lst.tail.contains(3));
+		assertTrue(lst.tail.contains(4));
+		assertTrue(lst.tail.contains(5));
+		assertFalse(lst.tail.contains(6));
+		assertFalse(lst.tail.contains(null));
+		
+		assertFalse(lst.tail.tail.tail.tail.tail.contains(null));
+		
+		ArrayList<Integer> a = new ArrayList<Integer>();
+		for(int i = 1; i <= 5; i++){
+			a.add(i);
+		}
+		
+		assertTrue(lst.containsAll(a));
+		assertFalse(lst.tail.containsAll(a));
+		
+		a.remove(0);
+		assertTrue(lst.containsAll(a));
+		assertTrue(lst.tail.containsAll(a));
+		assertFalse(lst.tail.tail.containsAll(a));
+		
+		for(int i = 0; i < 5; i++){
+			assertEquals(new Integer(i+1), lst.get(i));
+			assertEquals(i, lst.indexOf(new Integer(i+1)));
+		}
+		
+		for(int i = 0; i < 4; i++){
+			assertEquals(new Integer(i+2), lst.tail.get(i));
+			assertEquals(i, lst.tail.indexOf(new Integer(i+2)));
+		}
+		
+		
+	}
+	
+	@Test
+	public void testIteratorsAndArrayConversion(){
+		lst = lst.cons(5).cons(4).cons(3).cons(2).cons(1);
+		assertEquals("(1,2,3,4,5)", lst.toString());
+		Object[] correctArr = {1,2,3,4,5};
+		Object[] arr = lst.toArray();
+		assertEquals(correctArr.length, arr.length);
+		for(int i = 0; i < arr.length; i++){
+			assertEquals(correctArr[i], arr[i]);
+		}
+		Integer[] arr2 = lst.toArray(new Integer[0]);
+		assertEquals(correctArr.length, arr2.length);
+		for(int i = 0; i < correctArr.length; i++){
+			assertEquals(correctArr[i], arr2[i]);
+		}
+		arr2 = lst.toArray(new Integer[999]);
+		assertEquals(999, arr2.length);
+		for(int i = 0; i < correctArr.length; i++){
+			assertEquals(correctArr[i], arr2[i]);
+		}
 	}
 
 }

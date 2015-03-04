@@ -1,12 +1,11 @@
 package common.cons;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
-public class ConsList<E> implements List<E>{
+public class ConsList<E> implements Iterable<E>{
 	
 	public static final String NIL_STRING = "_NIL_";
 	
@@ -30,6 +29,14 @@ public class ConsList<E> implements List<E>{
 	
 	public E value(){
 		return val;
+	}
+	
+	public boolean isNil(){
+		return tail == null && val == null;
+	}
+	
+	public boolean isLast(){
+		return isNil() || tail.tail == null && tail.val == null;
 	}
 
 	public ConsList<E> cons(E head){
@@ -55,54 +62,46 @@ public class ConsList<E> implements List<E>{
 		
 		ConsList<?> lst = (ConsList<?>)o;
 		
-		return 
-				 size == lst.size &&
-				 (val == null && lst.val  == null || val  != null &&  val.equals(lst.val)) &&
-				(tail == null && lst.tail == null || tail != null && tail.equals(lst.tail));
+		return size == lst.size && Objects.equals(val, lst.val) && Objects.equals(tail, lst.tail);
 	}
 
-	@Override
 	public int size() {
 		return size;
 	}
 
-	@Override
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	@Override
 	public boolean contains(Object o) {
 		return val != null && val.equals(o) || tail != null && tail.contains(o);
 	}
 
-	@Override
 	public Iterator<E> iterator() {
-		return null;
+		return new ConsIterator<E>(this);
 	}
 
-	@Override
 	public Object[] toArray() {
-		return null;
+		Object[] arr = new Object[size];
+		ConsList<E> current = this;
+		for(int i = 0; i < size; i++, current = current.tail){
+			arr[i] = current.val;
+		}
+		return arr;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T[] toArray(T[] arr) {
+		if(arr.length < size){
+			arr = Arrays.copyOf(arr, size);
+		}
+		ConsList<E> current = this;
+		for(int i = 0; i < size; i++, current = current.tail){
+			arr[i] = (T) current.val;
+		}
+		return arr;
 	}
 
-	@Override
-	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean add(E e) {
-		throw new UnsupportedOperationException("Can't add to consList, can only cons");
-	}
-
-	@Override
-	public boolean remove(Object o) {
-		throw new UnsupportedOperationException("Can't remove from consList, they are immutable");
-	}
-
-	@Override
 	public boolean containsAll(Collection<?> c) {
 		for(Object o : c){
 			if(! contains(o)) return false;
@@ -110,32 +109,6 @@ public class ConsList<E> implements List<E>{
 		return true;
 	}
 
-	@Override
-	public boolean addAll(Collection<? extends E> c) {
-		throw new UnsupportedOperationException("Can't add to consList, can only cons");
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends E> c) {
-		throw new UnsupportedOperationException("Can't add to consList, can only cons");
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		throw new UnsupportedOperationException("Can't remove from consList, they are immutable");
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		throw new UnsupportedOperationException("Can't remove from consList, they are immutable");
-	}
-
-	@Override
-	public void clear() {
-		throw new UnsupportedOperationException("Can't remove from consList, they are immutable");		
-	}
-
-	@Override
 	public E get(int index) {
 		if(index < 0 || index >= size)
 			throw new IllegalArgumentException("Can't get element at index " + index + " OOB");
@@ -144,53 +117,36 @@ public class ConsList<E> implements List<E>{
 		return tail.get(index - 1);
 	}
 
-	@Override
-	public E set(int index, E element) {
-		throw new UnsupportedOperationException("Can't set in consList, they are immutable");		
-	}
-
-	@Override
-	public void add(int index, E element) {
-		throw new UnsupportedOperationException("Can't add to consList, can only cons");
-	}
-
-	@Override
-	public E remove(int index) {
-		throw new UnsupportedOperationException("Can't remove from consList, they are immutable");
-	}
-
-	@Override
 	public int indexOf(Object o) {
 		return indexOf(o, 0);
 	}
 	
 	private int indexOf(Object o, int x){
 		if (Objects.equals(val, o)) return x;
-		else return 
+		else if(isLast()) return -1;
+		return tail.indexOf(0, x+1);
 	}
 
-	@Override
-	public int lastIndexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public static class ConsIterator<E> implements Iterator<E>{
 
-	@Override
-	public ListIterator<E> listIterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		private ConsList<E> current;
+		
+		public ConsIterator(ConsList<E> first){
+			current = first;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return ! current.isLast();
+		}
 
-	@Override
-	public ListIterator<E> listIterator(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		@Override
+		public E next() {
+			E val = current.val;
+			current = current.tail;
+			return val;
+		}
+		
 	}
-
-	@Override
-	public List<E> subList(int fromIndex, int toIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }

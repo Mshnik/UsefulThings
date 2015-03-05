@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,12 +38,18 @@ public class Graph<V,E>{
 		}
 	}
 
+	private boolean directed;
 	private HashMap<V, Vertex> vertices;
 	private HashMap<E, Edge> edges;
 
 	public Graph(){
 		vertices = new HashMap<>();
 		edges = new HashMap<>();
+	}
+	
+	public Graph(boolean directed){
+		this();
+		this.directed = directed;
 	}
 
 	public Set<V> vertexSet() {
@@ -59,6 +66,10 @@ public class Graph<V,E>{
 
 	public int edgeSize(){
 		return edges.size();
+	}
+	
+	public boolean isDirected(){
+		return directed;
 	}
 
 	/** Adds the given vertex to the graph with no edges.
@@ -161,6 +172,7 @@ public class Graph<V,E>{
 	}
 
 	/** Returns the edge with the given source and sink, if any. null otw.
+	 * For undirected graphs, returns any edge that connects the two, in either direction
 	 * @throws NotInGraphException - if source or sink are not vertices in this graph*/
 	public E getConnection(V source, V sink) throws NotInGraphException{
 		if(! vertices.containsKey(source) || ! vertices.containsKey(sink))
@@ -173,8 +185,21 @@ public class Graph<V,E>{
 				return e;
 			}
 		}
-		
+		if(! directed){
+			for(E e : sourceV.inEdges.keySet()){
+				if(sinkV.outEdges.containsKey(e)){
+					return e;
+				}
+			}
+		}
 		return null;
+	}
+	
+	/** Returns true iff there is an edge with the given source and sink.
+	 * For undirected graphs, returns true iff there is any edge that conencts the two, in either direction
+	 * @throws NotInGraphException - if source or sink are not vertices in this graph*/
+	public boolean isConnection(V source, V sink) throws NotInGraphException{
+		return getConnection(source, sink) != null;
 	}
 	
 	/** Returns the vertex at the other end of the given edge.
@@ -191,7 +216,8 @@ public class Graph<V,E>{
 		return null;
 	}
 	
-	/** Returns a set of all edges with v as a source or sink */
+	/** Returns a set of all edges with v as an endpoint (source or sink)
+	 * @throws NotInGraphException if v is not in this graph */
 	public Set<E> edgeSetOf(V v){
 		if(! vertices.containsKey(v))
 			throw new NotInGraphException("Can't get source and sink set", v);
@@ -200,18 +226,42 @@ public class Graph<V,E>{
 		return e;
 	}
 	
-	/** Returns a set of all edges with v as a source */
+	/** Returns a set of all edges with v as a source.
+	 * If this graph is undirected returns edgeSetOf(source) instead, as
+	 * every vertex is source and sink 
+	 * @throws NotInGraphException if source is not in this graph */
 	public Set<E> edgeSetOfSource(V source){
 		if(! vertices.containsKey(source))
 			throw new NotInGraphException("Can't get source set", source);
-		return new HashSet<E>(vertices.get(source).outEdges.keySet());
+		if(directed)
+			return new HashSet<E>(vertices.get(source).outEdges.keySet());
+		else
+			return edgeSetOf(source);
 	}
 	
-	/** Returns a set of all edges with v as a sink */
+	/** Returns a set of all edges with v as a sink.
+	 * If this graph is undirected returns edgeSetOf(source) instead, as
+	 * every vertex is source and sink
+	 * @throws NotInGraphException if sink is not in this graph */
 	public Set<E> edgeSetOfSink(V sink){
 		if(! vertices.containsKey(sink))
 			throw new NotInGraphException("Can't get sink set", sink);
-		return new HashSet<E>(vertices.get(sink).inEdges.keySet());
+		if(directed)
+			return new HashSet<E>(vertices.get(sink).inEdges.keySet());
+		else
+			return edgeSetOf(sink);
+	}
+	
+	/** Returns the vertices on either end of the given edge - an arrayList of length 2
+	 * @throws NotInGraphException if e is not in this graph */
+	public ArrayList<V> verticesOf(E e){
+		if(! edges.containsKey(e))
+			throw new NotInGraphException("Can't get verticies of", e);
+		Edge edge = edges.get(e);
+		ArrayList<V> a = new ArrayList<V>();
+		a.add(edge.getSource().v);
+		a.add(edge.getSink().v);
+		return a;
 	}
 
 	@SuppressWarnings("serial")

@@ -1,118 +1,117 @@
 package graph;
 
-import graph.interf.Edge;
-import graph.interf.Graph;
-import graph.interf.Vertex;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbsGraph<V,E> implements Graph<V, E>{
+import common.tuple.Tuple3;
 
-	private class VPair{
-		private final V source;
-		private final V sink;
-		private VPair(V s1, V s2){
-			source = s1;
-			sink = s2;
+public class AbsGraph<V,E>{
+
+	protected class Vertex{
+		protected HashMap<E, Edge> outEdges;
+		protected HashMap<E, Edge> inEdges;
+		public final V v;
+
+		protected Vertex(V v){
+			this.v = v;
+			outEdges = new HashMap<>();
+			inEdges = new HashMap<>();
 		}
 	}
 
-	protected HashMap<VPair, HashSet<E>> graph;
-	private HashSet<V> vertices; //Lazily calculated copy of all vertices in graph
-	private HashSet<E> edges; //Lazily calculated copy of all edges in graph
+	protected class Edge extends Tuple3<Vertex, E, Vertex>{
 
-	private void refreshVertexSet(){
-		if(vertices == null){
-			vertices = new HashSet<V>();
-			for(VPair v : graph.keySet()){
-				vertices.add(v.sink);
-				vertices.add(v.source);
-			}
+		protected Edge(AbsGraph<V, E>.Vertex first, E second,
+				AbsGraph<V, E>.Vertex third) {
+			super(first, second, third);
+		}
+
+		public Vertex getSource(){
+			return _1;
+		}
+
+		public Vertex getSink(){
+			return _3;
 		}
 	}
 
-	private void refreshEdgeSet(){
-		if(edges == null){
-			edges = new HashSet<E>();
-			for(VPair v : graph.keySet()){
-				edges.addAll(graph.get(v));
-			}
-		}
-	}
+	private HashMap<V, Vertex> vertices;
+	private HashMap<E, Edge> edges;
 
-	@Override
 	public Set<V> vertexSet() {
-		refreshVertexSet();
-		return new HashSet<V>(vertices);
+		return new HashSet<V>(vertices.keySet());
 	}
 
-	@Override
 	public Set<E> edgeSet() {
-		refreshEdgeSet();
-		return new HashSet<E>(edges);
+		return new HashSet<E>(edges.keySet());
 	}
 
-	@Override
 	public boolean addVertex(V v, boolean overwrite) {
 		//Check if vertex is already present and we aren't overwriting.
-		if(graph.containsKey(v) && ! overwrite)
+		if(vertices.containsKey(v) && ! overwrite)
 			return false;
 
 		//If we are overwriting, remove the old vertex
 		if(overwrite)
 			removeVertex(v);
 
-		graph.put(v, new HashSet<E>());
+		vertices.put(v, new Vertex(v));
 		return true;
 	}
 
-	@Override
-	public E addEdge(V source, V sink, boolean overwrite) {
-		//Add endpoints to graph, but don't overwrite if they are there
-		if(! graph.containsKey(source) || ! graph.containsKey(sink))
+
+	public boolean addEdge(V source, V sink, E e, boolean overwrite) {
+		if(! vertices.containsKey(source) || ! vertices.containsKey(sink))
 			throw new IllegalArgumentException("Can't connect " + source + "," + sink +
 					" in " + this + "- not in graph");
 
-		if(outSet(source).contains(e) && inSet(sink).contains(e) && ! overwrite)
+		Vertex sourceV = vertices.get(source);
+		Vertex sinkV = vertices.get(sink);
+
+		if(!overwrite && (sourceV.outEdges.containsKey(e) || sinkV.inEdges.containsKey(e)))
 			return false;
 
-		//Put the edge in
-		graph.get(source).addEdge(e);
-		graph.get(sink).addEdge(e);
+		if(overwrite)
+			removeEdge(e);
 
+		//Put the edge in
+		Edge edge = new Edge(sourceV, e, sinkV);
+		edges.put(e, edge);
+		sourceV.outEdges.put(e, edge);
+		sinkV.inEdges.put(e, edge);
 		return true;
 	}
 
-	@Override
-	public boolean removeVertex(Vertex v) {
-		if(! vertices.contains(v))
+
+	public boolean removeVertex(V v) {
+		if(! vertices.containsKey(v))
 			return false;
 
+		Vertex vertex = vertices.get(v);
 		//Remove all connections to/from v
-		for(Edge e : inSet(v))
+		for(E e : vertex.inEdges.keySet())
 			removeEdge(e);
-		for(Edge e : outSet(v))
+		for(E e : vertex.outEdges.keySet())
 			removeEdge(e);
 
 		//Actually remove the vertex
-		graph.remove(v);
-
+		vertices.remove(v);
 		return true;
 	}
 
-	@Override
-	public boolean removeEdge(Edge e) {
-		Vertex source = e.getSource();
-		Vertex sink = e.getSink();
+	public boolean removeEdge(E e) {
+		if(! edges.containsKey(e))
+			return false;
+		
+		Edge edge = edges.get(e);
+		Vertex source = edge.getSource();
+		Vertex sink = edge.getSink();
 
-		if(outSet(source).contains(e) || inSet(sink).contains(e)){
-			graph.get(source).removeEdge(e);
-			graph.get(sink).removeEdge(e);
-			return true;
-		}
-		return false;
+		source.outEdges.remove(e);
+		sink.inEdges.remove(e);
+		edges.remove(e);
+		return true;
 	}
 
 }

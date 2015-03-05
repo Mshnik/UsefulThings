@@ -3,7 +3,6 @@ package graph;
 import graph.interf.Edge;
 import graph.interf.Graph;
 import graph.interf.Vertex;
-import graph.interf.Weighted;
 
 import java.util.Collections;
 import java.util.Comparator;

@@ -8,6 +8,20 @@ import java.util.Set;
 
 import common.tuple.Tuple3;
 
+/** Represents a Graph - a relational data structure.
+ * All relations of which vertices possess which edges, etc are 
+ * maintained internally within the Graph to fully encapsulate the data structure.
+ * <br><br>
+ * The only main requirement made on use of the Graph class is that 
+ * every vertex and edge that is stored within the graph needs to be a *unique*
+ * instance of V and E, respectively. This is due to the use of HashMaps
+ * for storage, thus multiple edges can't be created from the same E instance.
+ * 
+ * @author Mshnik
+ *
+ * @param <V> Generic type representing vertices
+ * @param <E> Generic type representing edges
+ */
 public class Graph<V,E>{
 
 	protected class Vertex{
@@ -73,59 +87,29 @@ public class Graph<V,E>{
 	}
 
 	/** Adds the given vertex to the graph with no edges.
-	 * If the vertex is already in the graph, does not overwrite
+	 * If the vertex is already in the graph, do nothing
 	 * Returns true if the an operation is performed this way, false otw.
 	 */
-	public boolean addVertex(V v){
-		return addVertex(v, false);
-	}
-
-	/** Adds the given vertex to the graph with no edges.
-	 * If the vertex is already in the graph, only overwrite if overwrite is true
-	 * When overwriting, clear edges from this vertex, leaving an unconnected vertex.
-	 * Returns true if the an operation is performed this way, false otw.
-	 */
-	public boolean addVertex(V v, boolean overwrite) {
-		//Check if vertex is already present and we aren't overwriting.
-		if(vertices.containsKey(v) && ! overwrite)
+	public boolean addVertex(V v) {
+		if(vertices.containsKey(v))
 			return false;
-
-		//If we are overwriting, remove the old vertex
-		if(overwrite)
-			removeVertex(v);
 
 		vertices.put(v, new Vertex(v));
 		return true;
 	}
 
 	/** Connects the two given vertices in the graph by adding an edge.
-	 * Does not overwrite.
-	 *  (Old edges from source -> other, etc... persist)
-	 * Returns true if an operation is performed this way, false otw.
-	 */
-	public boolean addEdge(V source, V sink, E e){
-		return addEdge(source, sink, e, false);
-	}
-
-	/** Connects the two given vertices in the graph by adding an edge.
-	 * If the vertex is already in the graph, do nothing, only overwrite if overwrite is true.
-	 *  (Old edges from source -> other, etc... persist)
 	 * Returns true if an operation is performed this way, false otw.
 	 * @throws NotInGraphException - if source or sink are not vertices in this graph
 	 */
-	public boolean addEdge(V source, V sink, E e, boolean overwrite) 
-			throws NotInGraphException{
+	public boolean addEdge(V source, V sink, E e) throws NotInGraphException{
 		if(! vertices.containsKey(source) || ! vertices.containsKey(sink))
 			throw new NotInGraphException("Can't create edge " + e, source, sink);
-
+		if(edges.containsKey(e))
+			return false;
+		
 		Vertex sourceV = vertices.get(source);
 		Vertex sinkV = vertices.get(sink);
-
-		if(!overwrite && (sourceV.outEdges.containsKey(e) || sinkV.inEdges.containsKey(e)))
-			return false;
-
-		if(overwrite)
-			removeEdge(e);
 
 		//Put the edge in
 		Edge edge = new Edge(sourceV, e, sinkV);

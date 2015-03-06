@@ -59,6 +59,7 @@ public class Graph<V,E>{
 	public Graph(){
 		vertices = new HashMap<>();
 		edges = new HashMap<>();
+		directed = true;
 	}
 	
 	public Graph(boolean directed){
@@ -182,7 +183,7 @@ public class Graph<V,E>{
 	/** Returns true iff there is an edge with the given source and sink.
 	 * For undirected graphs, returns true iff there is any edge that conencts the two, in either direction
 	 * @throws NotInGraphException - if source or sink are not vertices in this graph*/
-	public boolean isConnection(V source, V sink) throws NotInGraphException{
+	public boolean isConnected(V source, V sink) throws NotInGraphException{
 		return getConnection(source, sink) != null;
 	}
 	
@@ -195,8 +196,8 @@ public class Graph<V,E>{
 			throw new NotInGraphException("Can't find other endpoint of edge", e);
 		Edge edge = edges.get(e);
 		
-		if(edge._1.equals(oneEnd)) return edge._3.v;
-		if(edge._3.equals(oneEnd)) return edge._1.v;
+		if(edge._1.v.equals(oneEnd)) return edge._3.v;
+		if(edge._3.v.equals(oneEnd)) return edge._1.v;
 		return null;
 	}
 	
@@ -246,6 +247,29 @@ public class Graph<V,E>{
 		a.add(edge.getSource().v);
 		a.add(edge.getSink().v);
 		return a;
+	}
+	
+	/** Returns all neighbor vertices to {@code v}. In a directed graph
+	 * this is the set of vertices {@code a in A} for which there exists an edge e
+	 * with v as the source and a as the sink. In an undirected graph,
+	 * this is the set of vertices for which there exists an edge e with v as
+	 * either the source or the sink and a as the other endpoint.
+	 */
+	public Set<V> neighborsOf(V v) throws NotInGraphException{
+		if(! vertices.containsKey(v))
+			throw new NotInGraphException("Can't get neighbor set", v);
+		
+		Vertex vertex = vertices.get(v);
+		HashSet<V> neighbors = new HashSet<>();
+		for(Edge e : vertex.outEdges.values()){
+			neighbors.add(e.getSink().v);
+		}
+		if(! directed){
+			for(Edge e : vertex.inEdges.values()){
+				neighbors.add(e.getSource().v);
+			}
+		}
+		return neighbors;
 	}
 
 	@SuppressWarnings("serial")

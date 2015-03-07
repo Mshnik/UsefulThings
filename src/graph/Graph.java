@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import common.tuple.Tuple3;
@@ -34,7 +35,7 @@ public class Graph<V,E> implements Cloneable{
 			outEdges = new HashMap<>();
 			inEdges = new HashMap<>();
 		}
-		
+
 		public boolean equals(Object o){
 			try{
 				@SuppressWarnings("unchecked")
@@ -44,7 +45,7 @@ public class Graph<V,E> implements Cloneable{
 				return false;
 			}
 		}
-		
+
 		public int hashCode(){
 			return v.hashCode();
 		}
@@ -75,11 +76,11 @@ public class Graph<V,E> implements Cloneable{
 		edges = new HashMap<>();
 		this.directed = directed;
 	}
-	
+
 	public Graph(){
 		this(true);
 	}
-	
+
 	/** Returns a new Graph that is a copy of this.
 	 * The two graphs contain the same elements but are completely independent
 	 * in terms of underlying structure, so modifications to this Graph
@@ -88,7 +89,7 @@ public class Graph<V,E> implements Cloneable{
 	 */
 	public Graph<V, E> clone(){
 		Graph<V, E> g = new Graph<V, E>(directed);
-		
+
 		for(V v : vertexSet()){
 			g.addVertex(v);
 		}
@@ -96,8 +97,28 @@ public class Graph<V,E> implements Cloneable{
 			Edge edge = edges.get(e);
 			g.addEdge(edge.getSource().v, edge.getSink().v, e);
 		}
-		
+
 		return g;
+	}
+
+	/** Two graphs are equivalent if they store the same vertices and edges,
+	 * and are the same directionality (both directed, or both undirected) */
+	public boolean equals(Object o){
+		try{
+			@SuppressWarnings("unchecked")
+			Graph<V, E> g = (Graph<V, E>)o;
+
+			return directed == g.directed && 
+					vertices.equals(g.vertices) &&
+					edges.equals(g.edges);
+		}catch(ClassCastException ce){
+			return false;
+		}
+	}
+	
+	/** Hashes a Graph based on its vertices, edges, and directed-ness */
+	public int hashCode(){
+		return Objects.hash(directed, vertices, edges);
 	}
 
 	public Set<V> vertexSet() {
@@ -115,7 +136,7 @@ public class Graph<V,E> implements Cloneable{
 	public int edgeSize(){
 		return edges.size();
 	}
-	
+
 	public boolean isDirected(){
 		return directed;
 	}
@@ -141,7 +162,7 @@ public class Graph<V,E> implements Cloneable{
 			throw new NotInGraphException("Can't create edge " + e, source, sink);
 		if(edges.containsKey(e))
 			return false;
-		
+
 		Vertex sourceV = vertices.get(source);
 		Vertex sinkV = vertices.get(sink);
 
@@ -212,14 +233,14 @@ public class Graph<V,E> implements Cloneable{
 		}
 		return null;
 	}
-	
+
 	/** Returns true iff there is an edge with the given source and sink.
 	 * For undirected graphs, returns true iff there is any edge that conencts the two, in either direction
 	 * @throws NotInGraphException - if source or sink are not vertices in this graph*/
 	public boolean isConnected(V source, V sink) throws NotInGraphException{
 		return getConnection(source, sink) != null;
 	}
-	
+
 	/** Returns the vertex at the other end of the given edge.
 	 * Returns null if oneEnd is neither end of e.
 	 * @throws NotInGraphException if e isn't an edge in this graph
@@ -228,12 +249,12 @@ public class Graph<V,E> implements Cloneable{
 		if(! edges.containsKey(e))
 			throw new NotInGraphException("Can't find other endpoint of edge", e);
 		Edge edge = edges.get(e);
-		
+
 		if(edge._1.v.equals(oneEnd)) return edge._3.v;
 		if(edge._3.v.equals(oneEnd)) return edge._1.v;
 		return null;
 	}
-	
+
 	/** Returns a set of all edges with v as an endpoint (source or sink)
 	 * @throws NotInGraphException if v is not in this graph */
 	public Set<E> edgeSetOf(V v){
@@ -243,7 +264,7 @@ public class Graph<V,E> implements Cloneable{
 		e.addAll(vertices.get(v).inEdges.keySet());
 		return e;
 	}
-	
+
 	/** Returns a set of all edges with v as a source.
 	 * If this graph is undirected returns edgeSetOf(source) instead, as
 	 * every vertex is source and sink 
@@ -256,7 +277,7 @@ public class Graph<V,E> implements Cloneable{
 		else
 			return edgeSetOf(source);
 	}
-	
+
 	/** Returns a set of all edges with v as a sink.
 	 * If this graph is undirected returns edgeSetOf(source) instead, as
 	 * every vertex is source and sink
@@ -269,7 +290,7 @@ public class Graph<V,E> implements Cloneable{
 		else
 			return edgeSetOf(sink);
 	}
-	
+
 	/** Returns the vertices on either end of the given edge - an arrayList of length 2
 	 * @throws NotInGraphException if e is not in this graph */
 	public ArrayList<V> verticesOf(E e){
@@ -281,7 +302,7 @@ public class Graph<V,E> implements Cloneable{
 		a.add(edge.getSink().v);
 		return a;
 	}
-	
+
 	/** Returns all neighbor vertices to {@code v}. In a directed graph
 	 * this is the set of vertices {@code a in A} for which there exists an edge e
 	 * with v as the source and a as the sink. In an undirected graph,
@@ -291,7 +312,7 @@ public class Graph<V,E> implements Cloneable{
 	public Set<V> neighborsOf(V v) throws NotInGraphException{
 		if(! vertices.containsKey(v))
 			throw new NotInGraphException("Can't get neighbor set", v);
-		
+
 		Vertex vertex = vertices.get(v);
 		HashSet<V> neighbors = new HashSet<>();
 		for(Edge e : vertex.outEdges.values()){

@@ -238,7 +238,7 @@ public class GraphFrame<V,E> extends JFrame {
 		private static final int TEXT_HEIGHT = 15;
 
 		/** Extra width added to bounds to fit text */
-		private static final int TEXT_WIDTH = 50;
+		private static final int TEXT_WIDTH = 10;
 
 		/** Fixe the boundaries so that all drawings will be within the bounds.
 		 * Call after x, y, or diameter is changed. */
@@ -329,6 +329,9 @@ public class GraphFrame<V,E> extends JFrame {
 
 		private Circle c1;  //Endpoint one of this line
 		private Circle c2;  //Endpoint two of this line
+		
+		boolean arrowEnd1;
+		boolean arrowEnd2;
 
 		private Color color; //The color to draw this line; should stay in sync with the color policy
 
@@ -469,10 +472,13 @@ public class GraphFrame<V,E> extends JFrame {
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setStroke(new BasicStroke(LINE_THICKNESS));
 			Line2D line2d = null;
+			int y1 = 1;
+			int y2 = 1;
 			if (getX1() < getX2() && getY1() < getY2() || getX2() < getX1() && getY2() < getY1())
-				line2d = new Line2D.Double(1, 1, getLineWidth(), getLineHeight());
+				y2 = getLineHeight();
 			else
-				line2d = new Line2D.Double(1, getLineHeight(), getLineWidth(), 1);
+				y1 = getLineHeight();
+			line2d = new Line2D.Double(1, y1, getLineWidth(), y2);
 			g2d.setColor(getColor());
 			g2d.draw(line2d);
 			g2d.drawString(represents._2.toString(), 0, 0);

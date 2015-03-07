@@ -102,7 +102,7 @@ public class Board extends JPanel {
 		
 		Grid<DrawableTile> g = new Grid<DrawableTile>(5, 5);
 		for(Integer[] i : g.buildCoordinates()){
-			g.add(new DrawableTile(g, i[0], i[1]));
+			//g.add(new DrawableTile(g, i[0], i[1]));
 		}
 		
 		f.add(new Board(g, 50, 50, 5, 5, Color.RED));

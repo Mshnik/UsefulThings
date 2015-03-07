@@ -25,8 +25,13 @@ public class GraphTest {
 		g.addEdge("A", "C", 2);
 		g.addEdge("C","C",3);
 		
-		gU = g.clone();
-		gU.setDirected(false);
+		gU = new Graph<>(false);
+		gU.addVertex("A");
+		gU.addVertex("B");
+		gU.addVertex("C");
+		gU.addEdge("A", "B", 1);
+		gU.addEdge("A", "C", 2);
+		gU.addEdge("C","C",3);
 	}
 	
 	@Test
@@ -180,13 +185,27 @@ public class GraphTest {
 		assertEquals(new Integer(2), g.getConnection("A", "C"));
 		assertEquals(new Integer(3), g.getConnection("C", "C"));
 		
+		assertEquals(new Integer(1), gU.getConnection("A", "B"));
+		assertEquals(new Integer(1), gU.getConnection("B", "A"));
+		assertEquals(new Integer(2), gU.getConnection("A", "C"));
+		assertEquals(new Integer(2), gU.getConnection("C", "A"));
+		assertEquals(new Integer(3), gU.getConnection("C", "C"));
+		
 		try{
 			g.getConnection("A", "F");
+			fail("Got connection to vertex not in graph");
+		}catch(NotInGraphException e){}
+		try{
+			gU.getConnection("A", "F");
 			fail("Got connection to vertex not in graph");
 		}catch(NotInGraphException e){}
 		
 		try{
 			g.getConnection("F", "A");
+			fail("Got connection to vertex not in graph");
+		}catch(NotInGraphException e){}
+		try{
+			gU.getConnection("F", "A");
 			fail("Got connection to vertex not in graph");
 		}catch(NotInGraphException e){}
 		
@@ -196,12 +215,27 @@ public class GraphTest {
 		assertFalse(g.isConnected("A", "A"));
 		assertTrue(g.isConnected("C", "C"));
 		
+		assertTrue(gU.isConnected("A", "B"));
+		assertTrue(gU.isConnected("B", "A"));
+		assertFalse(gU.isConnected("B", "C"));
+		assertFalse(gU.isConnected("A", "A"));
+		assertTrue(gU.isConnected("C", "C"));
+		
 		try{
 			g.isConnected("A", "F");
 			fail("Got connection to vertex not in graph");
 		}catch(NotInGraphException e){}
 		try{
+			gU.isConnected("A", "F");
+			fail("Got connection to vertex not in graph");
+		}catch(NotInGraphException e){}
+		
+		try{
 			g.isConnected("F", "A");
+			fail("Got connection to vertex not in graph");
+		}catch(NotInGraphException e){}
+		try{
+			gU.isConnected("F", "A");
 			fail("Got connection to vertex not in graph");
 		}catch(NotInGraphException e){}
 		
@@ -211,8 +245,19 @@ public class GraphTest {
 		assertEquals("C", g.getOther(3, "C"));
 		assertEquals(null, g.getOther(1, "C"));
 		
+		assertEquals("B", gU.getOther(1, "A"));
+		assertEquals("A", gU.getOther(1, "B"));
+		assertEquals("A", gU.getOther(2, "C"));
+		assertEquals("C", gU.getOther(3, "C"));
+		assertEquals(null, gU.getOther(1, "C"));
+		
 		try{
 			g.getOther(15, "A");
+			fail("Got other endpoint of edge not in graph");
+		}catch(NotInGraphException e){}
+		
+		try{
+			gU.getOther(15, "A");
 			fail("Got other endpoint of edge not in graph");
 		}catch(NotInGraphException e){}
 	}

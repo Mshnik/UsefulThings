@@ -1,11 +1,8 @@
 package graph;
 
-import graph.interf.Edge;
-import graph.interf.Graph;
-import graph.interf.Vertex;
-
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -18,44 +15,49 @@ public class Algorithm {
 	 * @return - the path as a list, where return[0] is start and return[last] is goal.
 	 *           returns null if start or goal isn't in g, or there is no such path.
 	 */
-	public static <E extends Edge> LinkedList<Vertex> dijkstra(Graph<? extends Vertex, E> g, Vertex start, Vertex goal){
-		Graph g = start.getGraph();
-		//Check preconditions
-		if(start.getGraph() != g || goal.getGraph() != g)
-			return null;
-		
-		for(Edge e : g.edgeSet()){
-			if(e.getCapacity() < 0)
-				return null;
+	public static <V, E extends Weighted> LinkedList<V> dijkstra(Graph<V, E> g, V start, V goal){
+		for(E e : g.edgeSet()){
+			if(e.getWeight() <= 0)
+				throw new RuntimeException("Can't run dijkstra's algorithm on graph with non-positive weights");
 		}
+		
+		final HashMap<V, Integer> distance = new HashMap<>();
+		Comparator<V> distanceComparator = new Comparator<V>(){
+			@Override
+			public int compare(V o1, V o2) {
+				return distance.get(o1) - distance.get(o2);
+			}
+		};
+		
+		final HashMap<V, V> previous = new HashMap<>();
 		
 		//Initalize step
-		for(Vertex v : g.vertexSet()){
-			v.setLabel(Integer.MAX_VALUE);
-			v.setPrevious(null);
+		for(V v : g.vertexSet()){
+			distance.put(v, Integer.MAX_VALUE);
+			previous.put(v, null);
 		}
 		
-		start.setLabel(0);
+		distance.put(start, 0);
+		HashSet<V> frontier = new HashSet<V>();
 		
-		HashSet<Vertex> frontier = new HashSet<Vertex>();
 		frontier.add(start);
 		
 		//Iteration
 		do{
 			//Find next node (closest) and remove from frontier
-			Vertex next = Collections.min(frontier, new MinLabelComparator());
+			V next = Collections.min(frontier, distanceComparator);
 			frontier.remove(next);
 			//Found the goal - break out of loop
-			if(next == goal)
+			if(next.equals(goal))
 				break;
 			
 			//Look at each edge leaving next
-			for(Edge e : next.getOutEdges()){
-				Vertex neighbor = e.getSink();
+			for(E e : g.edgeSetOfSource(next)){
+				V neighbor = g.getOther(e, next);
 				//Relax edge - check if shortest path to neighbor is beaten by next -> neighbor.
-				if(neighbor.getLabel() > next.getLabel() + e.getCapacity()){
-					neighbor.setLabel(next.getLabel() + e.getCapacity());
-					neighbor.setPrevious(next);
+				if(distance.get(neighbor) > distance.get(next) + e.getWeight()){
+					distance.put(neighbor, distance.get(next) + e.getWeight());
+					previous.put(neighbor, next);
 					if(! frontier.contains(neighbor))
 						frontier.add(neighbor);
 				}
@@ -69,22 +71,13 @@ public class Algorithm {
 		}
 		
 		//Assemble path
-		LinkedList<Vertex> path = new LinkedList<Vertex>();
-		Vertex v = goal;
+		LinkedList<V> path = new LinkedList<V>();
+		V v = goal;
 		do{
 			path.push(v);
-			v = v.getPrevious();
+			v = previous.get(v);
 		}while(v != null);
 		
 		return path;
-	}
-	
-	/** Allows comparison of vertices by their label - smaller label first */
-	private static class MinLabelComparator implements Comparator<Vertex>{
-		@Override
-		public int compare(Vertex v0, Vertex v1) {
-			return v0.getLabel() - v1.getLabel();
-		}
-		
 	}
 }

@@ -70,10 +70,14 @@ public class Graph<V,E> implements Cloneable{
 	private HashMap<V, Vertex> vertices;
 	private HashMap<E, Edge> edges;
 
-	public Graph(){
+	public Graph(boolean directed){
 		vertices = new HashMap<>();
 		edges = new HashMap<>();
-		directed = true;
+		this.directed = directed;
+	}
+	
+	public Graph(){
+		this(true);
 	}
 	
 	/** Returns a new Graph that is a copy of this.
@@ -83,8 +87,7 @@ public class Graph<V,E> implements Cloneable{
 	 * graph won't alter this graph.
 	 */
 	public Graph<V, E> clone(){
-		Graph<V, E> g = new Graph<V, E>();
-		g.setDirected(directed);
+		Graph<V, E> g = new Graph<V, E>(directed);
 		
 		for(V v : vertexSet()){
 			g.addVertex(v);
@@ -115,10 +118,6 @@ public class Graph<V,E> implements Cloneable{
 	
 	public boolean isDirected(){
 		return directed;
-	}
-	
-	public void setDirected(boolean directed){
-		this.directed = directed;
 	}
 
 	/** Adds the given vertex to the graph with no edges.

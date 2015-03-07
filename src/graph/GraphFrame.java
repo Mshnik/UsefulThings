@@ -18,7 +18,7 @@ public class GraphFrame<V,E> extends JFrame {
 
 	private Dimension size = new Dimension(500,500);
 
-	public GraphFrame(Graph<V,E> graph){
+	private GraphFrame(Graph<V,E> graph){
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
 
@@ -42,7 +42,6 @@ public class GraphFrame<V,E> extends JFrame {
 		}
 		
 		setSize(size);
-		setPreferredSize(size);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 	}
@@ -57,8 +56,11 @@ public class GraphFrame<V,E> extends JFrame {
 		g.addEdge("B","C",2);
 		g.addEdge("C","D",3);
 		
-		new GraphFrame<String, Integer>(g);
-		
+		new GraphFrame<String, Integer>(g);		
+	}
+	
+	public static <V,E> void showGraph(Graph<V,E> g){
+		new GraphFrame<V,E>(g);
 	}
 
 	/** Graphics class Circle  allows the drawing of circles.

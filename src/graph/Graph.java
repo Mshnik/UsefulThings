@@ -128,6 +128,10 @@ public class Graph<V,E> implements Cloneable{
 	public int vertexSize(){
 		return vertices.size();
 	}
+	
+	protected Vertex getVertex(V v){
+		return vertices.get(v);
+	}
 
 	public Set<E> edgeSet() {
 		return new HashSet<E>(edges.keySet());
@@ -135,6 +139,10 @@ public class Graph<V,E> implements Cloneable{
 
 	public int edgeSize(){
 		return edges.size();
+	}
+	
+	protected Edge getEdge(E e){
+		return edges.get(e);
 	}
 
 	public boolean isDirected(){

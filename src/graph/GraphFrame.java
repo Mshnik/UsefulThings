@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.swing.*;
 
@@ -31,10 +32,16 @@ public class GraphFrame<V,E> extends JFrame {
 
 		for(E e : graph.edgeSet()){
 			Graph<V,E>.Edge edge = graph.getEdge(e);
-			edges.put(e, new Line(nodes.get(edge._1.v), nodes.get(edge._3.v), graph.getEdge(e)));
+			Circle c1 = nodes.get(edge._1.v);
+			Circle c2 = nodes.get(edge._3.v);
+			Line l = new Line(c1, c2, graph.getEdge(e));
+			edges.put(e, l);
+			c1.lines.add(l);
+			c2.lines.add(l);
 			getContentPane().add(edges.get(e));
 		}
 		
+		setSize(size);
 		setPreferredSize(size);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
@@ -81,6 +88,8 @@ public class GraphFrame<V,E> extends JFrame {
 
 		private Color color;
 		private boolean filled;
+		
+		private HashSet<Line> lines; //Edges attached to this circle
 
 		private Point clickPoint; //The point the user clicked within the circle before dragging began
 		private int maxX;   //Boundary for dragging on the x
@@ -109,6 +118,7 @@ public class GraphFrame<V,E> extends JFrame {
 		 */
 		public Circle(V r, int x, int y, int d, Color c, boolean filled) {
 			represents = r;
+			lines = new HashSet<Line>();
 
 			//Set preliminary bounds
 			setBounds(0,0,DEFAULT_DIAMETER + PANEL_BUFFER, DEFAULT_DIAMETER + PANEL_BUFFER);
@@ -181,6 +191,9 @@ public class GraphFrame<V,E> extends JFrame {
 		public void setX1(int x) {
 			x1 = x;
 			fixBounds();
+			for(Line l : lines){
+				l.fixBounds();
+			}
 		}
 
 		/** Return the y coordinate of this circle. */
@@ -192,6 +205,9 @@ public class GraphFrame<V,E> extends JFrame {
 		public void setY1(int y) {
 			y1 = y;
 			fixBounds();
+			for(Line l : lines){
+				l.fixBounds();
+			}
 		}
 
 		/** Return the color of this circle. */
@@ -233,7 +249,7 @@ public class GraphFrame<V,E> extends JFrame {
 			Rectangle oldBounds = getBounds();
 			setBounds(oldBounds.x, oldBounds.y - TEXT_HEIGHT,
 					oldBounds.width + TEXT_WIDTH, oldBounds.height + TEXT_HEIGHT);
-			repaint();
+			GraphFrame.this.repaint();
 		}
 
 		/** Switch this Circle's location with the location of c */

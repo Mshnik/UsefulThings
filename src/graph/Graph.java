@@ -22,7 +22,7 @@ import common.tuple.Tuple3;
  * @param <V> Generic type representing vertices
  * @param <E> Generic type representing edges
  */
-public class Graph<V,E>{
+public class Graph<V,E> implements Cloneable{
 
 	protected class Vertex{
 		protected HashMap<E, Edge> outEdges;
@@ -33,6 +33,20 @@ public class Graph<V,E>{
 			this.v = v;
 			outEdges = new HashMap<>();
 			inEdges = new HashMap<>();
+		}
+		
+		public boolean equals(Object o){
+			try{
+				@SuppressWarnings("unchecked")
+				Vertex vertex = (Graph<V,E>.Vertex)o;
+				return v.equals(vertex.v);
+			}catch(ClassCastException ce){
+				return false;
+			}
+		}
+		
+		public int hashCode(){
+			return v.hashCode();
 		}
 	}
 
@@ -62,9 +76,25 @@ public class Graph<V,E>{
 		directed = true;
 	}
 	
-	public Graph(boolean directed){
-		this();
-		this.directed = directed;
+	/** Returns a new Graph that is a copy of this.
+	 * The two graphs contain the same elements but are completely independent
+	 * in terms of underlying structure, so modifications to this Graph
+	 * won't alter the returned graph, and modifications to the returned
+	 * graph won't alter this graph.
+	 */
+	public Graph<V, E> clone(){
+		Graph<V, E> g = new Graph<V, E>();
+		g.setDirected(directed);
+		
+		for(V v : vertexSet()){
+			g.addVertex(v);
+		}
+		for(E e : edgeSet()){
+			Edge edge = edges.get(e);
+			g.addEdge(edge.getSource().v, edge.getSink().v, e);
+		}
+		
+		return g;
 	}
 
 	public Set<V> vertexSet() {
@@ -85,6 +115,10 @@ public class Graph<V,E>{
 	
 	public boolean isDirected(){
 		return directed;
+	}
+	
+	public void setDirected(boolean directed){
+		this.directed = directed;
 	}
 
 	/** Adds the given vertex to the graph with no edges.

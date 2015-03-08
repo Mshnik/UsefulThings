@@ -330,6 +330,9 @@ public class GraphFrame<V,E> extends JFrame {
 		private Circle c1;  //Endpoint one of this line
 		private Circle c2;  //Endpoint two of this line
 		
+		private int width;
+		private int height;
+		
 		boolean arrowEnd1;
 		boolean arrowEnd2;
 
@@ -408,24 +411,20 @@ public class GraphFrame<V,E> extends JFrame {
 
 		/** Return the width (x diff) of the line. Always positive. */
 		public int getLineWidth() {
-			return Math.abs(getX1() - getX2());
+			return width;
 		}
 
 		/** Return the height (y diff) of the line. Always positive. */
 		public int getLineHeight() {
-			return Math.abs(getY1() - getY2());
+			return height;
 		}
 
 		/** Dynamically resize the drawing boundaries of this line based on the
-		 * height and width of the line, with a minimum sized box of (40,40).
+		 * height and width of the line, with a minimum sized box of.
 		 * Call whenever circles move to fix the drawing boundaries of this. */
 		public void fixBounds() {
-			int minX = Math.min(getX1(), getX2());
-			int minY = Math.min(getY1(), getY2());
-			int width = Math.max(Math.abs(getX1() - getX2()), 40);
-			int height = Math.max(Math.abs(getY1() - getY2()), 40);
-
-			setBounds(minX, minY, width + 2, height + 2);
+			setBounds(0, 0, GraphFrame.this.getContentPane().getWidth(), 
+					GraphFrame.this.getContentPane().getHeight());
 			repaint();
 		}
 
@@ -471,14 +470,21 @@ public class GraphFrame<V,E> extends JFrame {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setStroke(new BasicStroke(LINE_THICKNESS));
-			Line2D line2d = null;
-			int y1 = 1;
-			int y2 = 1;
-			if (getX1() < getX2() && getY1() < getY2() || getX2() < getX1() && getY2() < getY1())
-				y2 = getLineHeight();
-			else
-				y1 = getLineHeight();
-			line2d = new Line2D.Double(1, y1, getLineWidth(), y2);
+			
+			double diffX = (getX2() - getX1());
+			double diffY = (getY2() - getY1());
+			double hypotenuse = Math.sqrt(diffX * diffX + diffY * diffY);
+			double angle = Math.acos(diffX/hypotenuse);
+			if(getY2() < getY1())
+				angle = 2*Math.PI - angle;
+			System.out.println(Math.toDegrees(angle));
+			
+			double y1 = getY1() + Math.sin(angle)*c1.diameter/2 + 1;
+			double x1 = getX1() + Math.cos(angle)*c1.diameter/2 + 1;
+			double y2 = getY2() - Math.sin(angle)*c2.diameter/2;
+			double x2 = getX2() - Math.cos(angle)*c2.diameter/2;
+			
+			Line2D line2d = new Line2D.Double(x1, y1, x2, y2);
 			g2d.setColor(getColor());
 			g2d.draw(line2d);
 			g2d.drawString(represents._2.toString(), 0, 0);

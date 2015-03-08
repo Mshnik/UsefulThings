@@ -1,6 +1,5 @@
 package graph;
 
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -23,10 +22,13 @@ public class GraphFrame<V,E> extends JFrame {
 		edges = new HashMap<>();
 
 		setLayout(null);
+		setSize(size);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setVisible(true);
 		
 		int i = 0;
 		for(V v : graph.vertexSet()){
-			nodes.put(v, new Circle(v, 100 + (i++)*50, 100, Circle.DEFAULT_DIAMETER));
+			nodes.put(v, new Circle(v, 100 + (i++)*50, (int)(Math.random() *100)+50, Circle.DEFAULT_DIAMETER));
 			getContentPane().add(nodes.get(v));
 		}
 
@@ -40,10 +42,6 @@ public class GraphFrame<V,E> extends JFrame {
 			c2.lines.add(l);
 			getContentPane().add(edges.get(e));
 		}
-		
-		setSize(size);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
 	}
 	
 	public static void main(String[] args){
@@ -142,8 +140,8 @@ public class GraphFrame<V,E> extends JFrame {
 				/** When clicked, store the initial point at which this is clicked. */
 				@Override
 				public void mousePressed(MouseEvent e) {
-					maxX = GraphFrame.this.getWidth();
-					maxY = GraphFrame.this.getHeight();
+					maxX = GraphFrame.this.getContentPane().getWidth();
+					maxY = GraphFrame.this.getContentPane().getHeight();
 					clickPoint = e.getPoint();
 				}
 
@@ -330,9 +328,6 @@ public class GraphFrame<V,E> extends JFrame {
 		private Circle c1;  //Endpoint one of this line
 		private Circle c2;  //Endpoint two of this line
 		
-		private int width;
-		private int height;
-		
 		boolean arrowEnd1;
 		boolean arrowEnd2;
 
@@ -347,11 +342,13 @@ public class GraphFrame<V,E> extends JFrame {
 		 * @param r - the Edge this Line represents when drawn on the GUI
 		 */
 		public Line(Circle c1, Circle c2, Graph<V,E>.Edge r) {
+			setBounds(0, 0, GraphFrame.this.getContentPane().getWidth(), 
+					GraphFrame.this.getContentPane().getHeight());
 			setC1(c1);
 			setC2(c2);
 			represents = r;
-			setOpaque(false);
 			fixBounds();
+			setOpaque(false);
 		}
 
 		/** Return the first end of this line. */
@@ -409,23 +406,13 @@ public class GraphFrame<V,E> extends JFrame {
 			return (c1.getY1() + c2.getY1()) / 2;
 		}
 
-		/** Return the width (x diff) of the line. Always positive. */
-		public int getLineWidth() {
-			return width;
-		}
-
-		/** Return the height (y diff) of the line. Always positive. */
-		public int getLineHeight() {
-			return height;
-		}
-
 		/** Dynamically resize the drawing boundaries of this line based on the
 		 * height and width of the line, with a minimum sized box of.
 		 * Call whenever circles move to fix the drawing boundaries of this. */
 		public void fixBounds() {
 			setBounds(0, 0, GraphFrame.this.getContentPane().getWidth(), 
 					GraphFrame.this.getContentPane().getHeight());
-			repaint();
+			GraphFrame.this.repaint();
 		}
 
 		/** Return the current color of this line, which is determined by the color policy. */
@@ -477,13 +464,12 @@ public class GraphFrame<V,E> extends JFrame {
 			double angle = Math.acos(diffX/hypotenuse);
 			if(getY2() < getY1())
 				angle = 2*Math.PI - angle;
-			System.out.println(Math.toDegrees(angle));
 			
 			double y1 = getY1() + Math.sin(angle)*c1.diameter/2 + 1;
 			double x1 = getX1() + Math.cos(angle)*c1.diameter/2 + 1;
 			double y2 = getY2() - Math.sin(angle)*c2.diameter/2;
 			double x2 = getX2() - Math.cos(angle)*c2.diameter/2;
-			
+						
 			Line2D line2d = new Line2D.Double(x1, y1, x2, y2);
 			g2d.setColor(getColor());
 			g2d.draw(line2d);

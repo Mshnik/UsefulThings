@@ -15,9 +15,12 @@ public class GraphFrame<V,E> extends JFrame {
 	private HashMap<V, Circle> nodes;
 	private HashMap<E, Line> edges;
 
+	private final boolean directed;
+
 	private Dimension size = new Dimension(500,500);
 
 	private GraphFrame(Graph<V,E> graph){
+		directed = graph.isDirected();
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
 
@@ -25,7 +28,7 @@ public class GraphFrame<V,E> extends JFrame {
 		setSize(size);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
-		
+
 		int i = 0;
 		for(V v : graph.vertexSet()){
 			nodes.put(v, new Circle(v, 100 + (i++)*50, (int)(Math.random() *100)+50, Circle.DEFAULT_DIAMETER));
@@ -43,7 +46,7 @@ public class GraphFrame<V,E> extends JFrame {
 			getContentPane().add(edges.get(e));
 		}
 	}
-	
+
 	public static void main(String[] args){
 		Graph<String, Integer> g = new Graph<>();
 		g.addVertex("A");
@@ -53,10 +56,10 @@ public class GraphFrame<V,E> extends JFrame {
 		g.addEdge("A","C",1);
 		g.addEdge("B","C",2);
 		g.addEdge("C","D",3);
-		
+
 		new GraphFrame<String, Integer>(g);		
 	}
-	
+
 	public static <V,E> void showGraph(Graph<V,E> g){
 		new GraphFrame<V,E>(g);
 	}
@@ -88,7 +91,7 @@ public class GraphFrame<V,E> extends JFrame {
 
 		private Color color;
 		private boolean filled;
-		
+
 		private HashSet<Line> lines; //Edges attached to this circle
 
 		private Point clickPoint; //The point the user clicked within the circle before dragging began
@@ -327,7 +330,7 @@ public class GraphFrame<V,E> extends JFrame {
 
 		private Circle c1;  //Endpoint one of this line
 		private Circle c2;  //Endpoint two of this line
-		
+
 		boolean arrowEnd1;
 		boolean arrowEnd2;
 
@@ -450,6 +453,8 @@ public class GraphFrame<V,E> extends JFrame {
 					c2.getX1() + "," + c2.getY1() + ")";
 		}
 
+		private static final double ARROW_RATIO = 1.1;
+
 		/** Paint this line */
 		@Override
 		public void paintComponent(Graphics g) {
@@ -457,22 +462,35 @@ public class GraphFrame<V,E> extends JFrame {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setStroke(new BasicStroke(LINE_THICKNESS));
-			
+
 			double diffX = (getX2() - getX1());
 			double diffY = (getY2() - getY1());
 			double hypotenuse = Math.sqrt(diffX * diffX + diffY * diffY);
 			double angle = Math.acos(diffX/hypotenuse);
 			if(getY2() < getY1())
 				angle = 2*Math.PI - angle;
-			
+
 			double y1 = getY1() + Math.sin(angle)*c1.diameter/2 + 1;
 			double x1 = getX1() + Math.cos(angle)*c1.diameter/2 + 1;
 			double y2 = getY2() - Math.sin(angle)*c2.diameter/2;
 			double x2 = getX2() - Math.cos(angle)*c2.diameter/2;
-						
 			Line2D line2d = new Line2D.Double(x1, y1, x2, y2);
 			g2d.setColor(getColor());
 			g2d.draw(line2d);
+
+//			if(directed){
+//				Polygon arrow = new Polygon();
+//				double radiusFrac = Math.PI / 12;
+//				double height = 20;
+//				
+//				arrow.addPoint((int)(getX2() - Math.cos(angle-radiusFrac) * height), 
+//						(int)(getY2() - Math.sin(angle-radiusFrac) * height));
+//				arrow.addPoint((int)x2,(int)y2);
+//				arrow.addPoint((int)(getX2() - Math.cos(angle+radiusFrac) * height), 
+//						(int)(getY2() - Math.sin(angle-radiusFrac) * height));
+//				
+//				g2d.fill(arrow);
+//			}
 			g2d.drawString(represents._2.toString(), 0, 0);
 		}
 

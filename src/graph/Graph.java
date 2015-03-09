@@ -115,7 +115,7 @@ public class Graph<V,E> implements Cloneable{
 			return false;
 		}
 	}
-	
+
 	/** Hashes a Graph based on its vertices, edges, and directed-ness */
 	public int hashCode(){
 		return Objects.hash(directed, vertices, edges);
@@ -128,7 +128,7 @@ public class Graph<V,E> implements Cloneable{
 	public int vertexSize(){
 		return vertices.size();
 	}
-	
+
 	protected Vertex getVertex(V v){
 		return vertices.get(v);
 	}
@@ -140,7 +140,7 @@ public class Graph<V,E> implements Cloneable{
 	public int edgeSize(){
 		return edges.size();
 	}
-	
+
 	protected Edge getEdge(E e){
 		return edges.get(e);
 	}
@@ -253,7 +253,7 @@ public class Graph<V,E> implements Cloneable{
 	 * Returns null if oneEnd is neither end of e.
 	 * @throws NotInGraphException if e isn't an edge in this graph
 	 */
-	public V getOther(E e, V oneEnd){
+	public V getOther(E e, V oneEnd) throws NotInGraphException{
 		if(! edges.containsKey(e))
 			throw new NotInGraphException("Can't find other endpoint of edge", e);
 		Edge edge = edges.get(e);
@@ -265,7 +265,7 @@ public class Graph<V,E> implements Cloneable{
 
 	/** Returns a set of all edges with v as an endpoint (source or sink)
 	 * @throws NotInGraphException if v is not in this graph */
-	public Set<E> edgeSetOf(V v){
+	public Set<E> edgeSetOf(V v) throws NotInGraphException{
 		if(! vertices.containsKey(v))
 			throw new NotInGraphException("Can't get source and sink set", v);
 		HashSet<E> e = new HashSet<E>(vertices.get(v).outEdges.keySet());
@@ -273,11 +273,19 @@ public class Graph<V,E> implements Cloneable{
 		return e;
 	}
 
+	/** Returns the number of edges with the given vertex as an endpoint (source or sink)
+	 * @throws NotInGraphException if v is not in this graph */
+	public int degreeOf(V v) throws NotInGraphException{
+		if(! vertices.containsKey(v))
+			throw new NotInGraphException("Can't get degree", v);
+		return vertices.get(v).inEdges.size() + vertices.get(v).outEdges.size();
+	}
+
 	/** Returns a set of all edges with v as a source.
 	 * If this graph is undirected returns edgeSetOf(source) instead, as
 	 * every vertex is source and sink 
 	 * @throws NotInGraphException if source is not in this graph */
-	public Set<E> edgeSetOfSource(V source){
+	public Set<E> edgeSetOfSource(V source) throws NotInGraphException{
 		if(! vertices.containsKey(source))
 			throw new NotInGraphException("Can't get source set", source);
 		if(directed)
@@ -286,11 +294,24 @@ public class Graph<V,E> implements Cloneable{
 			return edgeSetOf(source);
 	}
 
+	/** Returns the number of edges with the given vertex as an source.
+	 * If this graph is undirected, returns degreeOf(source) instead, as
+	 * every vertex is a source and sink.
+	 * @throws NotInGraphException if v is not in this graph */
+	public int outDegreeOf(V source) throws NotInGraphException{
+		if(! vertices.containsKey(source))
+			throw new NotInGraphException("Can't get degree", source);
+		if(directed)
+			return vertices.get(source).outEdges.size();
+		else
+			return degreeOf(source);
+	}
+
 	/** Returns a set of all edges with v as a sink.
 	 * If this graph is undirected returns edgeSetOf(source) instead, as
 	 * every vertex is source and sink
 	 * @throws NotInGraphException if sink is not in this graph */
-	public Set<E> edgeSetOfSink(V sink){
+	public Set<E> edgeSetOfSink(V sink) throws NotInGraphException{
 		if(! vertices.containsKey(sink))
 			throw new NotInGraphException("Can't get sink set", sink);
 		if(directed)
@@ -298,10 +319,23 @@ public class Graph<V,E> implements Cloneable{
 		else
 			return edgeSetOf(sink);
 	}
+	
+	/** Returns the number of edges with the given vertex as an sink.
+	 * If this graph is undirected, returns degreeOf(sink) instead, as
+	 * every vertex is a source and sink.
+	 * @throws NotInGraphException if v is not in this graph */
+	public int inDegreeOf(V sink) throws NotInGraphException{
+		if(! vertices.containsKey(sink))
+			throw new NotInGraphException("Can't get degree", sink);
+		if(directed)
+			return vertices.get(sink).inEdges.size();
+		else
+			return degreeOf(sink);
+	}
 
 	/** Returns the vertices on either end of the given edge - an arrayList of length 2
 	 * @throws NotInGraphException if e is not in this graph */
-	public ArrayList<V> verticesOf(E e){
+	public ArrayList<V> verticesOf(E e) throws NotInGraphException{
 		if(! edges.containsKey(e))
 			throw new NotInGraphException("Can't get verticies of", e);
 		Edge edge = edges.get(e);

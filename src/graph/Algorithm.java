@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -79,5 +80,33 @@ public class Algorithm {
 		}while(v != null);
 		
 		return path;
+	}
+	
+	/** Returns true if the given graph is a DAG, using a topological sort */
+	public static <V,E> boolean isDAG(Graph<V,E> g){
+		if(! g.isDirected()) return false;
+		
+		final Graph<V,E> g2 = g.clone(); //create modifiable copy
+		
+		Comparator<V> minDegreeComparator = new Comparator<V>(){
+			public int compare(V o1, V o2) {
+				return g2.inDegreeOf(o1) - g2.inDegreeOf(o2);
+			}
+		};
+		
+		ArrayList<V> arrLst = new ArrayList<V>();
+		arrLst.addAll(g2.vertexSet());
+		
+		while(g2.vertexSize() > 0){
+			V minV = Collections.min(arrLst, minDegreeComparator);
+			
+			//If minimum inDegree has in degree > 0, there is a cycle.
+			if(g2.inDegreeOf(minV) > 0) return false;
+			
+			//minimum inDegree is 0 - remove from arrayList and from actual graph
+			arrLst.remove(minV);
+			g2.removeVertex(minV);
+		}
+		return true;
 	}
 }

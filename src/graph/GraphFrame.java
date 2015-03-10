@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class GraphFrame<V,E> extends JFrame {
 
@@ -14,25 +16,74 @@ public class GraphFrame<V,E> extends JFrame {
 
 	private HashMap<V, Circle> nodes;
 	private HashMap<E, Line> edges;
-
 	private final boolean directed;
+	
+	private GraphFrame<V,E>.Circle selectedCircle;
 
 	private Dimension size = new Dimension(500,500);
 
+	private final JPanel drawPanel;
+	private final JSlider sizeSlider;
+	
 	private GraphFrame(Graph<V,E> graph){
 		directed = graph.isDirected();
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
+		
+		setLayout(new BorderLayout());
+		
+		drawPanel = new JPanel();
+		
+		drawPanel.setLayout(null);
+		drawPanel.setPreferredSize(size);
+		drawPanel.setBackground(Color.WHITE);
+		
+		drawPanel.addMouseListener(new MouseListener(){
 
-		setLayout(null);
-		setSize(size);
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				GraphFrame.this.remove(sizeSlider);
+				GraphFrame.this.pack();
+			}
+			public void mousePressed(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {}
+		});
+		
+		sizeSlider = new JSlider();
+		sizeSlider.setMinimum(Circle.DEFAULT_DIAMETER/5);
+		sizeSlider.setMaximum(Circle.DEFAULT_DIAMETER*3);
+		sizeSlider.addChangeListener(new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if(selectedCircle != null){
+					selectedCircle.diameter = ((JSlider)e.getSource()).getValue();
+					selectedCircle.fixBounds();
+					drawPanel.repaint();
+				}
+			}
+		});		
+		add(drawPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
+		pack();
 
+		addGraph(graph);
+
+		setVisible(true);
+	}
+	
+	/** Call during construction to add the circles and lines described
+	 * by the graph to the drawing panel
+	 */
+	private void addGraph(Graph<V,E> graph){
+		drawPanel.removeAll();
+		nodes.clear();
+		edges.clear();
 		int i = 0;
 		for(V v : graph.vertexSet()){
 			nodes.put(v, new Circle(v, 100 + (i++)*50, (int)(Math.random() *100)+50, Circle.DEFAULT_DIAMETER));
-			getContentPane().add(nodes.get(v));
+			drawPanel.add(nodes.get(v));
 		}
 
 		for(E e : graph.edgeSet()){
@@ -43,7 +94,7 @@ public class GraphFrame<V,E> extends JFrame {
 			edges.put(e, l);
 			c1.lines.add(l);
 			c2.lines.add(l);
-			getContentPane().add(edges.get(e));
+			drawPanel.add(edges.get(e));
 		}
 	}
 
@@ -143,13 +194,19 @@ public class GraphFrame<V,E> extends JFrame {
 				/** When clicked, store the initial point at which this is clicked. */
 				@Override
 				public void mousePressed(MouseEvent e) {
-					maxX = GraphFrame.this.getContentPane().getWidth();
-					maxY = GraphFrame.this.getContentPane().getHeight();
+					maxX = GraphFrame.this.drawPanel.getWidth();
+					maxY = GraphFrame.this.drawPanel.getHeight();
 					clickPoint = e.getPoint();
 				}
 
+				@SuppressWarnings("unchecked")
 				@Override
-				public void mouseClicked(MouseEvent e) {}
+				public void mouseClicked(MouseEvent e) {
+					selectedCircle = (GraphFrame<V,E>.Circle)e.getSource();
+					sizeSlider.setValue(diameter);
+					GraphFrame.this.add(sizeSlider, BorderLayout.SOUTH);
+					GraphFrame.this.pack();
+				}
 
 				@Override
 				public void mouseReleased(MouseEvent e) {}
@@ -252,7 +309,7 @@ public class GraphFrame<V,E> extends JFrame {
 			Rectangle oldBounds = getBounds();
 			setBounds(oldBounds.x, oldBounds.y - TEXT_HEIGHT,
 					oldBounds.width + TEXT_WIDTH, oldBounds.height + TEXT_HEIGHT);
-			GraphFrame.this.repaint();
+			drawPanel.repaint();
 		}
 
 		/** Switch this Circle's location with the location of c */
@@ -413,9 +470,8 @@ public class GraphFrame<V,E> extends JFrame {
 		 * height and width of the line, with a minimum sized box of.
 		 * Call whenever circles move to fix the drawing boundaries of this. */
 		public void fixBounds() {
-			setBounds(0, 0, GraphFrame.this.getContentPane().getWidth(), 
-					GraphFrame.this.getContentPane().getHeight());
-			GraphFrame.this.repaint();
+			setBounds(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
+			drawPanel.repaint();
 		}
 
 		/** Return the current color of this line, which is determined by the color policy. */

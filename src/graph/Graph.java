@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import common.Util;
 import common.tuple.Tuple3;
 
 /** Represents a Graph - a relational data structure.
@@ -132,6 +133,10 @@ public class Graph<V,E> implements Cloneable{
 	protected Vertex getVertex(V v){
 		return vertices.get(v);
 	}
+	
+	public V getRandomVertex(){
+		return Util.randomElement(vertices.keySet());
+	}
 
 	public Set<E> edgeSet() {
 		return new HashSet<E>(edges.keySet());
@@ -145,6 +150,10 @@ public class Graph<V,E> implements Cloneable{
 		return edges.get(e);
 	}
 
+	public E getRandomEdge(){
+		return Util.randomElement(edges.keySet());
+	}
+	
 	public boolean isDirected(){
 		return directed;
 	}

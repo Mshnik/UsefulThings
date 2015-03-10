@@ -453,7 +453,8 @@ public class GraphFrame<V,E> extends JFrame {
 					c2.getX1() + "," + c2.getY1() + ")";
 		}
 
-		private static final double ARROW_RATIO = 1.1;
+		private static final double ARROW_LENGTH = GraphFrame.Circle.DEFAULT_DIAMETER / 2;
+		private static final double ARROW_ANGLE = Math.PI / 6.0; 
 
 		/** Paint this line */
 		@Override
@@ -478,20 +479,17 @@ public class GraphFrame<V,E> extends JFrame {
 			g2d.setColor(getColor());
 			g2d.draw(line2d);
 
-//			if(directed){
-//				Polygon arrow = new Polygon();
-//				double radiusFrac = Math.PI / 12;
-//				double height = 20;
-//				
-//				arrow.addPoint((int)(getX2() - Math.cos(angle-radiusFrac) * height), 
-//						(int)(getY2() - Math.sin(angle-radiusFrac) * height));
-//				arrow.addPoint((int)x2,(int)y2);
-//				arrow.addPoint((int)(getX2() - Math.cos(angle+radiusFrac) * height), 
-//						(int)(getY2() - Math.sin(angle-radiusFrac) * height));
-//				
-//				g2d.fill(arrow);
-//			}
-			g2d.drawString(represents._2.toString(), 0, 0);
+			if(directed){
+				Polygon arrow = new Polygon();
+
+				arrow.addPoint((int)x2, (int)y2);
+				arrow.addPoint((int)(x2 + ARROW_LENGTH * Math.cos(angle + Math.PI - ARROW_ANGLE)), 
+						(int)(y2 + ARROW_LENGTH * Math.sin(angle + Math.PI - ARROW_ANGLE)));
+				arrow.addPoint((int)(x2 + ARROW_LENGTH * Math.cos(angle + Math.PI + ARROW_ANGLE)), 
+						(int)(y2 + ARROW_LENGTH * Math.sin(angle + Math.PI + ARROW_ANGLE)));
+				g2d.fill(arrow);
+			}
+			g2d.drawString(represents._2.toString(), getXMid(), getYMid() - 10);
 		}
 
 

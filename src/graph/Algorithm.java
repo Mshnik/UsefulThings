@@ -1,16 +1,45 @@
 package graph;
 
+import graph.Graph.NotInGraphException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import common.Util;
+import common.tuple.Tuple2;
 
 /** Holder class for various algorithms for graphs **/
 public class Algorithm {
+
+	/** Returns the sum of the weights for the given path in the given graph.
+	 * @throws an NotInGraphException if the path makes an illegal jump -
+	 * there is no such edge to travel
+	 * @return - 0 if path == null or path.size() < 2, the sum of the edge weights otherwise
+	 */
+	public static <V, E extends Weighted> int sumPathWeight(Graph<V, E> g, LinkedList<V> path)
+			throws NotInGraphException{
+		if(path == null || path.size() < 2) return 0;
+
+		int s = 0;
+		Iterator<V> one = path.iterator();
+		Iterator<V> two = path.iterator();
+		two.next(); //Advance two forward one.
+		while(two.hasNext()){
+			V v1 = one.next();
+			V v2 = two.next();
+			E e = g.getConnection(v1, v2);
+			if(e == null)
+				throw new NotInGraphException("Can't get cost of " + v1 + " to " + v2, e);
+			s += e.getWeight();
+		}
+
+		return s;
+	}
 
 	/** Attempts to find the shortest path in g from start to goal
 	 * @param start - a vertex in g, the start of the path
@@ -120,15 +149,15 @@ public class Algorithm {
 		HashSet<V> allVertices = new HashSet<V>(g.vertexSet());
 
 		LinkedList<V> queue = new LinkedList<V>();
-		
+
 		while(! allVertices.isEmpty()){
-			
+
 			queue.clear();
 			sideA.clear();
 			sideB.clear();
 			queue.add(Util.randomElement(allVertices));
 			sideA.add(queue.getFirst());
-			
+
 			while(! queue.isEmpty()){
 				V v = queue.poll();
 				allVertices.remove(v);
@@ -154,7 +183,80 @@ public class Algorithm {
 				}
 			}
 		}
-
 		return true;
 	}
+	
+	/** An instance represents a flow on a graph with edge type E
+	 * The first value is the total flow, the second is a map of each
+	 * edge in the graph to the amount of flow on that edge
+	 * @author Mshnik
+	 */
+	public static class Flow<E> extends Tuple2<Integer, HashMap<E, Integer>>{
+		public Flow(Integer first, HashMap<E, Integer> second) {
+			super(first, second);
+		}		
+	}
+	
+	/** An instance is created to perform a maxflow calculation.
+	 * This simplifies passing around the various hashMaps used in the calculation
+	 */
+	private static class MaxFlow<V, E extends Flowable>{
+		private HashMap<V, Integer> label;
+		private HashMap<E, Integer> flow;
+		private HashMap<E, Integer> residualFlow;
+		private HashMap<V, Integer> excess;
+		private final Graph<V,E> g;
+		private final V source;
+		private final V sink;
+		
+		public MaxFlow(Graph<V,E> g, V source, V sink){
+			this.g = g;
+			this.source = source;
+			this.sink = sink;
+			
+			//Initialize maps
+		}
+		
+		/** Helper method for the maxFlow calculation. */
+		private void push(V u, V v){
+			E e = g.getConnection(u, v);
+			assert(excess.get(u) > 0 && label.get(u) == label.get(v) + 1);
+			int delta = Math.min(excess.get(u), e.getCapacity() - flow.get(e));
+			flow.put(e, flow.get(e) + delta);
+			residualFlow.put(e, residualFlow.get(e) - delta);
+			excess.put(u, excess.get(u) - delta);
+			excess.put(v, excess.get(v) + delta);
+		}
+		
+		private void relabel(V u){
+			assert(excess.get(u) > 0);
+			int minVal = Integer.MAX_VALUE;
+			for(V v : g.vertexSet()){
+				E e = g.getConnection(u,v);
+				if(e != null && flow.get(e) < e.getCapacity()){
+					assert(label.get(u) <= label.get(v));
+					minVal = Math.min(minVal, label.get(v));
+				}
+			}
+			label.put(u, minVal + 1);
+		}
+		
+		private Flow<E> computeMaxFlow(){
+			return null;
+		}
+	}
+	
+	/** Returns the maximum flow possible on graph g.
+	 * Uses the preflow push algorithm to compute the max flow
+	 * @param g - the graph to find the flow on
+	 * @param source - the vertex to treat as the source of all flow
+	 * @param sink - the vertex to treat as the sink of all flow
+	 * @return - a flow object, contianing the value of the max flow and the placement of all flow
+	 */
+	public static <V, E extends Flowable> Flow<E> maxFlow(Graph<V,E> g, V source, V sink){
+		return new MaxFlow<V,E>(g, source, sink).computeMaxFlow();
+	}
+	
+
+	
 }

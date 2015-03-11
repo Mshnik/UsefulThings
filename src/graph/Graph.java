@@ -171,6 +171,8 @@ public class Graph<V,E> implements Cloneable{
 	}
 
 	/** Connects the two given vertices in the graph by adding an edge.
+	 * If there is already a connection from source to sink 
+	 * (or sink to source and this is undirected), does nothing.
 	 * Returns true if an operation is performed this way, false otw.
 	 * @throws NotInGraphException - if source or sink are not vertices in this graph
 	 */
@@ -179,7 +181,9 @@ public class Graph<V,E> implements Cloneable{
 			throw new NotInGraphException("Can't create edge " + e, source, sink);
 		if(edges.containsKey(e))
 			return false;
-
+		if(isConnected(source, sink))
+			return false;
+		
 		Vertex sourceV = vertices.get(source);
 		Vertex sinkV = vertices.get(sink);
 

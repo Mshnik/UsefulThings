@@ -164,10 +164,19 @@ public class GraphTest {
 
 		changed = g.addEdge("A", "B", 1);
 		assertFalse(changed);
+		
+		changed = g.addEdge("A","B",12);
+		assertFalse(changed);
 
 		changed = g.addEdge("B", "C", 1);
 		assertFalse(changed);
 
+		changed = gU.addEdge("A", "B", 12);
+		assertFalse(changed);
+		
+		changed = gU.addEdge("B", "A", 12);
+		assertFalse(changed);
+		
 		try{
 			g.addEdge("A","F", 5);
 			fail("Able to add edge to non-existant node");
@@ -408,5 +417,74 @@ public class GraphTest {
 		assertTrue(g.equals(g2));
 		assertTrue(g2.equals(g));
 		assertEquals(g.hashCode(), g2.hashCode());
+	}
+	
+	@Test
+	public void testIsDAG(){
+		//Check that undirected graph is false
+		assertFalse(Algorithm.isDAG(gU));
+		
+		//Check actual directed graph
+		Graph<String, Integer> g = new Graph<String, Integer>();
+		assertTrue(Algorithm.isDAG(g));
+		
+		g.addVertex("A");
+		g.addVertex("B");
+		g.addEdge("A", "B", 1);
+		assertTrue(Algorithm.isDAG(g));
+		
+		g.addVertex("C");
+		g.addEdge("B","C",2);
+		assertTrue(Algorithm.isDAG(g));
+		
+		g.addEdge("C","A",3);
+		assertFalse(Algorithm.isDAG(g));
+		
+		g.removeEdge(3);
+		assertTrue(Algorithm.isDAG(g));
+		
+		g.addEdge("B","A",3);
+		assertFalse(Algorithm.isDAG(g));
+		
+		g.removeEdge(3);
+		assertTrue(Algorithm.isDAG(g));
+
+		g.addEdge("A","A",3);
+		assertFalse(Algorithm.isDAG(g));
+	}
+	
+	@Test
+	public void testIsBipartite(){
+		Graph<String, Integer> g = new Graph<String, Integer>();
+		assertTrue(Algorithm.isBipartite(g));
+		
+		g.addVertex("A");
+		g.addVertex("B");
+		g.addEdge("A", "B", 1);
+		assertTrue(Algorithm.isBipartite(g));
+		
+		g.addVertex("C");
+		g.addEdge("B","C",2);
+		assertTrue(Algorithm.isBipartite(g));
+		
+		g.addEdge("C","A",3);
+		assertFalse(Algorithm.isBipartite(g));
+		
+		g.removeEdge(3);
+		g.addVertex("D");
+		g.addVertex("E");
+		g.addEdge("D","E",3);
+		assertTrue(Algorithm.isBipartite(g));
+		
+		g.addEdge("C","D",4);
+		assertTrue(Algorithm.isBipartite(g));
+		
+		g.addEdge("D","A",5);
+		assertTrue(Algorithm.isBipartite(g));
+		
+		g.removeEdge(5);
+		g.addEdge("E","A",5);
+		assertFalse(Algorithm.isBipartite(g));
+		
 	}
 }

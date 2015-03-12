@@ -107,7 +107,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 		} else {
 			//Shift left if there is no room to shift right (end == vals.length) and 
 			// (nondisjoint and in first half or disjoint and in second half
-			if(end == vals.length ||
+			if(end == vals.length || start != 0 &&
 					(start < end && index < size()/2 || start > end && start < realIndex)){
 				System.arraycopy(vals, start, vals, start-1, index);
 				start = Util.mod((start-1),vals.length);

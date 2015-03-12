@@ -1,4 +1,4 @@
-package common.cons;
+package common.dataStructures;
 
 import java.util.Arrays;
 import java.util.Collection;

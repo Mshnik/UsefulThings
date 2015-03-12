@@ -29,4 +29,9 @@ public class Util {
 		return iterator.next();
 	}
 	
+	/** Returns the MATHEMATICAL Mod of the two arguments, A % B. */
+	public static int mod(int a, int b){
+		return ((a % b) + b) % b;
+	}
+	
 }

@@ -1,4 +1,4 @@
-package common.cons;
+package common.dataStructures;
 
 import static org.junit.Assert.*;
 

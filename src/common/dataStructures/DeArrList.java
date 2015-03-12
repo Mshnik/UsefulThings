@@ -89,29 +89,6 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 		return false;
 	}
 
-	//	/** Moves all elements starting at fake-index start down, 
-	//	 * stopping after editing end. Goes by inc each time - 
-	//	 * +1 for shifting right, -1 for shifting left.
-	//	 * (fake index starts at 0, goes to size).
-	//	 * Returns true if a reArray operation occured because of this */
-	//	private boolean shift(int start, int end, int inc){
-	//		boolean incSize = reArray();
-	//		E temp = null;
-	//		boolean shifted = false;
-	//		boolean goingRight = (inc > 0);
-	//		for(int i = start; (goingRight && i < end) || (! goingRight && i > end); i += inc){
-	//			E here = null; 
-	//			try{
-	//				here = get(i);
-	//				set(i, temp);
-	//			}catch(ArrayIndexOutOfBoundsException e){}
-	//			temp = here;
-	//			shifted = true;
-	//		}
-	//		if(shifted) 		modCount++;
-	//		return incSize;
-	//	}
-
 	@Override
 	public void add(int index, E element) {
 		if(index < 0 || index > size())
@@ -138,7 +115,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 			}
 			//Shift right otherwise
 			else {
-				System.arraycopy(vals, realIndex, vals, realIndex+1, (end - realIndex));
+				System.arraycopy(vals, realIndex, vals, realIndex+1, (size() - index));
 				end = Util.mod((end+1),vals.length);
 				vals[Util.mod(realIndex,vals.length)] = element;
 			}
@@ -177,15 +154,23 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 	@Override
 	public E remove(int index) {
 		E e = get(index);
-		if(index >= size()/2){
-			//shift(size() - 1, index-1, -1);
-			vals[end - 1] = null;
+		if(index == size() - 1){
 			end = Util.mod((end-1),vals.length);
-		}
-		else{
-			//shift(0, index + 1, 1);
-			vals[start] = null;
+		} else if(index == 0){
 			start = Util.mod((start+1),vals.length);
+		} else {
+			int realIndex = Util.mod(start + index, vals.length);
+			//Shift right if
+			// (nondisjoint and in first half or disjoint and in second half
+			if((start < end && index < size()/2 || start > end && start < realIndex)){
+				System.arraycopy(vals, start, vals, start+1, index);
+				start = Util.mod((start+1),vals.length);
+			}
+			//Shift left otherwise
+			else {
+				System.arraycopy(vals, end, vals, end-1, (size() - index));
+				end = Util.mod((end+1),vals.length);
+			}
 		}
 		size--;
 		return e;

@@ -151,7 +151,25 @@ public class DeArrListTest {
 		a.add(5,45);
 		assertEquals("(1,12,2,3,4,45,5,6)",a.toString());
 		assertEquals(8, a.size());
+		
+		a.add(0,10);
+		assertEquals("(10,1,12,2,3,4,45,5,6)",a.toString());
+		assertEquals(9, a.size());
+		
+		a.add(9,99);
+		assertEquals("(10,1,12,2,3,4,45,5,6,99)",a.toString());
+		assertEquals(10, a.size());
+		
+		try{
+			a.add(12, 3);
+			fail("Added at out of bounds position");
+		}catch(ArrayIndexOutOfBoundsException e){}
 
+		try{
+			a.add(-1, 3);
+			fail("Added at out of bounds position");
+		}catch(ArrayIndexOutOfBoundsException e){}
+		
 		//Test reArraying working correctly
 		DeArrList<Integer> a2 = new DeArrList<Integer>(4);
 		String s = "(";
@@ -225,4 +243,34 @@ public class DeArrListTest {
 		}catch(ArrayIndexOutOfBoundsException e){}
 	}
 
+	@Test
+	public void testRemove(){
+		DeArrList<String> a = new DeArrList<>();
+		for(int i = 0; i < 4; i++){
+			a.add("" + i);
+		}
+		
+		assertEquals(4, a.size());
+		assertEquals("(0,1,2,3)",a.toString());
+		
+		boolean b = a.remove("1");
+		assertTrue(b);
+		assertEquals(3, a.size());
+		assertEquals("(0,2,3)", a.toString());
+		
+		String s = a.remove(0);
+		assertEquals("0", s);
+		assertEquals(2, a.size());
+		assertEquals("(2,3)",a.toString());
+		
+		b = a.remove("3");
+		assertTrue(b);
+		assertEquals(1, a.size());
+		assertEquals("(2)", a.toString());
+		
+		s = a.remove(0);
+		assertEquals("2",s);
+		assertEquals(0, a.size());
+		assertEquals("()", a.toString());
+	}
 }

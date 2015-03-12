@@ -97,18 +97,24 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 	private boolean shift(int start, int end, int inc){
 		boolean incSize = reArray();
 		E temp = null;
+		boolean shifted = false;
 		boolean goingRight = (inc > 0);
 		for(int i = start; (goingRight && i < end) || (! goingRight && i > end); i += inc){
-			E here = get(i);
-			set(i, temp);
+			E here = null; 
+			try{
+				here = get(i);
+				set(i, temp);
+			}catch(ArrayIndexOutOfBoundsException e){}
 			temp = here;
+			shifted = true;
 		}
+		if(shifted) 		modCount++;
 		return incSize;
 	}
 
 	@Override
 	public void add(int index, E element) {
-		if(index < -1 || index > size())
+		if(index < 0 || index > size())
 			throw new ArrayIndexOutOfBoundsException();
 		reArray();
 		if(index >= size()/2) {
@@ -121,7 +127,6 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 			shift(index, -1, -1);
 			vals[Util.mod(start + index,vals.length)] = element;
 		}
-		modCount++;
 	}
 
 	public void append(E e){
@@ -156,14 +161,13 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 	public E remove(int index) {
 		E e = get(index);
 		if(index >= size()/2){
-			shift(size(), index, -1);
+			shift(size(), index-1, -1);
 			end = Util.mod((end-1),vals.length);
 		}
 		else{
-			shift(-1, index, 1);
+			shift(-1, index + 1, 1);
 			start = Util.mod((start+1),vals.length);
 		}
-		modCount++;
 		return e;
 	}
 

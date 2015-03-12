@@ -140,24 +140,24 @@ public class DeArrListTest {
 		assertEquals("(1,2,3,5,6)",a.toString());
 		assertEquals(5, a.size());
 
-		a.add(3, 4);
-		assertEquals("(1,2,3,4,5,6)",a.toString());
+		a.add(1, 4);
+		assertEquals("(1,4,2,3,5,6)",a.toString());
 		assertEquals(6, a.size());
 		
 		a.add(1,12);
-		assertEquals("(1,12,2,3,4,5,6)",a.toString());
+		assertEquals("(1,12,4,2,3,5,6)",a.toString());
 		assertEquals(7, a.size());
 		
 		a.add(5,45);
-		assertEquals("(1,12,2,3,4,45,5,6)",a.toString());
+		assertEquals("(1,12,4,2,3,45,5,6)",a.toString());
 		assertEquals(8, a.size());
 		
 		a.add(0,10);
-		assertEquals("(10,1,12,2,3,4,45,5,6)",a.toString());
+		assertEquals("(10,1,12,4,2,3,45,5,6)",a.toString());
 		assertEquals(9, a.size());
 		
 		a.add(9,99);
-		assertEquals("(10,1,12,2,3,4,45,5,6,99)",a.toString());
+		assertEquals("(10,1,12,4,2,3,45,5,6,99)",a.toString());
 		assertEquals(10, a.size());
 		
 		try{

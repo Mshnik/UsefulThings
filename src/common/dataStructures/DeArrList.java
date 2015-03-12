@@ -31,6 +31,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 	//start will never equal end. ReArray whenever this would become the case.
 	private int start; //inclusive
 	private int end; //exclusive
+	private int size; //Number of elements in list
 	private Object[] vals;
 
 	private static final int DEFAULT_SIZE = 16;
@@ -56,8 +57,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 
 	@Override
 	public int size(){
-		if(end >= start) return end - start;
-		else return end + vals.length - start;
+		return size;
 	}
 
 	@Override
@@ -73,60 +73,77 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 
 	/** Moves vals to a new array of double the length, starting at length / 4. */
 	private boolean reArray(){
-		if(size() >= vals.length - 1){
+		if(size() >= vals.length){
 			Object[] oArr = new Object[vals.length * 2];
-			int i = oArr.length/4;
-			for(E elm : this){
-				oArr[i] = elm;
-				i++;
+			if(start < end){
+				System.arraycopy(vals, start, oArr, vals.length/2, end - start);
+			} else{
+				System.arraycopy(vals, start, oArr, vals.length/2, vals.length - start);
+				System.arraycopy(vals, 0, oArr, vals.length/2 + (vals.length - start), end);
 			}
-
+			start = vals.length/2;
+			end = vals.length * 3 / 2;
 			vals = oArr;
-			start = vals.length/4;
-			end = i;
 			return true;
 		}
 		return false;
 	}
 
-	/** Moves all elements starting at fake-index start down, 
-	 * stopping after editing end. Goes by inc each time - 
-	 * +1 for shifting right, -1 for shifting left.
-	 * (fake index starts at 0, goes to size).
-	 * Returns true if a reArray operation occured because of this */
-	private boolean shift(int start, int end, int inc){
-		boolean incSize = reArray();
-		E temp = null;
-		boolean shifted = false;
-		boolean goingRight = (inc > 0);
-		for(int i = start; (goingRight && i < end) || (! goingRight && i > end); i += inc){
-			E here = null; 
-			try{
-				here = get(i);
-				set(i, temp);
-			}catch(ArrayIndexOutOfBoundsException e){}
-			temp = here;
-			shifted = true;
-		}
-		if(shifted) 		modCount++;
-		return incSize;
-	}
+	//	/** Moves all elements starting at fake-index start down, 
+	//	 * stopping after editing end. Goes by inc each time - 
+	//	 * +1 for shifting right, -1 for shifting left.
+	//	 * (fake index starts at 0, goes to size).
+	//	 * Returns true if a reArray operation occured because of this */
+	//	private boolean shift(int start, int end, int inc){
+	//		boolean incSize = reArray();
+	//		E temp = null;
+	//		boolean shifted = false;
+	//		boolean goingRight = (inc > 0);
+	//		for(int i = start; (goingRight && i < end) || (! goingRight && i > end); i += inc){
+	//			E here = null; 
+	//			try{
+	//				here = get(i);
+	//				set(i, temp);
+	//			}catch(ArrayIndexOutOfBoundsException e){}
+	//			temp = here;
+	//			shifted = true;
+	//		}
+	//		if(shifted) 		modCount++;
+	//		return incSize;
+	//	}
 
 	@Override
 	public void add(int index, E element) {
 		if(index < 0 || index > size())
 			throw new ArrayIndexOutOfBoundsException();
 		reArray();
-		if(index >= size()/2) {
+
+		int realIndex = Util.mod(start + index, vals.length);
+
+		//Check for simple append, prepend operations
+		if(index == size()){
 			end = Util.mod((end+1),vals.length);
-			shift(index, size(), 1);
-			vals[Util.mod(start + index,vals.length)] = element;
-		}
-		else {
+			vals[Util.mod(realIndex,vals.length)] = element;
+		} else if(index == 0){
 			start = Util.mod((start-1),vals.length);
-			shift(index, -1, -1);
-			vals[Util.mod(start + index,vals.length)] = element;
+			vals[Util.mod(realIndex-1,vals.length)] = element;
+		} else {
+			//Shift left if there is no room to shift right (end == vals.length) and 
+			// (nondisjoint and in first half or disjoint and in second half
+			if(end == vals.length ||
+					(start < end && index < size()/2 || start > end && start < realIndex)){
+				System.arraycopy(vals, start, vals, start-1, index);
+				start = Util.mod((start-1),vals.length);
+				vals[Util.mod(realIndex-1,vals.length)] = element;
+			}
+			//Shift right otherwise
+			else {
+				System.arraycopy(vals, realIndex, vals, realIndex+1, (end - realIndex));
+				end = Util.mod((end+1),vals.length);
+				vals[Util.mod(realIndex,vals.length)] = element;
+			}
 		}
+		size++;
 	}
 
 	public void append(E e){
@@ -161,13 +178,16 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 	public E remove(int index) {
 		E e = get(index);
 		if(index >= size()/2){
-			shift(size(), index-1, -1);
+			//shift(size() - 1, index-1, -1);
+			vals[end - 1] = null;
 			end = Util.mod((end-1),vals.length);
 		}
 		else{
-			shift(-1, index + 1, 1);
+			//shift(0, index + 1, 1);
+			vals[start] = null;
 			start = Util.mod((start+1),vals.length);
 		}
+		size--;
 		return e;
 	}
 

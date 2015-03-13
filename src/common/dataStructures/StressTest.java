@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class StressTest {
 
-	private static final int BIG_VAL = 300000;
+	private static final int BIG_VAL = 200000;
 	
 	@Test
 	public void testArrayListsAdd(){
@@ -45,19 +45,21 @@ public class StressTest {
 		
 		long startTime = System.currentTimeMillis();
 		for(int i = 0; i < BIG_VAL; i++){
-			arr1.remove((int)(Math.random() * (arr1.size() + 1)));
+			arr1.remove((int)(Math.random() * (arr1.size())));
 		}
 		long arr1Time = System.currentTimeMillis() - startTime;
 		System.out.println("Standard Implementation Remove " + arr1Time +"ms");
 		
 		startTime = System.currentTimeMillis();
 		for(int i = 0; i < BIG_VAL; i++){
-			arr2.remove((int)(Math.random() * (arr1.size() + 1)));
+			arr2.remove((int)(Math.random() * (arr2.size())));
 		}
 		long arr2Time = System.currentTimeMillis() - startTime;
 		System.out.println("My Implementation Remove " + arr2Time +"ms");
 		
 		assertTrue(arr2Time < arr1Time);
+		assertEquals(0, arr1.size());
+		assertEquals(0, arr2.size());
 	}
 
 }

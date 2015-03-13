@@ -89,6 +89,52 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 		return false;
 	}
 
+	/** Rotates the DeArrList such that the first element is at true position newStart.
+	 * This is purely an internal operation and doesn't affect the list this represents
+	 * from the outside */
+	void reorder(int newStart){
+		if(newStart < 0 || newStart >= size())
+			throw new ArrayIndexOutOfBoundsException();
+
+		if(newStart == start) return;
+
+		Object[] arr = new Object[vals.length];
+
+		//Move main portion
+		int portion1 = Math.min(size, Math.min(vals.length - start, vals.length - newStart));
+		System.arraycopy(vals, start, arr, newStart, portion1);
+		//Move bridge portion
+		int portion2 = Math.min(size - portion1, Math.abs(start - newStart));
+		if(portion2 > 0){
+			System.arraycopy(vals, Util.mod(start + portion1, vals.length), arr, 
+					Util.mod(newStart + portion1, arr.length), portion2);
+			//Move final portion
+			int portion3 = size - portion1 - portion2;
+			if(portion3 > 0){
+				System.arraycopy(vals, Util.mod(start + portion1 + portion2, vals.length), arr, 
+						Util.mod(newStart + portion1 + portion2, arr.length), portion3);
+			}
+		}
+
+		//		if(start < end && newStart + size < vals.length){
+		//			System.arraycopy(vals, start, arr, newStart, end - start);
+		//		} else if(start < end){
+		//			System.arraycopy(vals, start, arr, newStart, vals.length - newStart);
+		//			System.arraycopy(vals, start + (vals.length - newStart), arr, 0, end - (vals.length - newStart));
+		//		} else if(newStart + size < vals.length){
+		//			System.arraycopy(vals, start, arr, newStart, vals.length - start);
+		//			System.arraycopy(vals, 0, arr, newStart + (vals.length - start), end - (vals.length - start));
+		//		} else{
+		//			System.arraycopy(vals, start, arr, newStart, vals.length - start);
+		//
+		//		}
+
+		start = newStart;
+		end = Util.mod(newStart + size,arr.length);
+		vals = arr;
+
+	}
+
 	@Override
 	public void add(int index, E element) {
 		if(index < 0 || index > size())
@@ -155,21 +201,25 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 	public E remove(int index) {
 		E e = get(index);
 		if(index == size() - 1){
+			vals[Util.mod(end - 1, vals.length)] = null;
 			end = Util.mod((end-1),vals.length);
 		} else if(index == 0){
+			vals[start] = null;
 			start = Util.mod((start+1),vals.length);
 		} else {
 			int realIndex = Util.mod(start + index, vals.length);
 			//Shift right if
 			// (nondisjoint and in first half or disjoint and in second half
-			if((start < end && index < size()/2 || start > end && start < realIndex)){
-				System.arraycopy(vals, start, vals, start+1, index);
+			if((start < end && index < size()/2 || start >= end && start < realIndex)){
+				System.arraycopy(vals, start, vals, start+1, realIndex - start);
+				vals[start] = null;
 				start = Util.mod((start+1),vals.length);
 			}
 			//Shift left otherwise
 			else {
-				System.arraycopy(vals, end, vals, end-1, (size() - index));
-				end = Util.mod((end+1),vals.length);
+				System.arraycopy(vals, realIndex + 1, vals, realIndex, end - realIndex - 1);
+				vals[end - 1] = null;
+				end = Util.mod((end-1),vals.length);
 			}
 		}
 		size--;

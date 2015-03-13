@@ -258,19 +258,41 @@ public class DeArrListTest {
 		assertEquals(3, a.size());
 		assertEquals("(0,2,3)", a.toString());
 		
-		String s = a.remove(0);
-		assertEquals("0", s);
+		String s = a.remove(1);
+		assertEquals("2", s);
 		assertEquals(2, a.size());
-		assertEquals("(2,3)",a.toString());
+		assertEquals("(0,3)",a.toString());
 		
 		b = a.remove("3");
 		assertTrue(b);
 		assertEquals(1, a.size());
-		assertEquals("(2)", a.toString());
+		assertEquals("(0)", a.toString());
 		
 		s = a.remove(0);
-		assertEquals("2",s);
+		assertEquals("0",s);
 		assertEquals(0, a.size());
 		assertEquals("()", a.toString());
+		
+		a = new DeArrList<>(4);
+		a.add("0");
+		a.add("1");
+		a.add("2");
+		a.add("3");
+		
+		assertEquals(4, a.size());
+		assertEquals("(0,1,2,3)",a.toString());
+		
+		//Try all rotations and all removals
+		for(int i = 0; i < 4; i++){
+			a.reorder(i);
+			
+			for(int k = 0; k < 4; k++){
+				String elm = a.remove(k);
+				assertEquals(3, a.size());
+				assertEquals("" + k, elm);
+				a.add(k, elm);
+			}
+		}
+		
 	}
 }

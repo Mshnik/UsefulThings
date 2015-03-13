@@ -123,7 +123,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 			Object[] oArr = new Object[vals.length * 2];
 			if(start < end){
 				System.arraycopy(vals, start, oArr, vals.length/2, end - start);
-			} else{
+			} else {
 				System.arraycopy(vals, start, oArr, vals.length/2, vals.length - start);
 				System.arraycopy(vals, 0, oArr, vals.length/2 + (vals.length - start), end);
 			}

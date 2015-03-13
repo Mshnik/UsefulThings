@@ -36,14 +36,14 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 	private int size; //Number of elements in list
 	private Object[] vals;
 
-	private static final int DEFAULT_SIZE = 16;
+	static final int DEFAULT_SIZE = 16;
 
 	public DeArrList(){
 		this(DEFAULT_SIZE);
 	}
 
 	public DeArrList(Collection<? extends E> c){
-		this(DEFAULT_SIZE);
+		this(Math.max(DEFAULT_SIZE, c.size()));
 		addAll(c);
 	}
 
@@ -61,41 +61,24 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 	public int size(){
 		return size;
 	}
-
-	@Override
-	public String toString(){
-		if(size() == 0)
-			return "()";
-		String s = "(";
-		for(E e : this){
-			s += e + ",";
-		}
-		return s.substring(0, s.length() - 1) + ")";
+	
+	int getStart(){
+		return start;
+	}
+	
+	int getEnd(){
+		return end;
 	}
 
-	/** Moves vals to a new array of double the length, starting at length / 4. */
-	private boolean reArray(){
-		if(size() >= vals.length){
-			Object[] oArr = new Object[vals.length * 2];
-			if(start < end){
-				System.arraycopy(vals, start, oArr, vals.length/2, end - start);
-			} else{
-				System.arraycopy(vals, start, oArr, vals.length/2, vals.length - start);
-				System.arraycopy(vals, 0, oArr, vals.length/2 + (vals.length - start), end);
-			}
-			start = vals.length/2;
-			end = vals.length * 3 / 2;
-			vals = oArr;
-			return true;
-		}
-		return false;
+	int getArrLength(){
+		return vals.length;
 	}
-
+	
 	/** Rotates the DeArrList such that the first element is at true position newStart.
 	 * This is purely an internal operation and doesn't affect the list this represents
 	 * from the outside */
-	void reorder(int newStart){
-		if(newStart < 0 || newStart >= size())
+	void rotateTo(int newStart){
+		if(newStart < 0 || newStart >= vals.length)
 			throw new ArrayIndexOutOfBoundsException();
 
 		if(newStart == start) return;
@@ -121,7 +104,35 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		start = newStart;
 		end = Util.mod(newStart + size,arr.length);
 		vals = arr;
-
+	}
+	
+	@Override
+	public String toString(){
+		if(size() == 0)
+			return "()";
+		String s = "(";
+		for(E e : this){
+			s += e + ",";
+		}
+		return s.substring(0, s.length() - 1) + ")";
+	}
+	
+	/** Moves vals to a new array of double the length, starting at length / 4. */
+	private boolean reArray(){
+		if(size() >= vals.length){
+			Object[] oArr = new Object[vals.length * 2];
+			if(start < end){
+				System.arraycopy(vals, start, oArr, vals.length/2, end - start);
+			} else{
+				System.arraycopy(vals, start, oArr, vals.length/2, vals.length - start);
+				System.arraycopy(vals, 0, oArr, vals.length/2 + (vals.length - start), end);
+			}
+			start = vals.length/2;
+			end = vals.length * 3 / 2;
+			vals = oArr;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -326,12 +337,20 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 
 	@Override
 	public boolean removeFirstOccurrence(Object o) {
-		return remove(indexOf(o)) != null;
+		try{
+			return remove(indexOf(o)) != null;
+		}catch(ArrayIndexOutOfBoundsException e){
+			return false;
+		}
 	}
 
 	@Override
 	public boolean removeLastOccurrence(Object o) {
-		return remove(lastIndexOf(o)) != null;
+		try{
+			return remove(lastIndexOf(o)) != null;
+		}catch(ArrayIndexOutOfBoundsException e){
+			return false;
+		}
 	}
 
 	@Override

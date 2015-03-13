@@ -244,6 +244,40 @@ public class DeArrListTest {
 	}
 
 	@Test
+	public void testRotate(){
+		
+		//Test rotating a non-full list
+		DeArrList<String> a = new DeArrList<>();
+		for(int i = 0; i < 4; i++){
+			a.add("" + i);
+		}
+		
+		assertEquals(4, a.size());
+		assertEquals("(0,1,2,3)",a.toString());
+		
+		for(int i = 0; i < a.getArrLength(); i++){
+			a.rotateTo(i);
+			assertEquals(4, a.size());
+			assertEquals("(0,1,2,3)",a.toString());
+		}
+		
+		//Test rotating a full list
+		a = new DeArrList<>(4);
+		for(int i = 0; i < 4; i++){
+			a.add("" + i);
+		}
+		
+		assertEquals(4, a.size());
+		assertEquals("(0,1,2,3)",a.toString());
+		
+		for(int i = 0; i < a.getArrLength(); i++){
+			a.rotateTo(i);
+			assertEquals(4, a.size());
+			assertEquals("(0,1,2,3)",a.toString());
+		}
+	}
+	
+	@Test
 	public void testRemove(){
 		DeArrList<String> a = new DeArrList<>();
 		for(int i = 0; i < 4; i++){
@@ -284,7 +318,7 @@ public class DeArrListTest {
 		
 		//Try all rotations and all removals
 		for(int i = 0; i < 4; i++){
-			a.reorder(i);
+			a.rotateTo(i);
 			
 			for(int k = 0; k < 4; k++){
 				String elm = a.remove(k);
@@ -293,6 +327,113 @@ public class DeArrListTest {
 				a.add(k, elm);
 			}
 		}
+	}
+	
+	@Test
+	public void testDequeFunctions(){
+		DeArrList<Integer> a = new DeArrList<>();
+		for(int i = 0; i < 5; i++){
+			a.add(i);
+		}
+		
+		assertEquals("(0,1,2,3,4)", a.toString());
+		
+		a.offer(5);
+		assertEquals("(0,1,2,3,4,5)", a.toString());
+
+		a.offerFirst(-1);
+		assertEquals("(-1,0,1,2,3,4,5)", a.toString());
+		
+		a.offerLast(6);
+		assertEquals("(-1,0,1,2,3,4,5,6)", a.toString());
+		
+		a.push(-2);
+		assertEquals("(-2,-1,0,1,2,3,4,5,6)", a.toString());
+
+		assertEquals(new Integer(-2), a.peek());
+		assertEquals(new Integer(-2), a.peekFirst());
+		assertEquals(new Integer(-2), a.element());
+		assertEquals(new Integer(6), a.peekLast());
+
+		Integer i = a.poll();
+		assertEquals(new Integer(-2), i);
+		assertEquals("(-1,0,1,2,3,4,5,6)", a.toString());
+		
+		i = a.pollFirst();
+		assertEquals(new Integer(-1), i);
+		assertEquals("(0,1,2,3,4,5,6)", a.toString());
+		
+		i = a.pollLast();
+		assertEquals(new Integer(6), i);
+		assertEquals("(0,1,2,3,4,5)", a.toString());
+		
+		i = a.pop();
+		assertEquals(new Integer(0), i);
+		assertEquals("(1,2,3,4,5)",a.toString());
+		
+		a.addFirst(0);
+		assertEquals("(0,1,2,3,4,5)", a.toString());
+
+		a.addLast(6);
+		assertEquals("(0,1,2,3,4,5,6)", a.toString());
+
+		assertEquals(new Integer(0), a.getFirst());
+		assertEquals(new Integer(6), a.getLast());
+		
+		i = a.removeFirst();
+		assertEquals(new Integer(0), i);
+		assertEquals("(1,2,3,4,5,6)",a.toString());
+		
+		i = a.removeLast();
+		assertEquals(new Integer(6), i);
+		assertEquals("(1,2,3,4,5)",a.toString());
+		
+		a.add(1);
+		boolean ok = a.removeFirstOccurrence(1);
+		assertTrue(ok);
+		assertEquals("(2,3,4,5,1)", a.toString());
+		
+		a.push(1);
+		ok = a.removeLastOccurrence(1);
+		assertTrue(ok);
+		assertEquals("(1,2,3,4,5)", a.toString());
+		
+		ok = a.removeFirstOccurrence(7);
+		assertFalse(ok);
+		
+		ok = a.removeLastOccurrence(19);
+		assertFalse(ok);
+		
+		//Test differences between throwing and returning null methods
+		a.clear();
+		
+		assertEquals(null, a.peek());
+		assertEquals(null, a.peekFirst());
+		assertEquals(null, a.peekLast());
+		
+		assertEquals(null, a.poll());
+		assertEquals(null, a.pollFirst());
+		assertEquals(null, a.pollLast());
+		
+		try{
+			a.getFirst();
+			fail("Performed throwing operation on empty DeArrList");
+		}catch(Exception e){}
+		
+		try{
+			a.getLast();
+			fail("Performed throwing operation on empty DeArrList");
+		}catch(Exception e){}
+		
+		try{
+			a.removeFirst();
+			fail("Performed throwing operation on empty DeArrList");
+		}catch(Exception e){}
+
+		try{
+			a.removeLast();
+			fail("Performed throwing operation on empty DeArrList");
+		}catch(Exception e){}
 		
 	}
 }

@@ -2,6 +2,8 @@ package common.dataStructures;
 
 import java.util.AbstractList;
 import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
 
 import common.Util;
 
@@ -26,7 +28,7 @@ import common.Util;
  * wrapping values around either side of the array.
  * @author Mshnik
  */
-public class DeArrList<E> extends AbstractList<E> implements Cloneable{
+public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>{
 
 	//start will never equal end. ReArray whenever this would become the case.
 	private int start; //inclusive
@@ -168,13 +170,37 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 		}
 		size++;
 	}
-
-	public void append(E e){
-		add(size(), e);
+	
+	@Override
+	public void push(E e) {
+		add(0, e);		
+	}
+	
+	@Override
+	public boolean offer(E e) {
+		add(e);
+		return true;
+	}
+	
+	@Override
+	public void addFirst(E e) {
+		add(0, e);
 	}
 
-	public void prepend(E e){
-		add(0, e);
+	@Override
+	public void addLast(E e) {
+		add(e);
+	}
+
+	@Override
+	public boolean offerFirst(E e) {
+		add(0,e);
+		return true;
+	}
+
+	@Override
+	public boolean offerLast(E e) {
+		return add(e);
 	}
 
 	@Override
@@ -185,6 +211,44 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 		@SuppressWarnings("unchecked")
 		E e = (E)vals[Util.mod((index + start),vals.length)];
 		return e;
+	}
+	
+	@Override
+	public E element() {
+		return get(0);
+	}
+	
+	@Override
+	public E getFirst() {
+		return get(0);
+	}
+
+	@Override
+	public E getLast() {
+		return get(size() - 1);
+	}
+
+	@Override
+	public E peek() {
+		return peekFirst();
+	}
+	
+	@Override
+	public E peekFirst() {
+		try{
+			return get(0);
+		}catch(ArrayIndexOutOfBoundsException e){
+			return null;
+		}
+	}
+
+	@Override
+	public E peekLast() {
+		try{
+			return get(size() - 1);
+		}catch(ArrayIndexOutOfBoundsException e){
+			return null;
+		}
 	}
 
 	@Override
@@ -226,4 +290,65 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable{
 		return e;
 	}
 
+	@Override
+	public E poll() {
+		try{
+			return remove(0);
+		}catch(ArrayIndexOutOfBoundsException e){
+			return null;
+		}
+	}
+	
+	@Override
+	public E pop() {
+		return poll();
+	}
+	
+	@Override
+	public E remove() {
+		return removeFirst();
+	}
+	
+	@Override
+	public E removeFirst() {
+		return remove(0);
+	}
+
+	@Override
+	public E removeLast() {
+		return remove(size() - 1);
+	}
+
+	@Override
+	public E pollFirst() {
+		try{
+			return remove(0);
+		}catch(ArrayIndexOutOfBoundsException e){
+			return null;
+		}
+	}
+
+	@Override
+	public E pollLast() {
+		try{
+			return remove(size() - 1);
+		}catch(ArrayIndexOutOfBoundsException e){
+			return null;
+		}
+	}
+
+	@Override
+	public boolean removeFirstOccurrence(Object o) {
+		return remove(indexOf(o)) != null;
+	}
+
+	@Override
+	public boolean removeLastOccurrence(Object o) {
+		return remove(lastIndexOf(o)) != null;
+	}
+
+	@Override
+	public Iterator<E> descendingIterator() {
+		throw new UnsupportedOperationException("Not Yet Implemented");
+	}
 }

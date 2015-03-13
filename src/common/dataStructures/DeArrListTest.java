@@ -82,31 +82,31 @@ public class DeArrListTest {
 		DeArrList<Integer> a = new DeArrList<>();
 		assertEquals("()", a.toString());
 
-		a.prepend(5);
+		a.push(5);
 		assertEquals("(5)", a.toString());
 		assertEquals(1, a.size());
 
-		a.prepend(4);
+		a.push(4);
 		assertEquals("(4,5)", a.toString());
 		assertEquals(2, a.size());
 
-		a.prepend(3);
+		a.push(3);
 		assertEquals("(3,4,5)", a.toString());
 		assertEquals(3, a.size());
 
-		a.prepend(2);
+		a.push(2);
 		assertEquals("(2,3,4,5)", a.toString());
 		assertEquals(4, a.size());
 
-		a.prepend(1);
+		a.push(1);
 		assertEquals("(1,2,3,4,5)", a.toString());
 		assertEquals(5, a.size());
 
-		a.prepend(0);
+		a.push(0);
 		assertEquals("(0,1,2,3,4,5)", a.toString());
 		assertEquals(6, a.size());
 
-		a.prepend(-1);
+		a.push(-1);
 		assertEquals("(-1,0,1,2,3,4,5)", a.toString());
 		assertEquals(7, a.size());
 
@@ -114,7 +114,7 @@ public class DeArrListTest {
 		DeArrList<Integer> a2 = new DeArrList<Integer>(4);
 		String s = "(";
 		for(int i = 49; i >= 0; i--){
-			a2.prepend(i);
+			a2.push(i);
 		}
 		for(int i = 0; i < 50; i++){
 			s += i + (i < 49 ? "," : "");

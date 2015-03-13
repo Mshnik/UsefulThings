@@ -29,7 +29,8 @@ public class Util {
 		return iterator.next();
 	}
 	
-	/** Returns the MATHEMATICAL Mod of the two arguments, A % B. */
+	/** Returns the MATHEMATICAL Mod of the two arguments, A % B.
+	 * FK java for having a nonsensical interpretation of the mod operator. */
 	public static int mod(int a, int b){
 		return ((a % b) + b) % b;
 	}

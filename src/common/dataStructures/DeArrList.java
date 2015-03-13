@@ -118,19 +118,6 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 			}
 		}
 
-		//		if(start < end && newStart + size < vals.length){
-		//			System.arraycopy(vals, start, arr, newStart, end - start);
-		//		} else if(start < end){
-		//			System.arraycopy(vals, start, arr, newStart, vals.length - newStart);
-		//			System.arraycopy(vals, start + (vals.length - newStart), arr, 0, end - (vals.length - newStart));
-		//		} else if(newStart + size < vals.length){
-		//			System.arraycopy(vals, start, arr, newStart, vals.length - start);
-		//			System.arraycopy(vals, 0, arr, newStart + (vals.length - start), end - (vals.length - start));
-		//		} else{
-		//			System.arraycopy(vals, start, arr, newStart, vals.length - start);
-		//
-		//		}
-
 		start = newStart;
 		end = Util.mod(newStart + size,arr.length);
 		vals = arr;

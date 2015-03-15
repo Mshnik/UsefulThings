@@ -47,11 +47,15 @@ public class Algorithm {
 	 * @return - the path as a list, where return[0] is start and return[last] is goal.
 	 *           returns null if start or goal isn't in g, or there is no such path.
 	 */
-	public static <V, E extends Weighted> LinkedList<V> dijkstra(Graph<V, E> g, V start, V goal){
+	public static <V, E extends Weighted> LinkedList<V> dijkstra(Graph<V, E> g, V start, V goal)
+			throws RuntimeException, NotInGraphException{
+		if(! g.containsVertex(start) || ! g.containsVertex(goal))
+			throw new NotInGraphException("Can't tun dijkstra's algorithm", start, goal);
 		for(E e : g.edgeSet()){
 			if(e.getWeight() <= 0)
 				throw new RuntimeException("Can't run dijkstra's algorithm on graph with non-positive weights");
 		}
+		
 
 		final HashMap<V, Integer> distance = new HashMap<>();
 		Comparator<V> distanceComparator = new Comparator<V>(){
@@ -97,8 +101,8 @@ public class Algorithm {
 
 		}while(! frontier.isEmpty());
 
-		//If the frontier is empty, then the goal was never found.
-		if(frontier.isEmpty()){
+		//If the frontier is empty and goal distance is infinite, then the goal was never found.
+		if(frontier.isEmpty() && distance.get(goal).equals(Integer.MAX_VALUE)){
 			return null;
 		}
 
@@ -185,7 +189,7 @@ public class Algorithm {
 		}
 		return true;
 	}
-	
+
 	/** An instance represents a flow on a graph with edge type E
 	 * The first value is the total flow, the second is a map of each
 	 * edge in the graph to the amount of flow on that edge
@@ -196,7 +200,7 @@ public class Algorithm {
 			super(first, second);
 		}		
 	}
-	
+
 	/** An instance is created to perform a maxflow calculation.
 	 * This simplifies passing around the various hashMaps used in the calculation
 	 */
@@ -208,15 +212,15 @@ public class Algorithm {
 		private final Graph<V,E> g;
 		private final V source;
 		private final V sink;
-		
+
 		public MaxFlow(Graph<V,E> g, V source, V sink){
 			this.g = g;
 			this.source = source;
 			this.sink = sink;
-			
+
 			//Initialize maps
 		}
-		
+
 		/** Helper method for the maxFlow calculation. */
 		private void push(V u, V v){
 			E e = g.getConnection(u, v);
@@ -227,7 +231,7 @@ public class Algorithm {
 			excess.put(u, excess.get(u) - delta);
 			excess.put(v, excess.get(v) + delta);
 		}
-		
+
 		private void relabel(V u){
 			assert(excess.get(u) > 0);
 			int minVal = Integer.MAX_VALUE;
@@ -240,12 +244,12 @@ public class Algorithm {
 			}
 			label.put(u, minVal + 1);
 		}
-		
+
 		private Flow<E> computeMaxFlow(){
 			return null;
 		}
 	}
-	
+
 	/** Returns the maximum flow possible on graph g.
 	 * Uses the preflow push algorithm to compute the max flow
 	 * @param g - the graph to find the flow on
@@ -256,7 +260,7 @@ public class Algorithm {
 	public static <V, E extends Flowable> Flow<E> maxFlow(Graph<V,E> g, V source, V sink){
 		return new MaxFlow<V,E>(g, source, sink).computeMaxFlow();
 	}
-	
 
-	
+
+
 }

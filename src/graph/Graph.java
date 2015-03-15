@@ -125,6 +125,10 @@ public class Graph<V,E> implements Cloneable{
 	public Set<V> vertexSet() {
 		return new HashSet<V>(vertices.keySet());
 	}
+	
+	public boolean containsVertex(V v){
+		return vertices.containsKey(v);
+	}
 
 	public int vertexSize(){
 		return vertices.size();
@@ -140,6 +144,10 @@ public class Graph<V,E> implements Cloneable{
 
 	public Set<E> edgeSet() {
 		return new HashSet<E>(edges.keySet());
+	}
+	
+	public boolean containsEdge(E e){
+		return edges.containsKey(e);
 	}
 
 	public int edgeSize(){

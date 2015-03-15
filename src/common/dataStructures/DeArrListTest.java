@@ -209,6 +209,48 @@ public class DeArrListTest {
 	}
 	
 	@Test
+	public void testEqualityAndHashcode(){
+		DeArrList<Integer> a = new DeArrList<>();
+		DeArrList<Integer> a2 = a.clone();
+		
+		assertTrue(a.equals(a2));
+		assertTrue(a2.equals(a));
+		assertFalse(a.equals(null));
+		assertEquals(a.hashCode(), a2.hashCode());
+		
+		a.add(1);
+		
+		assertFalse(a.equals(a2));
+		assertFalse(a2.equals(a));
+		assertFalse(a.equals(null));
+		assertFalse(a2.equals(null));
+		
+		a2.add(1);
+		assertTrue(a.equals(a2));
+		assertTrue(a2.equals(a));
+		assertEquals(a.hashCode(), a2.hashCode());
+		
+		a.add(2);
+		a2.add(3);
+		
+		assertFalse(a.equals(a2));
+		assertFalse(a2.equals(a));
+		assertFalse(a.equals(null));
+		assertFalse(a2.equals(null));
+		
+		a.removeLast();
+		a2.removeLast();
+		
+		a.add(3);
+		a2.add(3);
+		
+		a.rotateTo(2);
+		assertTrue(a.equals(a2));
+		assertTrue(a2.equals(a));
+		assertEquals(a.hashCode(), a2.hashCode());
+	}
+	
+	@Test
 	public void testSet(){
 		DeArrList<Integer> a = new DeArrList<>();
 		a.add(1);

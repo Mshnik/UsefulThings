@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import graph.Graph.NotInGraphException;
 
@@ -485,6 +486,77 @@ public class GraphTest {
 		g.removeEdge(5);
 		g.addEdge("E","A",5);
 		assertFalse(Algorithm.isBipartite(g));
+	}
+	
+	private static class WeightedEdge implements Weighted{
+		final int w;
+		
+		public WeightedEdge(int w){
+			this.w = w;
+		}
+		
+		public int getWeight(){
+			return w;
+		}
+	}
+	
+	@Test
+	public void testDijkstra(){
+		Graph<String, WeightedEdge> g = new Graph<>();
+		LinkedList<String> path = new LinkedList<String>();
+		g.addVertex("A");
+		g.addVertex("B");
+		g.addVertex("C");
+		
+		try{
+			Algorithm.dijkstra(g, "X", "A");
+			fail("Ran dijkstra's on non-existent start node");
+		}catch(NotInGraphException e){}
+		
+		try{
+			Algorithm.dijkstra(g, "A", "X");
+			fail("Ran dijkstra's on non-existent goal node");
+		}catch(NotInGraphException e){}
+		
+		g.addEdge("A", "B", new WeightedEdge(-1));
+		
+		try{
+			Algorithm.dijkstra(g, "A", "B");
+			fail("Ran dijkstra's algorithm on a graph with a negative weight");
+		}catch(Exception e){}
+		
+		g.removeEdge(g.getConnection("A", "B"));
+		
+		g.addEdge("A", "B", new WeightedEdge(3));
+		path.clear();
+				
+		path.add("A");
+		
+		assertEquals(path, Algorithm.dijkstra(g, "A", "A"));
+		
+		path.add("B");
+		
+		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
+		assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
+		assertEquals(null, Algorithm.dijkstra(g, "A", "C"));
+		
+		g.addEdge("A", "C", new WeightedEdge(1));
+		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
+		assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
+		
+		path.clear();
+		path.add("A");
+		path.add("C");
+		assertEquals(path, Algorithm.dijkstra(g, "A", "C"));
+		
+		g.addEdge("C", "B", new WeightedEdge(1));
+		path.add("B");
+		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
+		
+		g.addEdge("B","A", new WeightedEdge(5));
+		path.removeFirst();
+		path.add("A");
+		assertEquals(path, Algorithm.dijkstra(g, "C", "A"));
 		
 	}
 }

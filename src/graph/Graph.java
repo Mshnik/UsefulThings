@@ -353,6 +353,26 @@ public class Graph<V,E> implements Cloneable{
 		else
 			return degreeOf(sink);
 	}
+	
+	/** Returns the source of the given edge. If this is undirected, returns a
+	 * first endpoint
+	 * @throws NotInGraphException if e is not in this graph
+	 */
+	public V sourceOf(E e) throws NotInGraphException{
+		if(! edges.containsKey(e))
+			throw new NotInGraphException("Can't get source of", e);
+		return edges.get(e).getSource().v;
+	}
+	
+	/** Returns the sink of the given edge. If this is undirected, returns a
+	 * second endpoint
+	 * @throws NotInGraphException if e is not in this graph
+	 */
+	public V sinkOf(E e) throws NotInGraphException{
+		if(! edges.containsKey(e))
+			throw new NotInGraphException("Can't get source of", e);
+		return edges.get(e).getSink().v;
+	}
 
 	/** Returns the vertices on either end of the given edge - an arrayList of length 2
 	 * @throws NotInGraphException if e is not in this graph */

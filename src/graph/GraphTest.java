@@ -489,9 +489,9 @@ public class GraphTest {
 	}
 	
 	private static class WeightedEdge implements Weighted{
-		final int w;
+		private final int w;
 		
-		public WeightedEdge(int w){
+		private WeightedEdge(int w){
 			this.w = w;
 		}
 		
@@ -557,6 +557,46 @@ public class GraphTest {
 		path.removeFirst();
 		path.add("A");
 		assertEquals(path, Algorithm.dijkstra(g, "C", "A"));
+	}
+	
+	private static class FlowEdge implements Flowable{
+		private final int capacity;
+		private final String name;
+		private FlowEdge(String n, int c){
+			name = n;
+			capacity = c;
+		}
+		@Override
+		public int getCapacity() {
+			return capacity;
+		}
+		@Override
+		public String toString(){
+			return name;
+		}
+	}
+	
+	@Test
+	public void testMaxflow(){
+		Graph<String, FlowEdge> g = new Graph<>();
+		g.addVertex("SOURCE");
+		g.addVertex("SINK");
+		g.addVertex("A");
+		g.addVertex("B");
+		g.addVertex("C");
 		
+		g.addEdge("SOURCE", "A", new FlowEdge("a",10));
+		g.addEdge("SOURCE", "B", new FlowEdge("b",5));
+		g.addEdge("SOURCE", "C", new FlowEdge("c",10));
+
+		g.addEdge("A", "SINK", new FlowEdge("a2",10));
+		g.addEdge("B", "SINK", new FlowEdge("b2",10));
+		g.addEdge("C", "SINK", new FlowEdge("c2",5));
+
+		assertEquals(new Integer(20), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
+		
+		g.addEdge("SOURCE", "SINK", new FlowEdge("direct", 30));
+		assertEquals(new Integer(50), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
+
 	}
 }

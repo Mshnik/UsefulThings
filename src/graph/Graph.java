@@ -1,13 +1,13 @@
 package graph;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import common.Util;
 import common.dataStructures.NotInCollectionException;
 import common.tuple.Tuple3;
 
@@ -78,12 +78,17 @@ public class Graph<V,E> implements Cloneable{
 	private HashMap<V, Vertex> vertices;
 	private HashMap<E, Edge> edges;
 
+	/** Constructs a new graph that contains no vertices or edges
+	 * @param directed - true if this is a graph of directed edges, false otherwise
+	 */
 	public Graph(boolean directed){
 		vertices = new HashMap<>();
 		edges = new HashMap<>();
 		this.directed = directed;
 	}
 
+	/** Constructs a new graph that contains no vertices or edges
+	 * and is directed - Calls {@code Graph(true)} */
 	public Graph(){
 		this(true);
 	}
@@ -128,52 +133,64 @@ public class Graph<V,E> implements Cloneable{
 		return Objects.hash(directed, vertices, edges);
 	}
 
+	/** Returns a Set of the vertices in this graph. This set is a copy of the 
+	 * underlying keyset, so it is pass by value. Altering the returned
+	 * set will not affect the graph.
+	 */
 	public Set<V> vertexSet() {
 		return new HashSet<V>(vertices.keySet());
 	}
 	
+	/** Returns true iff this graph contains the given vertex. */
 	public boolean containsVertex(V v){
 		return vertices.containsKey(v);
 	}
 
+	/** Returns the number of vertices in this graph */
 	public int vertexSize(){
 		return vertices.size();
 	}
 
+	/** Returns the vertex object tied to the given vertex key.
+	 * Returns null if v is not contained in this graph */
 	protected Vertex getVertex(V v){
 		return vertices.get(v);
 	}
 	
-	public V getRandomVertex(){
-		return Util.randomElement(vertices.keySet());
-	}
-
+	/** Returns a Set of the edges in this graph. This set is a copy of the underlying
+	 * keyset, so it is pass by value. Altering the returned set will not affect
+	 * the graph.
+	 */
 	public Set<E> edgeSet() {
 		return new HashSet<E>(edges.keySet());
 	}
 	
+	/** Returns true iff this graph contains the edge E */
 	public boolean containsEdge(E e){
 		return edges.containsKey(e);
 	}
 
+	/** Returns the number of edges in this graph */
 	public int edgeSize(){
 		return edges.size();
 	}
 
+	/** Returns the edge object tied to the given edge key.
+	 * Returns null if e is not contained in this graph */
 	protected Edge getEdge(E e){
 		return edges.get(e);
 	}
-
-	public E getRandomEdge(){
-		return Util.randomElement(edges.keySet());
-	}
 	
+	/** Returns whether or not this graph is directed.
+	 * If this graph is undirected, all edges are treated as bi-directional
+	 * for the purposes of directed-graph algorithms.
+	 */
 	public boolean isDirected(){
 		return directed;
 	}
 
 	/** Adds the given vertex to the graph with no edges.
-	 * If the vertex is already in the graph, do nothing
+	 * If the vertex is already in the graph, do nothing and return false
 	 * Returns true if the an operation is performed this way, false otw.
 	 */
 	public boolean addVertex(V v) {
@@ -186,7 +203,8 @@ public class Graph<V,E> implements Cloneable{
 
 	/** Connects the two given vertices in the graph by adding an edge.
 	 * If there is already a connection from source to sink 
-	 * (or sink to source and this is undirected), does nothing.
+	 * (or sink to source and this is undirected), or e is already
+	 * an edge in this graph, do nothing and return false.
 	 * Returns true if an operation is performed this way, false otw.
 	 * @throws NotInCollectionException - if source or sink are not vertices in this graph
 	 */
@@ -244,8 +262,15 @@ public class Graph<V,E> implements Cloneable{
 		edges.remove(e);
 		return true;
 	}
+	
+	/** Clears this graph entirely, removing all edges and vertices. */
+	public void clear(){
+		vertices.clear();
+		edges.clear();
+	}
 
-	/** Returns the edge with the given source and sink, if any. null otw.
+	/** Returns the edge with the given source and sink, if any. Returns null
+	 * if there is no such edge.
 	 * For undirected graphs, returns any edge that connects the two, in either direction
 	 * @throws NotInCollectionException - if source or sink are not vertices in this graph*/
 	public E getConnection(V source, V sink) throws NotInCollectionException{
@@ -270,7 +295,8 @@ public class Graph<V,E> implements Cloneable{
 	}
 
 	/** Returns true iff there is an edge with the given source and sink.
-	 * For undirected graphs, returns true iff there is any edge that conencts the two, in either direction
+	 * For undirected graphs, returns true iff there is any edge that connects the 
+	 * two, in either direction.
 	 * @throws NotInCollectionException - if source or sink are not vertices in this graph*/
 	public boolean isConnected(V source, V sink) throws NotInCollectionException{
 		return getConnection(source, sink) != null;
@@ -360,8 +386,8 @@ public class Graph<V,E> implements Cloneable{
 			return degreeOf(sink);
 	}
 	
-	/** Returns the source of the given edge. If this is undirected, returns a
-	 * first endpoint
+	/** Returns the source of the given edge. If this is undirected, returns the
+	 * first endpoint - the endpoint given first when the edge was created.
 	 * @throws NotInCollectionException if e is not in this graph
 	 */
 	public V sourceOf(E e) throws NotInCollectionException{
@@ -371,7 +397,7 @@ public class Graph<V,E> implements Cloneable{
 	}
 	
 	/** Returns the sink of the given edge. If this is undirected, returns a
-	 * second endpoint
+	 * second endpoint - the endpoint given second when the edge was created.
 	 * @throws NotInCollectionException if e is not in this graph
 	 */
 	public V sinkOf(E e) throws NotInCollectionException{
@@ -380,18 +406,30 @@ public class Graph<V,E> implements Cloneable{
 		return edges.get(e).getSink().v;
 	}
 
-	/** Returns the vertices on either end of the given edge - an arrayList of length 2
+	/** Returns the vertices on either end of the given edge - a List of length 2
+	 * The returned list is read-only - attempts to modify it will cause an
+	 * UnsupportedOperationException.
 	 * @throws NotInCollectionException if e is not in this graph */
-	public ArrayList<V> verticesOf(E e) throws NotInCollectionException{
+	public List<V> verticesOf(E e) throws NotInCollectionException{
 		if(! edges.containsKey(e))
 			throw new NotInCollectionException("Can't get verticies of", e);
 		Edge edge = edges.get(e);
-		ArrayList<V> a = new ArrayList<V>();
+		List<V> a = new ArrayList<V>(2);
 		a.add(edge.getSource().v);
 		a.add(edge.getSink().v);
-		return a;
+		return Collections.unmodifiableList(a);
 	}
 
+	/** Returns true if the given edge is a self edge - two endpoints are the same
+	 * vertex, false otherwise.
+	 * @throws NotInCollectionException if e is not in this graph
+	 */
+	public boolean isSelfEdge(E e) throws NotInCollectionException{
+		if(! edges.containsKey(e))
+			throw new NotInCollectionException("Can't determine if is self edge", e);
+		return sourceOf(e).equals(sinkOf(e));
+	}
+	
 	/** Returns all neighbor vertices to {@code v}. In a directed graph
 	 * this is the set of vertices {@code a in A} for which there exists an edge e
 	 * with v as the source and a as the sink. In an undirected graph,

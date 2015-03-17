@@ -221,7 +221,7 @@ public class Algorithm {
 			flow = new HashMap<E, Integer>();
 
 			for(V v : g.vertexSet()){
-				label.put(v, 0); //Later reset during bfs
+				label.put(v, 0);
 				excess.put(v,0);
 				for(V v2 : g.vertexSet()){
 					E e = g.getConnection(v, v2);
@@ -236,8 +236,8 @@ public class Algorithm {
 
 			//Assemble preflows for edges leaving source
 			for(E e : g.edgeSetOfSource(source)){
-				V edgeEnd = g.getOther(e, source);
-				if(edgeEnd != source){
+				if(! g.isSelfEdge(e)){
+					V edgeEnd = g.getOther(e, source);
 					excess.put(source, excess.get(source) + e.getCapacity());
 					excess.put(edgeEnd, excess.get(edgeEnd) + e.getCapacity());
 					flow.put(e, e.getCapacity());

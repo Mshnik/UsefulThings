@@ -208,12 +208,15 @@ public class Algorithm {
 		private HashMap<V, Integer> label;
 		private HashMap<E, Integer> flow;
 		private HashMap<V, Integer> excess;
+		private final V source;
+		private final V sink;
 		private final Graph<V,E> g;
-
 		private final Flow<E> flowObj;
 
 		public MaxFlow(Graph<V,E> g, V source, V sink){
 			this.g = g;
+			this.source = source;
+			this.sink = sink;
 
 			label = new HashMap<V, Integer>();
 			excess = new HashMap<V, Integer>();
@@ -280,7 +283,7 @@ public class Algorithm {
 		}
 
 		private boolean relabel(V u){
-			if (excess.get(u) <= 0)
+			if (excess.get(u) <= 0 || u == source || u == sink)
 				return false;
 			int minVal = Integer.MAX_VALUE;
 			for(V v : g.vertexSet()){

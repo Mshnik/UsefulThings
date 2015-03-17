@@ -604,5 +604,23 @@ public class GraphTest {
 		g.addEdge("B", "C", new FlowEdge("bc", 200));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
+		g.addVertex("D");
+		g.addEdge("SOURCE", "D", new FlowEdge("d", 200));
+		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
+
+		g.addEdge("SINK", "A", new FlowEdge("rA", 100));
+		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
+		
+		g.addEdge("B","B", new FlowEdge("bb", 200));
+		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
+
+		g.addEdge("SINK", "SINK", new FlowEdge("sink2", 200));
+		g.addEdge("SOURCE", "SOURCE", new FlowEdge("source2", 200));
+		
+		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
+		
+		g.addEdge("SOURCE", "SINK", new FlowEdge("direct2", 10));
+		assertEquals(new Integer(65), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
+
 	}
 }

@@ -601,6 +601,8 @@ public class GraphTest {
 		g.addEdge("C","B", new FlowEdge("cb", 5));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
+		g.addEdge("B", "C", new FlowEdge("bc", 200));
+		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
 	}
 }

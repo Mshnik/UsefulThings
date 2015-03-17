@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import common.Util;
-import common.dataStructures.DeArrList;
 import common.tuple.Tuple2;
 
 /** Holder class for various algorithms for graphs **/
@@ -56,7 +55,7 @@ public class Algorithm {
 			if(e.getWeight() <= 0)
 				throw new RuntimeException("Can't run dijkstra's algorithm on graph with non-positive weights");
 		}
-		
+
 
 		final HashMap<V, Integer> distance = new HashMap<>();
 		Comparator<V> distanceComparator = new Comparator<V>(){
@@ -210,18 +209,18 @@ public class Algorithm {
 		private HashMap<E, Integer> flow;
 		private HashMap<V, Integer> excess;
 		private final Graph<V,E> g;
-		
+
 		private final Flow<E> flowObj;
-		
+
 		public MaxFlow(Graph<V,E> g, V source, V sink){
 			this.g = g;
 
 			label = new HashMap<V, Integer>();
 			excess = new HashMap<V, Integer>();
 			flow = new HashMap<E, Integer>();
-			
+
 			for(V v : g.vertexSet()){
-				label.put(v, Integer.MAX_VALUE); //Later reset during bfs
+				label.put(v, 0); //Later reset during bfs
 				excess.put(v,0);
 				for(V v2 : g.vertexSet()){
 					E e = g.getConnection(v, v2);
@@ -230,50 +229,35 @@ public class Algorithm {
 					}
 				}
 			}
-			
-			//Assemble preflows
+
+			//Label for start node is number of nodes
+			label.put(source, g.vertexSize());
+
+			//Assemble preflows for edges leaving source
 			for(E e : g.edgeSetOfSource(source)){
 				V edgeEnd = g.sinkOf(e);
 				if(edgeEnd != source){
 					excess.put(source, excess.get(source) + e.getCapacity());
-					excess.put(g.sinkOf(e), excess.get(edgeEnd) + e.getCapacity());
+					excess.put(edgeEnd, excess.get(edgeEnd) + e.getCapacity());
 					flow.put(e, e.getCapacity());
 				}
 			}
-			
-			//Run reverse breath first search to determine distances
-			DeArrList<V> queue = new DeArrList<>();
-			DeArrList<V> tempQueue = new DeArrList<>();
-			queue.add(sink);
-			int dist = 0;
-			while(! queue.isEmpty()){
-				tempQueue.clear();
-				for(V v : queue){
-					label.put(v, dist);
-					for(E e : g.edgeSetOfSink(v)){
-						if(label.get(g.sourceOf(e)) == Integer.MAX_VALUE && ! tempQueue.contains(g.sourceOf(e))){
-							tempQueue.add(g.sourceOf(e));
-						}
-					}
-				}
-				dist++;
-				queue.clear();
-				queue.addAll(tempQueue);
-			}
-			
+
 			//Main loop. Continue while an operation occurred
 			boolean opOccured = false;
 			do{
 				opOccured = false;
 				for(V v : g.vertexSet()){
-					opOccured = relabel(v) | opOccured;
-					for(V v2 : g.vertexSet()){
-						if(g.isConnected(v, v2));
-							opOccured = push(v, v2) | opOccured;
+					for(E e : g.edgeSetOfSource(v)){
+						opOccured = push(v, e, true) | opOccured;
 					}
+					for(E e : g.edgeSetOfSink(v)){
+						opOccured = push(v, e, false) | opOccured;
+					}
+					if(! opOccured) opOccured = relabel(v) | opOccured;
 				}
 			}while(opOccured);
-			
+
 			int maxFlow = 0;
 			for(E e : g.edgeSetOfSink(sink)){
 				maxFlow += flow.get(e);
@@ -283,14 +267,15 @@ public class Algorithm {
 		}
 
 		/** Helper method for the maxFlow calculation. */
-		private boolean push(V u, V v){
-			E e = g.getConnection(u, v);
-			if(! (excess.get(u) > 0 && label.get(u) == label.get(v) + 1))
+		private boolean push(V u, E e, boolean forward){
+			V v = g.getOther(e, u);
+			if(excess.get(u) <= 0 || label.get(u) != label.get(v) + 1)
 				return false;
+			int mult = (forward ? 1 : -1);
 			int delta = Math.min(excess.get(u), e.getCapacity() - flow.get(e));
-			flow.put(e, flow.get(e) + delta);
-			excess.put(u, excess.get(u) - delta);
-			excess.put(v, excess.get(v) + delta);
+			flow.put(e, flow.get(e) + mult * delta);
+			excess.put(u, excess.get(u) - mult * delta);
+			excess.put(v, excess.get(v) + mult * delta);
 			return delta != 0;
 		}
 

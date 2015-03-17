@@ -238,7 +238,7 @@ public class Algorithm {
 
 			//Assemble preflows for edges leaving source
 			for(E e : g.edgeSetOfSource(source)){
-				V edgeEnd = g.sinkOf(e);
+				V edgeEnd = g.getOther(e, source);
 				if(edgeEnd != source){
 					excess.put(source, excess.get(source) + e.getCapacity());
 					excess.put(edgeEnd, excess.get(edgeEnd) + e.getCapacity());

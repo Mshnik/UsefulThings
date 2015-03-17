@@ -50,6 +50,11 @@ public class Graph<V,E> implements Cloneable{
 		public int hashCode(){
 			return v.hashCode();
 		}
+		
+		@Override
+		public String toString(){
+			return v.toString();
+		}
 	}
 
 	protected class Edge extends Tuple3<Vertex, E, Vertex>{

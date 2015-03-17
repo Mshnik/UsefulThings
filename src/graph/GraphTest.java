@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import graph.Graph.NotInGraphException;
+import common.dataStructures.NotInCollectionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -181,12 +181,12 @@ public class GraphTest {
 		try{
 			g.addEdge("A","F", 5);
 			fail("Able to add edge to non-existant node");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			g.addEdge("F","B", 6);
 			fail("Able to add edge to non-existant node");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 	}
 
 	@Test
@@ -204,20 +204,20 @@ public class GraphTest {
 		try{
 			g.getConnection("A", "F");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 		try{
 			gU.getConnection("A", "F");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			g.getConnection("F", "A");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 		try{
 			gU.getConnection("F", "A");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		assertTrue(g.isConnected("A", "B"));
 		assertFalse(g.isConnected("B", "A"));
@@ -234,20 +234,20 @@ public class GraphTest {
 		try{
 			g.isConnected("A", "F");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 		try{
 			gU.isConnected("A", "F");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			g.isConnected("F", "A");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 		try{
 			gU.isConnected("F", "A");
 			fail("Got connection to vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		assertEquals("B", g.getOther(1, "A"));
 		assertEquals("A", g.getOther(1, "B"));
@@ -264,12 +264,12 @@ public class GraphTest {
 		try{
 			g.getOther(15, "A");
 			fail("Got other endpoint of edge not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			gU.getOther(15, "A");
 			fail("Got other endpoint of edge not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 	}
 
 	@Test
@@ -312,32 +312,32 @@ public class GraphTest {
 		try{
 			g.edgeSetOf("F");
 			fail("Got edge set of vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			g.edgeSetOfSink("F");
 			fail("Got edge set of vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			g.edgeSetOfSource("F");
 			fail("Got edge set of vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			gU.edgeSetOf("F");
 			fail("Got edge set of vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			gU.edgeSetOfSink("F");
 			fail("Got edge set of vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 
 		try{
 			gU.edgeSetOfSource("F");
 			fail("Got edge set of vertex not in graph");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 	}
 
 	@Test
@@ -511,12 +511,12 @@ public class GraphTest {
 		try{
 			Algorithm.dijkstra(g, "X", "A");
 			fail("Ran dijkstra's on non-existent start node");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 		
 		try{
 			Algorithm.dijkstra(g, "A", "X");
 			fail("Ran dijkstra's on non-existent goal node");
-		}catch(NotInGraphException e){}
+		}catch(NotInCollectionException e){}
 		
 		g.addEdge("A", "B", new WeightedEdge(-1));
 		
@@ -619,6 +619,7 @@ public class GraphTest {
 		
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
+		//Test on undirected graph - should allow backwards edges to be used correcly
 		Graph<String, FlowEdge> g2 = new Graph<>(false);
 		g2.addVertex("SOURCE");
 		g2.addVertex("SINK");
@@ -641,5 +642,16 @@ public class GraphTest {
 
 		g2.addEdge("SINK", "SOURCE", new FlowEdge("directReverse", 75));
 		assertEquals(new Integer(100), Algorithm.maxFlow(g2, "SOURCE", "SINK")._1);
+		
+		//Test on unconnected graph
+		Graph<String, FlowEdge> g3 = new Graph<>();
+		g3.addVertex("SOURCE");
+		g3.addVertex("SINK");
+		
+		assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
+		
+		g3.addEdge("SINK", "SOURCE", new FlowEdge("directReverse", 100));
+		assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
+
 	}
 }

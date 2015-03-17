@@ -1,7 +1,5 @@
 package graph;
 
-import graph.Graph.NotInGraphException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,17 +10,18 @@ import java.util.LinkedList;
 
 import common.Util;
 import common.tuple.Tuple2;
+import common.dataStructures.NotInCollectionException;
 
 /** Holder class for various algorithms for graphs **/
 public class Algorithm {
 
 	/** Returns the sum of the weights for the given path in the given graph.
-	 * @throws an NotInGraphException if the path makes an illegal jump -
+	 * @throws an NotInCollectionException if the path makes an illegal jump -
 	 * there is no such edge to travel
 	 * @return - 0 if path == null or path.size() < 2, the sum of the edge weights otherwise
 	 */
 	public static <V, E extends Weighted> int sumPathWeight(Graph<V, E> g, LinkedList<V> path)
-			throws NotInGraphException{
+			throws NotInCollectionException{
 		if(path == null || path.size() < 2) return 0;
 
 		int s = 0;
@@ -34,7 +33,7 @@ public class Algorithm {
 			V v2 = two.next();
 			E e = g.getConnection(v1, v2);
 			if(e == null)
-				throw new NotInGraphException("Can't get cost of " + v1 + " to " + v2, e);
+				throw new NotInCollectionException("Can't get cost of " + v1 + " to " + v2, e);
 			s += e.getWeight();
 		}
 
@@ -48,14 +47,13 @@ public class Algorithm {
 	 *           returns null if start or goal isn't in g, or there is no such path.
 	 */
 	public static <V, E extends Weighted> LinkedList<V> dijkstra(Graph<V, E> g, V start, V goal)
-			throws RuntimeException, NotInGraphException{
+			throws RuntimeException, NotInCollectionException{
 		if(! g.containsVertex(start) || ! g.containsVertex(goal))
-			throw new NotInGraphException("Can't tun dijkstra's algorithm", start, goal);
+			throw new NotInCollectionException("Can't tun dijkstra's algorithm", start, goal);
 		for(E e : g.edgeSet()){
 			if(e.getWeight() <= 0)
 				throw new RuntimeException("Can't run dijkstra's algorithm on graph with non-positive weights");
 		}
-
 
 		final HashMap<V, Integer> distance = new HashMap<>();
 		Comparator<V> distanceComparator = new Comparator<V>(){
@@ -311,8 +309,12 @@ public class Algorithm {
 	 * @param source - the vertex to treat as the source of all flow
 	 * @param sink - the vertex to treat as the sink of all flow
 	 * @return - a flow object, contianing the value of the max flow and the placement of all flow
+	 * @throws IllegalArgumentException if source or sink is null, or if they are the same node
 	 */
-	public static <V, E extends Flowable> Flow<E> maxFlow(Graph<V,E> g, V source, V sink){
+	public static <V, E extends Flowable> Flow<E> maxFlow(Graph<V,E> g, V source, V sink)
+			throws IllegalArgumentException{
+		if(source == null || sink == null || source.equals(sink))
+			throw new IllegalArgumentException("Source and Sink must be non-null and distinct");
 		return new MaxFlow<V,E>(g, source, sink).computeMaxFlow();
 	}
 

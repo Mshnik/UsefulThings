@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import common.Util;
+import common.dataStructures.NotInCollectionException;
 import common.tuple.Tuple3;
 
 /** Represents a Graph - a relational data structure.
@@ -187,11 +188,11 @@ public class Graph<V,E> implements Cloneable{
 	 * If there is already a connection from source to sink 
 	 * (or sink to source and this is undirected), does nothing.
 	 * Returns true if an operation is performed this way, false otw.
-	 * @throws NotInGraphException - if source or sink are not vertices in this graph
+	 * @throws NotInCollectionException - if source or sink are not vertices in this graph
 	 */
-	public boolean addEdge(V source, V sink, E e) throws NotInGraphException{
+	public boolean addEdge(V source, V sink, E e) throws NotInCollectionException{
 		if(! vertices.containsKey(source) || ! vertices.containsKey(sink))
-			throw new NotInGraphException("Can't create edge " + e, source, sink);
+			throw new NotInCollectionException("Can't create edge " + e, source, sink);
 		if(edges.containsKey(e))
 			return false;
 		if(isConnected(source, sink))
@@ -246,10 +247,10 @@ public class Graph<V,E> implements Cloneable{
 
 	/** Returns the edge with the given source and sink, if any. null otw.
 	 * For undirected graphs, returns any edge that connects the two, in either direction
-	 * @throws NotInGraphException - if source or sink are not vertices in this graph*/
-	public E getConnection(V source, V sink) throws NotInGraphException{
+	 * @throws NotInCollectionException - if source or sink are not vertices in this graph*/
+	public E getConnection(V source, V sink) throws NotInCollectionException{
 		if(! vertices.containsKey(source) || ! vertices.containsKey(sink))
-			throw new NotInGraphException("Can't check for connection", source, sink);
+			throw new NotInCollectionException("Can't check for connection", source, sink);
 
 		Vertex sourceV = vertices.get(source);
 		Vertex sinkV = vertices.get(sink);
@@ -270,18 +271,18 @@ public class Graph<V,E> implements Cloneable{
 
 	/** Returns true iff there is an edge with the given source and sink.
 	 * For undirected graphs, returns true iff there is any edge that conencts the two, in either direction
-	 * @throws NotInGraphException - if source or sink are not vertices in this graph*/
-	public boolean isConnected(V source, V sink) throws NotInGraphException{
+	 * @throws NotInCollectionException - if source or sink are not vertices in this graph*/
+	public boolean isConnected(V source, V sink) throws NotInCollectionException{
 		return getConnection(source, sink) != null;
 	}
 
 	/** Returns the vertex at the other end of the given edge.
 	 * Returns null if oneEnd is neither end of e.
-	 * @throws NotInGraphException if e isn't an edge in this graph
+	 * @throws NotInCollectionException if e isn't an edge in this graph
 	 */
-	public V getOther(E e, V oneEnd) throws NotInGraphException{
+	public V getOther(E e, V oneEnd) throws NotInCollectionException{
 		if(! edges.containsKey(e))
-			throw new NotInGraphException("Can't find other endpoint of edge", e);
+			throw new NotInCollectionException("Can't find other endpoint of edge", e);
 		Edge edge = edges.get(e);
 
 		if(edge._1.v.equals(oneEnd)) return edge._3.v;
@@ -290,30 +291,30 @@ public class Graph<V,E> implements Cloneable{
 	}
 
 	/** Returns a set of all edges with v as an endpoint (source or sink)
-	 * @throws NotInGraphException if v is not in this graph */
-	public Set<E> edgeSetOf(V v) throws NotInGraphException{
+	 * @throws NotInCollectionException if v is not in this graph */
+	public Set<E> edgeSetOf(V v) throws NotInCollectionException{
 		if(! vertices.containsKey(v))
-			throw new NotInGraphException("Can't get source and sink set", v);
+			throw new NotInCollectionException("Can't get source and sink set", v);
 		HashSet<E> e = new HashSet<E>(vertices.get(v).outEdges.keySet());
 		e.addAll(vertices.get(v).inEdges.keySet());
 		return e;
 	}
 
 	/** Returns the number of edges with the given vertex as an endpoint (source or sink)
-	 * @throws NotInGraphException if v is not in this graph */
-	public int degreeOf(V v) throws NotInGraphException{
+	 * @throws NotInCollectionException if v is not in this graph */
+	public int degreeOf(V v) throws NotInCollectionException{
 		if(! vertices.containsKey(v))
-			throw new NotInGraphException("Can't get degree", v);
+			throw new NotInCollectionException("Can't get degree", v);
 		return vertices.get(v).inEdges.size() + vertices.get(v).outEdges.size();
 	}
 
 	/** Returns a set of all edges with v as a source.
 	 * If this graph is undirected returns edgeSetOf(source) instead, as
 	 * every vertex is source and sink 
-	 * @throws NotInGraphException if source is not in this graph */
-	public Set<E> edgeSetOfSource(V source) throws NotInGraphException{
+	 * @throws NotInCollectionException if source is not in this graph */
+	public Set<E> edgeSetOfSource(V source) throws NotInCollectionException{
 		if(! vertices.containsKey(source))
-			throw new NotInGraphException("Can't get source set", source);
+			throw new NotInCollectionException("Can't get source set", source);
 		if(directed)
 			return new HashSet<E>(vertices.get(source).outEdges.keySet());
 		else
@@ -323,10 +324,10 @@ public class Graph<V,E> implements Cloneable{
 	/** Returns the number of edges with the given vertex as an source.
 	 * If this graph is undirected, returns degreeOf(source) instead, as
 	 * every vertex is a source and sink.
-	 * @throws NotInGraphException if v is not in this graph */
-	public int outDegreeOf(V source) throws NotInGraphException{
+	 * @throws NotInCollectionException if v is not in this graph */
+	public int outDegreeOf(V source) throws NotInCollectionException{
 		if(! vertices.containsKey(source))
-			throw new NotInGraphException("Can't get degree", source);
+			throw new NotInCollectionException("Can't get degree", source);
 		if(directed)
 			return vertices.get(source).outEdges.size();
 		else
@@ -336,10 +337,10 @@ public class Graph<V,E> implements Cloneable{
 	/** Returns a set of all edges with v as a sink.
 	 * If this graph is undirected returns edgeSetOf(source) instead, as
 	 * every vertex is source and sink
-	 * @throws NotInGraphException if sink is not in this graph */
-	public Set<E> edgeSetOfSink(V sink) throws NotInGraphException{
+	 * @throws NotInCollectionException if sink is not in this graph */
+	public Set<E> edgeSetOfSink(V sink) throws NotInCollectionException{
 		if(! vertices.containsKey(sink))
-			throw new NotInGraphException("Can't get sink set", sink);
+			throw new NotInCollectionException("Can't get sink set", sink);
 		if(directed)
 			return new HashSet<E>(vertices.get(sink).inEdges.keySet());
 		else
@@ -349,10 +350,10 @@ public class Graph<V,E> implements Cloneable{
 	/** Returns the number of edges with the given vertex as an sink.
 	 * If this graph is undirected, returns degreeOf(sink) instead, as
 	 * every vertex is a source and sink.
-	 * @throws NotInGraphException if v is not in this graph */
-	public int inDegreeOf(V sink) throws NotInGraphException{
+	 * @throws NotInCollectionException if v is not in this graph */
+	public int inDegreeOf(V sink) throws NotInCollectionException{
 		if(! vertices.containsKey(sink))
-			throw new NotInGraphException("Can't get degree", sink);
+			throw new NotInCollectionException("Can't get degree", sink);
 		if(directed)
 			return vertices.get(sink).inEdges.size();
 		else
@@ -361,29 +362,29 @@ public class Graph<V,E> implements Cloneable{
 	
 	/** Returns the source of the given edge. If this is undirected, returns a
 	 * first endpoint
-	 * @throws NotInGraphException if e is not in this graph
+	 * @throws NotInCollectionException if e is not in this graph
 	 */
-	public V sourceOf(E e) throws NotInGraphException{
+	public V sourceOf(E e) throws NotInCollectionException{
 		if(! edges.containsKey(e))
-			throw new NotInGraphException("Can't get source of", e);
+			throw new NotInCollectionException("Can't get source of", e);
 		return edges.get(e).getSource().v;
 	}
 	
 	/** Returns the sink of the given edge. If this is undirected, returns a
 	 * second endpoint
-	 * @throws NotInGraphException if e is not in this graph
+	 * @throws NotInCollectionException if e is not in this graph
 	 */
-	public V sinkOf(E e) throws NotInGraphException{
+	public V sinkOf(E e) throws NotInCollectionException{
 		if(! edges.containsKey(e))
-			throw new NotInGraphException("Can't get source of", e);
+			throw new NotInCollectionException("Can't get source of", e);
 		return edges.get(e).getSink().v;
 	}
 
 	/** Returns the vertices on either end of the given edge - an arrayList of length 2
-	 * @throws NotInGraphException if e is not in this graph */
-	public ArrayList<V> verticesOf(E e) throws NotInGraphException{
+	 * @throws NotInCollectionException if e is not in this graph */
+	public ArrayList<V> verticesOf(E e) throws NotInCollectionException{
 		if(! edges.containsKey(e))
-			throw new NotInGraphException("Can't get verticies of", e);
+			throw new NotInCollectionException("Can't get verticies of", e);
 		Edge edge = edges.get(e);
 		ArrayList<V> a = new ArrayList<V>();
 		a.add(edge.getSource().v);
@@ -397,9 +398,9 @@ public class Graph<V,E> implements Cloneable{
 	 * this is the set of vertices for which there exists an edge e with v as
 	 * either the source or the sink and a as the other endpoint.
 	 */
-	public Set<V> neighborsOf(V v) throws NotInGraphException{
+	public Set<V> neighborsOf(V v) throws NotInCollectionException{
 		if(! vertices.containsKey(v))
-			throw new NotInGraphException("Can't get neighbor set", v);
+			throw new NotInCollectionException("Can't get neighbor set", v);
 
 		Vertex vertex = vertices.get(v);
 		HashSet<V> neighbors = new HashSet<>();
@@ -412,14 +413,6 @@ public class Graph<V,E> implements Cloneable{
 			}
 		}
 		return neighbors;
-	}
-
-	@SuppressWarnings("serial")
-	public static class NotInGraphException extends RuntimeException{
-		public NotInGraphException(String msg, Object... objects){
-			super(msg + " - " + Arrays.deepToString(objects) + 
-					(objects.length > 1 ? "aren't" : "isn't") + " contained in graph");
-		}
 	}
 
 }

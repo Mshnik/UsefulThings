@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import common.dataStructures.NotInCollectionException;
-import common.tuple.Tuple3;
+import common.types.Tuple3;
 
 /** Represents a Graph - a relational data structure.
  * All relations of which vertices possess which edges, etc are 

@@ -1,4 +1,4 @@
-package common.tuple;
+package common.types;
 
 /** A tuple of two values, of types A and B, respectively */
 public class Tuple2<A,B> extends AbsTuple{

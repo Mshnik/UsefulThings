@@ -1,15 +1,15 @@
-package common.tuple;
+package common.types;
 
 import java.util.Arrays;
 
-/** An abstract parent of all tuples. Tuples as implemented here are
- * are immutable.
+/** An abstract parent of all tuples, a simple Product Type implementation. 
+ * Tuples as implemented here are immutable.
  * Stores all tupled values in an Object array for basic method implementations
  * Contains default implementations of toString(), equals(..), and hashCode().
  * @author Mshnik
  *
  */
-public abstract class AbsTuple {
+public abstract class AbsTuple{
 
 	/** The objects stored in the tuple. Shouldn't be altered
 	 * after initialization. If it must be, subclass should make

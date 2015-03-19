@@ -1,4 +1,4 @@
-package common.tuple;
+package common.types;
 
 /** A tuple of three values, of types A, B and C, respectively */
 public class Tuple3<A,B,C> extends AbsTuple{

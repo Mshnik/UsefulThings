@@ -1,7 +1,7 @@
-package common.tuple;
+package common.types;
 
-/** A tuple of five values, of types A, B, C, D and E, respectively */
-public class Tuple5<A,B,C,D,E> extends AbsTuple {
+/** A tuple of six values, of types A, B, C, D, E and F, respectively */
+public class Tuple6<A,B,C,D,E,F> extends AbsTuple {
 
 		/** The first value stored within this tuple */
 		public final A _1; 
@@ -18,13 +18,17 @@ public class Tuple5<A,B,C,D,E> extends AbsTuple {
 		/** The fifth value stored within this tuple */
 		public final E _5;
 		
-		/** Constructs a new tuple of the values (first, second, third, fourth) */
-		public Tuple5(A first, B second, C third, D fourth, E fifth){
-			super(first, second, third, fourth, fifth);
+		/** The sixth value stored within this tuple */
+		public final F _6;
+		
+		/** Constructs a new tuple of the values (first, second, third, fourth, fifth, sixth) */
+		public Tuple6(A first, B second, C third, D fourth, E fifth, F sixth){
+			super(first, second, third, fourth, fifth, sixth);
 			_1 = first;
 			_2 = second;
 			_3 = third;
 			_4 = fourth;
 			_5 = fifth;
+			_6 = sixth;
 		}
 }

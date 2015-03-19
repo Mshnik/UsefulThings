@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import common.Util;
-import common.tuple.Tuple2;
+import common.types.Tuple2;
 import common.dataStructures.NotInCollectionException;
 
 /** Holder class for various algorithms for graphs **/
@@ -280,6 +280,7 @@ public class Algorithm {
 			return delta != 0;
 		}
 
+		/** Helper method for the maxFlow calculation. */
 		private boolean relabel(V u){
 			if (excess.get(u) <= 0 || u == source || u == sink)
 				return false;

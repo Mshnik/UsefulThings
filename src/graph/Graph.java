@@ -74,6 +74,208 @@ public class Graph<V,E> implements Cloneable{
 		}
 	}
 
+	/** An extension of the Graph class that functions as a unmodifiable *view* 
+	 * of an underlying graph.
+	 * <br><br>
+	 * This view doesn't support alterations. Any method that would alter this
+	 * graph is overridden to throw an UnsupportedOperationException when called.
+	 * Other methods return the result of the underlying graph for the given
+	 * method.
+	 * <br><br>
+	 * Because instances of UnmodifiableGraph are only views, changes in the
+	 * underlying graph will be reflected by this UnmodifiableGraph. 
+	 * Graph extensions should also extend UnmodifiableGraph so that
+	 * the extended version can be returned by the unmodifiableGraph()
+	 * method.
+	 * 
+	 * @author Mshnik
+	 *
+	 */
+	protected class UnmodifiableGraph extends Graph<V,E>{
+		
+		/** The graph this UnmodifiableGraph is a view of */
+		private final Graph<V,E> graph;
+		
+		private UnmodifiableGraph(Graph<V,E> g){
+			if(g == null) throw new IllegalArgumentException("Can't View Null Graph");
+			graph = g;
+		}
+		
+		@Override
+		public Graph<V,E> clone(){
+			return graph.clone();
+		}
+		
+		/** Returns this, instead of creating another redundant view of the 
+		 * same underlying graph
+		 */
+		@Override
+		public UnmodifiableGraph unmodifiableGraph(){
+			return this;
+		}
+		
+		@Override
+		public boolean equals(Object o){
+			return graph.equals(o);
+		}
+		
+		@Override
+		public int hashCode(){
+			return graph.hashCode();
+		}
+		
+		@Override
+		public Set<V> vertexSet(){
+			return graph.vertexSet();
+		}
+		
+		@Override
+		public int vertexSize(){
+			return graph.vertexSize();
+		}
+		
+		@Override
+		public boolean containsVertex(V v){
+			return graph.containsVertex(v);
+		}
+		
+		@Override
+		protected Vertex getVertex(V v){
+			return graph.getVertex(v);
+		}
+		
+		@Override
+		public Set<E> edgeSet(){
+			return graph.edgeSet();
+		}
+		
+		@Override
+		public boolean containsEdge(E e){
+			return graph.containsEdge(e);
+		}
+		
+		@Override
+		public int edgeSize(){
+			return graph.edgeSize();
+		}
+		
+		@Override
+		protected Edge getEdge(E e){
+			return graph.getEdge(e);
+		}
+		
+		@Override
+		public boolean isDirected(){
+			return graph.isDirected();
+		}
+		
+		/** Not Supported by UnmodifiableGraph.
+		 * @throws UnsupportedOperationException Always*/
+		@Override
+		public boolean addVertex(V v){
+			throw new UnsupportedOperationException("Can't Modify UnmodifiableGraph");
+		}
+		
+		/** Not Supported by UnmodifiableGraph.
+		 * @throws UnsupportedOperationException Always*/
+		@Override
+		public boolean addEdge(V source, V sink, E e){
+			throw new UnsupportedOperationException("Can't Modify UnmodifiableGraph");
+		}
+		
+		/** Not Supported by UnmodifiableGraph.
+		 * @throws UnsupportedOperationException Always*/
+		@Override
+		public boolean removeVertex(V v){
+			throw new UnsupportedOperationException("Can't Modify UnmodifiableGraph");
+		}
+		
+		/** Not Supported by UnmodifiableGraph.
+		 * @throws UnsupportedOperationException Always*/
+		@Override
+		public boolean removeEdge(E e){
+			throw new UnsupportedOperationException("Can't Modify UnmodifiableGraph");
+		}
+		
+		/** Not Supported by UnmodifiableGraph.
+		 * @throws UnsupportedOperationException Always*/
+		@Override
+		public void clear(){
+			throw new UnsupportedOperationException("Can't Modify UnmodifiableGraph");
+		}
+		
+		@Override
+		public E getConnection(V source, V sink){
+			return graph.getConnection(source, sink);
+		}
+		
+		@Override
+		public boolean isConnected(V source, V sink){
+			return graph.isConnected(source, sink);
+		}
+		
+		@Override
+		public V getOther(E e, V oneEnd){
+			return graph.getOther(e, oneEnd);
+		}
+		
+		@Override
+		public Set<E> edgeSetOf(V v){
+			return graph.edgeSetOf(v);
+		}
+		
+		@Override
+	  public Set<E> edgeSetOfSource(V source){
+			return graph.edgeSetOfSource(source);
+		}
+		
+		@Override
+		public Set<E> edgeSetOfSink(V sink){
+			return graph.edgeSetOfSink(sink);
+		}
+		
+		@Override
+		public int degreeOf(V v){
+			return graph.degreeOf(v);
+		}
+		
+		@Override
+		public int outDegreeOf(V source){
+			return graph.outDegreeOf(source);
+		}
+		
+		@Override
+		public int inDegreeOf(V sink){
+			return graph.inDegreeOf(sink);
+		}
+		
+		@Override
+		public V sourceOf(E e){
+			return graph.sourceOf(e);
+		}
+		
+		@Override
+		public V sinkOf(E e){
+			return graph.sinkOf(e);
+		}
+		
+		@Override
+		public List<V> verticesOf(E e){
+			return graph.verticesOf(e);
+		}
+		
+		@Override
+		public boolean isSelfEdge(E e){
+			return graph.isSelfEdge(e);
+		}
+		
+		@Override
+		public Set<V> neighborsOf(V v){
+			return graph.neighborsOf(v);
+		}
+		
+	}
+	
 	private boolean directed;
 	private HashMap<V, Vertex> vertices;
 	private HashMap<E, Edge> edges;
@@ -92,6 +294,23 @@ public class Graph<V,E> implements Cloneable{
 	public Graph(){
 		this(true);
 	}
+	
+	/** Constructs a new graph that is a copy of the given graph
+	 * The two graphs contain the same elements but are completely independent
+	 * in terms of underlying structure, so modifications to this Graph
+	 * won't alter the returned graph, and modifications to the returned
+	 * graph won't alter this graph.
+	 */
+	public Graph(Graph<V,E> g){
+		this(g.directed);
+		for(V v : g.vertexSet()){
+			addVertex(v);
+		}
+		for(E e : g.edgeSet()){
+			Edge edge = g.edges.get(e);
+			addEdge(edge.getSource().v, edge.getSink().v, e);
+		}
+	}
 
 	/** Returns a new Graph that is a copy of this.
 	 * The two graphs contain the same elements but are completely independent
@@ -100,17 +319,14 @@ public class Graph<V,E> implements Cloneable{
 	 * graph won't alter this graph.
 	 */
 	public Graph<V, E> clone(){
-		Graph<V, E> g = new Graph<V, E>(directed);
-
-		for(V v : vertexSet()){
-			g.addVertex(v);
-		}
-		for(E e : edgeSet()){
-			Edge edge = edges.get(e);
-			g.addEdge(edge.getSource().v, edge.getSink().v, e);
-		}
-
-		return g;
+		return new Graph<V, E>(this);
+	}
+	
+	/** Returns a new Graph that is an unmodifiable view of this
+	 * 
+	 */
+	public Graph<V,E> unmodifiableGraph(){
+		return new UnmodifiableGraph(this);
 	}
 
 	/** Two graphs are equivalent if they store the same vertices and edges,
@@ -120,9 +336,9 @@ public class Graph<V,E> implements Cloneable{
 			@SuppressWarnings("unchecked")
 			Graph<V, E> g = (Graph<V, E>)o;
 
-			return directed == g.directed && 
-					vertices.equals(g.vertices) &&
-					edges.equals(g.edges);
+			return isDirected() == g.isDirected() && 
+					vertexSet().equals(g.vertexSet()) &&
+					edgeSet().equals(g.edgeSet());
 		}catch(ClassCastException ce){
 			return false;
 		}

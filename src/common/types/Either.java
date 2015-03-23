@@ -36,7 +36,6 @@ public abstract class Either<A, B> {
 	public abstract Class<?> getType();
 	
 	/** Two Eithers are equal iff:
-	 *  <br>- They are of the same type pairs (A and B match for both)
 	 *  <br>- They are both Left or both Right, the only two direct subclasses
 	 *  <br>- The objects they store are equivalent using Objects.equals. 
 	 */

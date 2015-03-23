@@ -421,6 +421,91 @@ public class GraphTest {
 	}
 	
 	@Test
+	public void testUnmodifiableGraph(){
+		Graph<String, Integer> unmodifiableG = g.unmodifiableGraph();
+		
+		assertEquals(g.isDirected(), unmodifiableG.isDirected());
+		assertEquals(g.vertexSet(), unmodifiableG.vertexSet());
+		assertEquals(g.edgeSet(), unmodifiableG.edgeSet());
+		
+		assertEquals(g.vertexSize(), unmodifiableG.vertexSize());
+		assertEquals(g.edgeSize(), unmodifiableG.edgeSize());
+		
+		assertTrue(g.equals(unmodifiableG));
+		assertTrue(unmodifiableG.equals(g));
+		
+		assertEquals(g.hashCode(), unmodifiableG.hashCode());
+		
+		for(int i = 60; i < 70; i++){ //Char codes with caps letters in the middle
+			String s = ((char)i) + "";
+			assertEquals(g.containsVertex(s), unmodifiableG.containsVertex(s));
+		}
+		
+		for(int i = 0; i < 10; i++){
+			assertEquals(g.containsEdge(i), unmodifiableG.containsEdge(i));
+		}
+		
+		for(String v1 : g.vertexSet()){
+			assertEquals(g.degreeOf(v1), unmodifiableG.degreeOf(v1));
+			assertEquals(g.edgeSetOf(v1), unmodifiableG.edgeSetOf(v1));
+			assertEquals(g.inDegreeOf(v1), unmodifiableG.inDegreeOf(v1));
+			assertEquals(g.edgeSetOfSink(v1), unmodifiableG.edgeSetOfSink(v1));
+			assertEquals(g.outDegreeOf(v1), unmodifiableG.outDegreeOf(v1));
+			assertEquals(g.edgeSetOfSource(v1), unmodifiableG.edgeSetOfSource(v1));
+			assertEquals(g.neighborsOf(v1), unmodifiableG.neighborsOf(v1));
+			
+			for(String v2 : g.vertexSet()){
+				assertEquals(g.getConnection(v1, v2), unmodifiableG.getConnection(v1, v2));
+				assertEquals(g.isConnected(v1, v2), unmodifiableG.isConnected(v1, v2));
+			}
+			
+			for(Integer e : g.edgeSet()){
+				assertEquals(g.getOther(e, v1), unmodifiableG.getOther(e, v1));
+			}
+		}
+		
+		for(Integer e : g.edgeSet()){
+			assertEquals(g.sourceOf(e), unmodifiableG.sourceOf(e));
+			assertEquals(g.sinkOf(e), unmodifiableG.sinkOf(e));
+			assertEquals(g.verticesOf(e), unmodifiableG.verticesOf(e));
+			assertEquals(g.isSelfEdge(e), unmodifiableG.isSelfEdge(e));
+		}
+		
+		assertTrue(unmodifiableG == unmodifiableG.unmodifiableGraph());
+		
+		try{
+			unmodifiableG.addVertex("ASDF");
+			fail("Modified UnmodifiableGraph");
+		}catch(UnsupportedOperationException e){}
+		
+		try{
+			unmodifiableG.addEdge("C", "C", 15);
+			fail("Modified UnmodifiableGraph");
+		}catch(UnsupportedOperationException e){}
+		
+		try{
+			unmodifiableG.removeVertex("B");
+			fail("Modified UnmodifiableGraph");
+		}catch(UnsupportedOperationException e){}
+		
+		try{
+			unmodifiableG.removeEdge(1);
+			fail("Modified UnmodifiableGraph");
+		}catch(UnsupportedOperationException e){}
+		
+		try{
+			unmodifiableG.clear();
+			fail("Modified UnmodifiableGraph");
+		}catch(UnsupportedOperationException e){}
+		
+		//Test adding a vertex is reflected in view
+		g.addVertex("Z");
+		
+		assertEquals(g.vertexSet(), unmodifiableG.vertexSet());
+		
+	}
+	
+	@Test
 	public void testIsDAG(){
 		//Check that undirected graph is false
 		assertFalse(Algorithm.isDAG(gU));

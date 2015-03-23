@@ -21,39 +21,39 @@ public class ConsTest {
 	public void testConstruction() {
 		assertEquals("(" + ConsList.NIL_STRING + ")", lst.toString());
 		assertEquals(0, lst.size);
-		assertEquals(null, lst.tail);
+		assertEquals(null, lst.tail());
 		assertEquals(null, lst.val);
 		
 		ConsList<Integer> lst2 = lst.cons(1);
 		assertEquals("(1)", lst2.toString());
 		assertEquals(1, lst2.size);
 		assertEquals(new Integer(1), lst2.val);
-		assertEquals(lst, lst2.tail);
+		assertEquals(lst, lst2.tail());
 		
 		ConsList<Integer> lst3 = lst2.cons(2);
 		assertEquals("(2,1)", lst3.toString());
 		assertEquals(2, lst3.size);
 		assertEquals(new Integer(2), lst3.val);
-		assertEquals(lst2, lst3.tail);
+		assertEquals(lst2, lst3.tail());
 		
 		//Test that lst 2 hasn't changed
 		assertEquals("(1)", lst2.toString());
 		assertEquals(1, lst2.size);
 		assertEquals(new Integer(1), lst2.val);
-		assertEquals(lst, lst2.tail);
+		assertEquals(lst, lst2.tail());
 		
 		//Branch to new lst
 		ConsList<Integer> lst4 = lst2.cons(3);
 		assertEquals("(3,1)", lst4.toString());
 		assertEquals(2, lst4.size);
 		assertEquals(new Integer(3), lst4.val);
-		assertEquals(lst2, lst4.tail);
+		assertEquals(lst2, lst4.tail());
 		
 		//Test that lst3 hasn't changed
 		assertEquals("(2,1)", lst3.toString());
 		assertEquals(2, lst3.size);
 		assertEquals(new Integer(2), lst3.val);
-		assertEquals(lst2, lst3.tail);
+		assertEquals(lst2, lst3.tail());
 	}
 	
 	@Test
@@ -91,32 +91,32 @@ public class ConsTest {
 		assertEquals("(1,2,3,4,5)", lst.toString());
 		
 		assertFalse(lst.isNil());
-		assertFalse(lst.tail.isNil());
-		assertFalse(lst.tail.tail.isNil());
-		assertFalse(lst.tail.tail.tail.isNil());
-		assertFalse(lst.tail.tail.tail.tail.isNil());
-		assertTrue(lst.tail.tail.tail.tail.tail.isNil());
+		assertFalse(lst.tail().isNil());
+		assertFalse(lst.tail().tail().isNil());
+		assertFalse(lst.tail().tail().tail().isNil());
+		assertFalse(lst.tail().tail().tail().tail().isNil());
+		assertTrue(lst.tail().tail().tail().tail().tail().isNil());
 		
 		assertFalse(lst.isLast());
-		assertFalse(lst.tail.isLast());
-		assertFalse(lst.tail.tail.isLast());
-		assertFalse(lst.tail.tail.tail.isLast());
-		assertTrue(lst.tail.tail.tail.tail.isLast());
-		assertTrue(lst.tail.tail.tail.tail.tail.isLast());
+		assertFalse(lst.tail().isLast());
+		assertFalse(lst.tail().tail().isLast());
+		assertFalse(lst.tail().tail().tail().isLast());
+		assertTrue(lst.tail().tail().tail().tail().isLast());
+		assertTrue(lst.tail().tail().tail().tail().tail().isLast());
 		
 		assertEquals(5, lst.size());
-		assertEquals(4, lst.tail.size());
-		assertEquals(3, lst.tail.tail.size());
-		assertEquals(2, lst.tail.tail.tail.size());
-		assertEquals(1, lst.tail.tail.tail.tail.size());
-		assertEquals(0, lst.tail.tail.tail.tail.tail.size());
+		assertEquals(4, lst.tail().size());
+		assertEquals(3, lst.tail().tail().size());
+		assertEquals(2, lst.tail().tail().tail().size());
+		assertEquals(1, lst.tail().tail().tail().tail().size());
+		assertEquals(0, lst.tail().tail().tail().tail().tail().size());
 		
 		assertFalse(lst.isEmpty());
-		assertFalse(lst.tail.isEmpty());
-		assertFalse(lst.tail.tail.isEmpty());
-		assertFalse(lst.tail.tail.tail.isEmpty());
-		assertFalse(lst.tail.tail.tail.tail.isEmpty());
-		assertTrue(lst.tail.tail.tail.tail.tail.isEmpty());
+		assertFalse(lst.tail().isEmpty());
+		assertFalse(lst.tail().tail().isEmpty());
+		assertFalse(lst.tail().tail().tail().isEmpty());
+		assertFalse(lst.tail().tail().tail().tail().isEmpty());
+		assertTrue(lst.tail().tail().tail().tail().tail().isEmpty());
 		
 		assertTrue(lst.contains(1));
 		assertTrue(lst.contains(2));
@@ -126,15 +126,15 @@ public class ConsTest {
 		assertFalse(lst.contains(6));
 		assertFalse(lst.contains(null));
 		
-		assertFalse(lst.tail.contains(1));
-		assertTrue(lst.tail.contains(2));
-		assertTrue(lst.tail.contains(3));
-		assertTrue(lst.tail.contains(4));
-		assertTrue(lst.tail.contains(5));
-		assertFalse(lst.tail.contains(6));
-		assertFalse(lst.tail.contains(null));
+		assertFalse(lst.tail().contains(1));
+		assertTrue(lst.tail().contains(2));
+		assertTrue(lst.tail().contains(3));
+		assertTrue(lst.tail().contains(4));
+		assertTrue(lst.tail().contains(5));
+		assertFalse(lst.tail().contains(6));
+		assertFalse(lst.tail().contains(null));
 		
-		assertFalse(lst.tail.tail.tail.tail.tail.contains(null));
+		assertFalse(lst.tail().tail().tail().tail().tail().contains(null));
 		
 		ArrayList<Integer> a = new ArrayList<Integer>();
 		for(int i = 1; i <= 5; i++){
@@ -142,12 +142,12 @@ public class ConsTest {
 		}
 		
 		assertTrue(lst.containsAll(a));
-		assertFalse(lst.tail.containsAll(a));
+		assertFalse(lst.tail().containsAll(a));
 		
 		a.remove(0);
 		assertTrue(lst.containsAll(a));
-		assertTrue(lst.tail.containsAll(a));
-		assertFalse(lst.tail.tail.containsAll(a));
+		assertTrue(lst.tail().containsAll(a));
+		assertFalse(lst.tail().tail().containsAll(a));
 		
 		for(int i = 0; i < 5; i++){
 			assertEquals(new Integer(i+1), lst.get(i));
@@ -155,8 +155,8 @@ public class ConsTest {
 		}
 		
 		for(int i = 0; i < 4; i++){
-			assertEquals(new Integer(i+2), lst.tail.get(i));
-			assertEquals(i, lst.tail.indexOf(new Integer(i+2)));
+			assertEquals(new Integer(i+2), lst.tail().get(i));
+			assertEquals(i, lst.tail().indexOf(new Integer(i+2)));
 		}
 		
 		
@@ -192,15 +192,50 @@ public class ConsTest {
 		}
 		assertFalse(iterator.hasNext());
 		
-		iterator = lst.tail.iterator();
+		iterator = lst.tail().iterator();
 		for(int i = 2; i <= 5; i++){
 			assertTrue(iterator.hasNext());
 			assertEquals(new Integer(i), iterator.next());
 		}
 		assertFalse(iterator.hasNext());
 		
-		iterator = lst.tail.tail.tail.tail.tail.iterator();
+		iterator = lst.tail().tail().tail().tail().tail().iterator();
 		assertFalse(iterator.hasNext());
+	}
+	
+	@Test
+	public void testReverse(){
+		lst = lst.cons(5).cons(4).cons(3).cons(2).cons(1).cons(0);
+		ConsList<Integer> lst2 = new ConsList<Integer>().cons(5).cons(4).cons(3).cons(2).cons(1).cons(0);
+		assertEquals("(0,1,2,3,4,5)", lst.toString());
+		
+		assertTrue(lst.equals(lst2));
+		
+		lst = lst.reverse();
+		
+		assertFalse(lst2.equals(lst));
+		
+		assertEquals("(5,4,3,2,1,0)", lst.toString());
+		assertEquals(6, lst.size);
+		assertEquals(5, lst.tail().size);
+		assertEquals(4, lst.tail().tail().size);
+		assertEquals(3, lst.tail().tail().tail().size);
+		assertEquals(2, lst.tail().tail().tail().tail().size);
+		assertEquals(1, lst.tail().tail().tail().tail().tail().size);
+		assertEquals(0, lst.tail().tail().tail().tail().tail().tail().size);
+		
+		lst = lst.reverse();
+		assertEquals("(0,1,2,3,4,5)", lst.toString());
+		assertEquals(6, lst.size);
+		assertEquals(5, lst.tail().size);
+		assertEquals(4, lst.tail().tail().size);
+		assertEquals(3, lst.tail().tail().tail().size);
+		assertEquals(2, lst.tail().tail().tail().tail().size);
+		assertEquals(1, lst.tail().tail().tail().tail().tail().size);
+		assertEquals(0, lst.tail().tail().tail().tail().tail().tail().size);
+		
+		assertEquals(lst2, lst);
+		
 	}
 
 }

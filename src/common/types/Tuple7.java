@@ -1,7 +1,7 @@
 package common.types;
 
 /** A tuple of seven values, of types A, B, C, D, E, F and G, respectively */
-public class Tuple7<A,B,C,D,E,F,G> extends AbsTuple {
+public class Tuple7<A,B,C,D,E,F,G> extends Tuple {
 
 		/** The first value stored within this tuple */
 		public final A _1; 

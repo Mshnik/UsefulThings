@@ -278,39 +278,6 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 			recSetTile((Object[])arr[index], depth + 1, loc, t);
 		}
 	}
-
-	
-//	/** Returns the neighbors (adjacent tiles) of {@code t}.
-//	 * @param t - the tile to get neighbors of
-//	 * @param diagonals - true if tiles that are diagonal from t (more than one delta) should be included
-//	 * 					  false for just cardinal directions
-//	 * @return - the neighbors of t
-//	 * @throws NotInGridException - if t isn't contained in this grid
-//	 */
-//	public ArrayList<T> getNeighbors(T t, boolean diagonals) throws NotInGridException{
-//		if(! containsKey(t.loc))
-//			throw new NotInGridException("Can't get neighbors of " + t + "; not in this grid");
-//		ArrayList<T> neighbors = new ArrayList<>();
-//		if(diagonals){
-//			ArrayList<int[]> is = recBuild(new ArrayList<int[]>(), t.loc.getVals(), 
-//					new int[]{-1, 0, 1}, 0);
-//			LocationBuilder lb = Location.initBuilder(minVals, maxVals, t.loc.getLabels());
-//			for(int[] i : is){
-//				try{
-//					T t2 = get(lb.build(i));
-//					if(t2 != null && t2 != t) neighbors.add(t2);
-//				}catch(LocationOutOfBoundsException e){}
-//			}
-//		} else{
-//			for(int i = 0; i < minVals.length; i++){
-//				T t2 = get(t.loc.cloneWithChange(i, 1));
-//				if(t2 != null) neighbors.add(t2);
-//				t2 = get(t.loc.cloneWithChange(i, -1));
-//				if(t2 != null) neighbors.add(t2);
-//			}
-//		}
-//		return neighbors;
-//	}
 	
 	/** Returns all coordinate groups that are in bounds for this grid */
 	public ArrayList<Integer[]> buildCoordinates(){

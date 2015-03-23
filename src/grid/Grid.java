@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import common.dataStructures.ConsList;
+
 public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	
 	private final Object[] vals;
@@ -281,51 +283,26 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	
 	/** Returns all coordinate groups that are in bounds for this grid */
 	public ArrayList<Integer[]> buildCoordinates(){
-		return recBuild(new Integer[dimension], new ArrayList<Integer[]>(), 0, bounds);
+		return recBuild(new ConsList<Integer>(), new ArrayList<Integer[]>(), 0, bounds);
 	}
 	
-	/** Recursively builds int arrays within the given ranges
-	 * @param template
-	 * @param built
-	 * @param depth
-	 * @param minVal
-	 * @param maxVal
-	 * @return
+	/** Recursively builds int arrays within the given ranges.
+	 * @param template - represented in reverse to get O(1) prepend. Reverse when used.
+	 * @param built - the list of coordinates built.
+	 * @param depth - the depth to recurse to
+	 * @param bounds - the max val at each depth[i].
 	 */
-	private static ArrayList<Integer[]> recBuild(Integer[] template, 
+	private static ArrayList<Integer[]> recBuild(ConsList<Integer> template, 
 			ArrayList<Integer[]> built, int depth, int[] bounds){
 		if(depth == bounds.length){
-			built.add(Arrays.copyOf(template, template.length));
+			built.add(template.reverse().toArray(new Integer[template.size]));
 			return built;
 		}
 		for(int i = 0; i < bounds[depth]; i++){
-			template[depth] = i;
-			recBuild(template, built, depth+1, bounds);
+			recBuild(template.cons(i), built, depth+1, bounds);
 		}
-		template[depth] = null;
 		return built;
 	}
-	
-//	/** Recursively builds int arrays
-//	 * @param built - the arrays built thus far
-//	 * @param template - the array being buit
-//	 * @param deltas - the deltas to apply to each index of the template
-//	 * @param index - the current index. Also keeps track of recursion depth
-//	 * @return - many int arrays. Yeah.
-//	 */
-//	private static ArrayList<int[]> recBuild(ArrayList<int[]> built, 
-//			int[] template, int[] deltas, int index){
-//		if(index == template.length){
-//			built.add(template);
-//			return built;
-//		}
-//		for(int d : deltas){
-//			int[] templateNew = Arrays.copyOf(template, template.length);
-//			templateNew[index] += d;
-//			recBuild(built, templateNew, deltas, index+1);
-//		}
-//		return built;
-//	}
 
 	/** Returns a deep string of the array represented by this grid as
 	 * its toString

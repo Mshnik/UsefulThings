@@ -14,7 +14,7 @@ public class Matching<A,B> {
 	public Matching(){
 		aObjects = new HashSet<>();
 		bObjects = new HashSet<>();
-		matching = new BiMap<>();
+		matching = new BiMap<>(); //Can only contain pairs from aObjects and bObjects
 	}
 	
 	public boolean addA(A a){
@@ -23,14 +23,38 @@ public class Matching<A,B> {
 		return true;
 	}
 	
+	public boolean addAllA(Collection<? extends A> colA){
+		boolean changed = false;
+		for(A a : colA){
+			changed = addA(a) | changed;
+		}
+		return changed;
+	}
+	
 	public boolean addB(B b){
 		if(bObjects.contains(b)) return false;
 		bObjects.add(b);
 		return true;
 	}
 	
+	public boolean addAllB(Collection<? extends B> colB){
+		boolean changed = false;
+		for(B b : colB){
+			changed = addB(b) | changed;
+		}
+		return changed;
+	}
+	
+	/** Returns true iff o is currently matched in this matching */
 	public boolean isMatched(Object o){
 		return matching.containsKey(o) || matching.containsValue(o);
+	}
+	
+	/** Returns true iff o is currently unmatched in this matching, but is
+	 * a valid object in this matching.
+	 */
+	public boolean isUnmatched(Object o){
+		return (aObjects.contains(o) || bObjects.contains(o)) && ! isMatched(o);
 	}
 	
 	public A getMatchedA(B b){
@@ -42,8 +66,8 @@ public class Matching<A,B> {
 	}
 	
 	public boolean match(A a, B b){		
-		addA(a);
-		addB(b);
+		if(! aObjects.contains(a) || ! bObjects.contains(b))
+			return false;
 		matching.put(a, b);
 		return true;
 	}

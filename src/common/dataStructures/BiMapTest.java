@@ -63,7 +63,38 @@ public class BiMapTest {
 		assertFalse(b.containsValue('a'));
 		
 		assertEquals(2, b.size());
+	}
+	
+	@Test
+	public void testGetPut(){
+		BiMap<Character, Integer> b = new BiMap<>();
 
+		assertEquals(null, b.get('a'));
+		assertEquals(null, b.getValue('a'));
+		assertEquals(null, b.getKey(1));
+		
+		Integer old = b.put('a', 1);
+		assertEquals(null, old);
+		assertEquals(new Integer(1), b.get('a'));
+		assertEquals(new Integer(1), b.getValue('a'));
+		assertEquals(new Character('a'), b.getKey(1));
+		
+		old = b.put('b', 1);
+		assertEquals(null, old);
+		assertEquals(null, b.get('a'));
+		assertEquals(null, b.getValue('a'));
+		assertEquals(new Integer(1), b.get('b'));
+		assertEquals(new Integer(1), b.getValue('b'));
+		assertEquals(new Character('b'), b.getKey(1));
+		
+		old = b.remove('b');
+		assertEquals(new Integer(1), old);
+		assertEquals(0, b.size());
+		assertEquals(null, b.get('a'));
+		assertEquals(null, b.getValue('a'));
+		assertEquals(null, b.get('b'));
+		assertEquals(null, b.getValue('b'));
+		assertEquals(null, b.getKey(1));
 	}
 
 }

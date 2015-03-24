@@ -270,9 +270,19 @@ public class Graph<V,E> implements Cloneable{
 		}
 		
 		@Override
+		public boolean isEndpointOf(E e, V endpoint){
+			return graph.isEndpointOf(e, endpoint);
+		}
+		
+		@Override
+		public V getSharedEndpoint(E e1, E e2){
+			return graph.getSharedEndpoint(e1, e2);
+		}
+		
+		@Override
 		public Set<V> neighborsOf(V v){
 			return graph.neighborsOf(v);
-		}
+		}		
 		
 	}
 	
@@ -649,8 +659,29 @@ public class Graph<V,E> implements Cloneable{
 	 */
 	public boolean isEndpointOf(E e, V endpoint) throws NotInCollectionException{
 		if(! edges.containsKey(e))
-			throw new NotInCollectionException("Can't determine if is self edge", e);
+			throw new NotInCollectionException("Can't determine if isEndpoint", e);
 		return endpoint.equals(sourceOf(e)) || endpoint.equals(sinkOf(e));
+	}
+	
+	/** Returns the shared endpoint between the two edges. If both endpoints are
+	 * shared, an arbitrary endpoint is returned. If they do not share an endpoint, 
+	 * returns null
+	 */
+	public V getSharedEndpoint(E e1, E e2) throws NotInCollectionException{
+		if(! edges.containsKey(e1) || ! edges.containsKey(e2))
+			throw new NotInCollectionException("Can't getSharedEndpoint", e1, e2);
+		
+		V v11 = sourceOf(e1);
+		V v12 = sinkOf(e1);
+		V v21 = sourceOf(e2);
+		V v22 = sinkOf(e2);
+		
+		if(v11.equals(v21)) return v11;
+		if(v11.equals(v22)) return v11;
+		if(v12.equals(v21)) return v12;
+		if(v12.equals(v22)) return v22;
+		
+		return null;
 	}
 	
 	/** Returns all neighbor vertices to {@code v}. In a directed graph

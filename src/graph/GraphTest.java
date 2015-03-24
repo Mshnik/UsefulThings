@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import common.dataStructures.NotInCollectionException;
 
@@ -165,7 +166,7 @@ public class GraphTest {
 
 		changed = g.addEdge("A", "B", 1);
 		assertFalse(changed);
-		
+
 		changed = g.addEdge("A","B",12);
 		assertFalse(changed);
 
@@ -174,10 +175,10 @@ public class GraphTest {
 
 		changed = gU.addEdge("A", "B", 12);
 		assertFalse(changed);
-		
+
 		changed = gU.addEdge("B", "A", 12);
 		assertFalse(changed);
-		
+
 		try{
 			g.addEdge("A","F", 5);
 			fail("Able to add edge to non-existant node");
@@ -304,7 +305,7 @@ public class GraphTest {
 		iSet.add(2);
 		assertEquals(iSet, g.edgeSetOf("C"));
 		assertEquals(iSet, g.edgeSetOfSink("C"));
-		
+
 		assertEquals(iSet, gU.edgeSetOf("C"));
 		assertEquals(iSet, gU.edgeSetOfSink("C"));
 		assertEquals(iSet, gU.edgeSetOfSource("C"));
@@ -338,6 +339,57 @@ public class GraphTest {
 			gU.edgeSetOfSource("F");
 			fail("Got edge set of vertex not in graph");
 		}catch(NotInCollectionException e){}
+
+		assertTrue(g.isEndpointOf(1, "A"));
+		assertTrue(g.isEndpointOf(1, "B"));
+		assertFalse(g.isEndpointOf(1, "C"));
+		assertTrue(g.isEndpointOf(2, "A"));
+		assertFalse(g.isEndpointOf(2, "B"));
+		assertTrue(g.isEndpointOf(2, "C"));
+		assertFalse(g.isEndpointOf(3, "A"));
+		assertFalse(g.isEndpointOf(3, "B"));
+		assertTrue(g.isEndpointOf(3, "C"));
+		assertFalse(g.isEndpointOf(2, "ZZ"));
+
+		try{
+			g.isEndpointOf(12, "A");
+			fail("Checked endpoint of non-existent edge");
+		}catch(NotInCollectionException e){}
+
+		assertTrue(gU.isEndpointOf(1, "A"));
+		assertTrue(gU.isEndpointOf(1, "B"));
+		assertFalse(gU.isEndpointOf(1, "C"));
+		assertTrue(gU.isEndpointOf(2, "A"));
+		assertFalse(gU.isEndpointOf(2, "B"));
+		assertTrue(gU.isEndpointOf(2, "C"));
+		assertFalse(gU.isEndpointOf(3, "A"));
+		assertFalse(gU.isEndpointOf(3, "B"));
+		assertTrue(gU.isEndpointOf(3, "C"));
+		assertFalse(gU.isEndpointOf(2, "ZZ"));
+
+		try{
+			gU.isEndpointOf(12, "A");
+			fail("Checked endpoint of non-existent edge");
+		}catch(NotInCollectionException e){}
+
+		assertEquals("A", g.getSharedEndpoint(1, 2));
+		assertEquals("C", g.getSharedEndpoint(2, 3));
+		assertEquals(null, g.getSharedEndpoint(1, 3));
+
+		try{
+			g.getSharedEndpoint(12, 2);
+			fail("Found shared endpoint of non-existant edge");
+		}catch(NotInCollectionException e){}
+
+		assertEquals("A", gU.getSharedEndpoint(1, 2));
+		assertEquals("C", gU.getSharedEndpoint(2, 3));
+		assertEquals(null, gU.getSharedEndpoint(1, 3));
+
+		try{
+			gU.getSharedEndpoint(12, 2);
+			fail("Found shared endpoint of non-existant edge");
+		}catch(NotInCollectionException e){}
+
 	}
 
 	@Test
@@ -364,7 +416,7 @@ public class GraphTest {
 	@Test
 	public void testNeighbors(){
 		HashSet<String> neighbors = new HashSet<>();
-		
+
 		assertEquals(neighbors, g.neighborsOf("B"));
 
 		neighbors.add("C");
@@ -372,79 +424,79 @@ public class GraphTest {
 
 		neighbors.add("B");
 		assertEquals(neighbors, g.neighborsOf("A"));
-		
+
 		assertEquals(neighbors, gU.neighborsOf("A"));
-		
+
 		neighbors.clear();
 		neighbors.add("C");
 		neighbors.add("A");
 		assertEquals(neighbors, gU.neighborsOf("C"));
-		
+
 		neighbors.clear();
 		neighbors.add("A");
 		assertEquals(neighbors, gU.neighborsOf("B"));
 	}
-	
+
 	@Test
 	public void testEqualityAndHash(){
 		Graph<String, Integer> g2 = g.clone();
-		
+
 		assertTrue(g.equals(g2));
 		assertTrue(g2.equals(g));
 		assertEquals(g.hashCode(), g2.hashCode());
-		
+
 		assertFalse(gU.equals(g));
 		assertFalse(g.equals(gU));
-		
+
 		g.addVertex("X");
 		assertFalse(g.equals(g2));
 		assertFalse(g2.equals(g));
-		
+
 		g2.addVertex("X");
 		assertTrue(g.equals(g2));
 		assertTrue(g2.equals(g));
 		assertEquals(g.hashCode(), g2.hashCode());
-		
+
 		g.addEdge("B","C",7);
 		assertFalse(g.equals(g2));
 		assertFalse(g2.equals(g));
-		
+
 		g2.addEdge("B","C",8);
 		assertFalse(g.equals(g2));
 		assertFalse(g2.equals(g));
-		
+
 		g2.removeEdge(8);
 		g2.addEdge("B","C",7);
 		assertTrue(g.equals(g2));
 		assertTrue(g2.equals(g));
 		assertEquals(g.hashCode(), g2.hashCode());
 	}
-	
+
 	@Test
 	public void testUnmodifiableGraph(){
 		Graph<String, Integer> unmodifiableG = g.unmodifiableGraph();
-		
+
 		assertEquals(g.isDirected(), unmodifiableG.isDirected());
 		assertEquals(g.vertexSet(), unmodifiableG.vertexSet());
 		assertEquals(g.edgeSet(), unmodifiableG.edgeSet());
-		
+
 		assertEquals(g.vertexSize(), unmodifiableG.vertexSize());
 		assertEquals(g.edgeSize(), unmodifiableG.edgeSize());
-		
+
 		assertTrue(g.equals(unmodifiableG));
 		assertTrue(unmodifiableG.equals(g));
-		
+
 		assertEquals(g.hashCode(), unmodifiableG.hashCode());
-		
+
 		for(int i = 60; i < 70; i++){ //Char codes with caps letters in the middle
 			String s = ((char)i) + "";
 			assertEquals(g.containsVertex(s), unmodifiableG.containsVertex(s));
 		}
-		
+
 		for(int i = 0; i < 10; i++){
 			assertEquals(g.containsEdge(i), unmodifiableG.containsEdge(i));
 		}
-		
+
 		for(String v1 : g.vertexSet()){
 			assertEquals(g.degreeOf(v1), unmodifiableG.degreeOf(v1));
 			assertEquals(g.edgeSetOf(v1), unmodifiableG.edgeSetOf(v1));
@@ -453,138 +505,143 @@ public class GraphTest {
 			assertEquals(g.outDegreeOf(v1), unmodifiableG.outDegreeOf(v1));
 			assertEquals(g.edgeSetOfSource(v1), unmodifiableG.edgeSetOfSource(v1));
 			assertEquals(g.neighborsOf(v1), unmodifiableG.neighborsOf(v1));
-			
+
 			for(String v2 : g.vertexSet()){
 				assertEquals(g.getConnection(v1, v2), unmodifiableG.getConnection(v1, v2));
 				assertEquals(g.isConnected(v1, v2), unmodifiableG.isConnected(v1, v2));
 			}
-			
+
 			for(Integer e : g.edgeSet()){
 				assertEquals(g.getOther(e, v1), unmodifiableG.getOther(e, v1));
+				assertEquals(g.isEndpointOf(e, v1), unmodifiableG.isEndpointOf(e, v1));
 			}
 		}
-		
+
 		for(Integer e : g.edgeSet()){
 			assertEquals(g.sourceOf(e), unmodifiableG.sourceOf(e));
 			assertEquals(g.sinkOf(e), unmodifiableG.sinkOf(e));
 			assertEquals(g.verticesOf(e), unmodifiableG.verticesOf(e));
 			assertEquals(g.isSelfEdge(e), unmodifiableG.isSelfEdge(e));
+
+			for(Integer e2 : g.edgeSet()){
+				assertEquals(g.getSharedEndpoint(e, e2), unmodifiableG.getSharedEndpoint(e, e2));
+			}
 		}
-		
+
 		assertTrue(unmodifiableG == unmodifiableG.unmodifiableGraph());
-		
+
 		try{
 			unmodifiableG.addVertex("ASDF");
 			fail("Modified UnmodifiableGraph");
 		}catch(UnsupportedOperationException e){}
-		
+
 		try{
 			unmodifiableG.addEdge("C", "C", 15);
 			fail("Modified UnmodifiableGraph");
 		}catch(UnsupportedOperationException e){}
-		
+
 		try{
 			unmodifiableG.removeVertex("B");
 			fail("Modified UnmodifiableGraph");
 		}catch(UnsupportedOperationException e){}
-		
+
 		try{
 			unmodifiableG.removeEdge(1);
 			fail("Modified UnmodifiableGraph");
 		}catch(UnsupportedOperationException e){}
-		
+
 		try{
 			unmodifiableG.clear();
 			fail("Modified UnmodifiableGraph");
 		}catch(UnsupportedOperationException e){}
-		
+
 		//Test adding a vertex is reflected in view
 		g.addVertex("Z");
-		
+
 		assertEquals(g.vertexSet(), unmodifiableG.vertexSet());
-		
+
 	}
-	
+
 	@Test
 	public void testIsDAG(){
 		//Check that undirected graph is false
 		assertFalse(Algorithm.isDAG(gU));
-		
+
 		//Check actual directed graph
 		Graph<String, Integer> g = new Graph<String, Integer>();
 		assertTrue(Algorithm.isDAG(g));
-		
+
 		g.addVertex("A");
 		g.addVertex("B");
 		g.addEdge("A", "B", 1);
 		assertTrue(Algorithm.isDAG(g));
-		
+
 		g.addVertex("C");
 		g.addEdge("B","C",2);
 		assertTrue(Algorithm.isDAG(g));
-		
+
 		g.addEdge("C","A",3);
 		assertFalse(Algorithm.isDAG(g));
-		
+
 		g.removeEdge(3);
 		assertTrue(Algorithm.isDAG(g));
-		
+
 		g.addEdge("B","A",3);
 		assertFalse(Algorithm.isDAG(g));
-		
+
 		g.removeEdge(3);
 		assertTrue(Algorithm.isDAG(g));
 
 		g.addEdge("A","A",3);
 		assertFalse(Algorithm.isDAG(g));
 	}
-	
+
 	@Test
 	public void testIsBipartite(){
 		Graph<String, Integer> g = new Graph<String, Integer>();
 		assertTrue(Algorithm.isBipartite(g));
-		
+
 		g.addVertex("A");
 		g.addVertex("B");
 		g.addEdge("A", "B", 1);
 		assertTrue(Algorithm.isBipartite(g));
-		
+
 		g.addVertex("C");
 		g.addEdge("B","C",2);
 		assertTrue(Algorithm.isBipartite(g));
-		
+
 		g.addEdge("C","A",3);
 		assertFalse(Algorithm.isBipartite(g));
-		
+
 		g.removeEdge(3);
 		g.addVertex("D");
 		g.addVertex("E");
 		g.addEdge("D","E",3);
 		assertTrue(Algorithm.isBipartite(g));
-		
+
 		g.addEdge("C","D",4);
 		assertTrue(Algorithm.isBipartite(g));
-		
+
 		g.addEdge("D","A",5);
 		assertTrue(Algorithm.isBipartite(g));
-		
+
 		g.removeEdge(5);
 		g.addEdge("E","A",5);
 		assertFalse(Algorithm.isBipartite(g));
 	}
-	
+
 	private static class WeightedEdge implements Weighted{
 		private final int w;
-		
+
 		private WeightedEdge(int w){
 			this.w = w;
 		}
-		
+
 		public int getWeight(){
 			return w;
 		}
 	}
-	
+
 	@Test
 	public void testDijkstra(){
 		Graph<String, WeightedEdge> g = new Graph<>();
@@ -592,58 +649,58 @@ public class GraphTest {
 		g.addVertex("A");
 		g.addVertex("B");
 		g.addVertex("C");
-		
+
 		try{
 			Algorithm.dijkstra(g, "X", "A");
 			fail("Ran dijkstra's on non-existent start node");
 		}catch(NotInCollectionException e){}
-		
+
 		try{
 			Algorithm.dijkstra(g, "A", "X");
 			fail("Ran dijkstra's on non-existent goal node");
 		}catch(NotInCollectionException e){}
-		
+
 		g.addEdge("A", "B", new WeightedEdge(-1));
-		
+
 		try{
 			Algorithm.dijkstra(g, "A", "B");
 			fail("Ran dijkstra's algorithm on a graph with a negative weight");
 		}catch(Exception e){}
-		
+
 		g.removeEdge(g.getConnection("A", "B"));
-		
+
 		g.addEdge("A", "B", new WeightedEdge(3));
 		path.clear();
-				
+
 		path.add("A");
-		
+
 		assertEquals(path, Algorithm.dijkstra(g, "A", "A"));
-		
+
 		path.add("B");
-		
+
 		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
 		assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
 		assertEquals(null, Algorithm.dijkstra(g, "A", "C"));
-		
+
 		g.addEdge("A", "C", new WeightedEdge(1));
 		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
 		assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
-		
+
 		path.clear();
 		path.add("A");
 		path.add("C");
 		assertEquals(path, Algorithm.dijkstra(g, "A", "C"));
-		
+
 		g.addEdge("C", "B", new WeightedEdge(1));
 		path.add("B");
 		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
-		
+
 		g.addEdge("B","A", new WeightedEdge(5));
 		path.removeFirst();
 		path.add("A");
 		assertEquals(path, Algorithm.dijkstra(g, "C", "A"));
 	}
-	
+
 	private static class FlowEdge implements Flowable{
 		private final int capacity;
 		private final String name;
@@ -660,7 +717,7 @@ public class GraphTest {
 			return name;
 		}
 	}
-	
+
 	@Test
 	public void testMaxflow(){
 		Graph<String, FlowEdge> g = new Graph<>();
@@ -669,7 +726,7 @@ public class GraphTest {
 		g.addVertex("A");
 		g.addVertex("B");
 		g.addVertex("C");
-		
+
 		g.addEdge("SOURCE", "A", new FlowEdge("a",10));
 		g.addEdge("SOURCE", "B", new FlowEdge("b",5));
 		g.addEdge("SOURCE", "C", new FlowEdge("c",10));
@@ -679,10 +736,10 @@ public class GraphTest {
 		g.addEdge("C", "SINK", new FlowEdge("c2",5));
 
 		assertEquals(new Integer(20), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
-		
+
 		g.addEdge("SOURCE", "SINK", new FlowEdge("direct", 30));
 		assertEquals(new Integer(50), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
-		
+
 		g.addEdge("C","B", new FlowEdge("cb", 5));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
@@ -695,13 +752,13 @@ public class GraphTest {
 
 		g.addEdge("SINK", "A", new FlowEdge("rA", 100));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
-		
+
 		g.addEdge("B","B", new FlowEdge("bb", 200));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
 		g.addEdge("SINK", "SINK", new FlowEdge("sink2", 200));
 		g.addEdge("SOURCE", "SOURCE", new FlowEdge("source2", 200));
-		
+
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
 		//Test on undirected graph - should allow backwards edges to be used correcly
@@ -711,32 +768,163 @@ public class GraphTest {
 		g2.addVertex("A");
 		g2.addVertex("B");
 		g2.addVertex("C");
-		
+
 		g2.addEdge("SOURCE", "A", new FlowEdge("a",10));
 		g2.addEdge("SOURCE", "B", new FlowEdge("b",5));
 		g2.addEdge("SOURCE", "C", new FlowEdge("c",10));
-		
+
 		g2.addEdge("A", "SINK", new FlowEdge("a2",10));
 		g2.addEdge("B", "SINK", new FlowEdge("b2",10));
 		g2.addEdge("C", "SINK", new FlowEdge("c2",5));
-		
+
 		assertEquals(new Integer(20), Algorithm.maxFlow(g2, "SOURCE", "SINK")._1);
-		
+
+		//Use an edge backwards
 		g2.addEdge("B", "C", new FlowEdge("bc", 5));
 		assertEquals(new Integer(25), Algorithm.maxFlow(g2, "SOURCE", "SINK")._1);
 
+		//Use an edge backwards
 		g2.addEdge("SINK", "SOURCE", new FlowEdge("directReverse", 75));
 		assertEquals(new Integer(100), Algorithm.maxFlow(g2, "SOURCE", "SINK")._1);
-		
+
 		//Test on unconnected graph
 		Graph<String, FlowEdge> g3 = new Graph<>();
 		g3.addVertex("SOURCE");
 		g3.addVertex("SINK");
-		
-		assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
-		
-		g3.addEdge("SINK", "SOURCE", new FlowEdge("directReverse", 100));
+
 		assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
 
+		g3.addEdge("SINK", "SOURCE", new FlowEdge("directReverse", 100));
+		assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
+	}
+
+	private <V,E> void testIsValidCycle(Graph<V,E> g, List<E> path){
+		for(int i = 0; i < path.size() - 1; i++){
+			if(g.isDirected()){
+				assertEquals(g.sinkOf(path.get(i)), g.sourceOf(path.get(i+1)));
+			} else{
+				assertTrue(g.getSharedEndpoint(path.get(i), path.get(i+1)) != null);
+			}
+		}
+		//Check last edge
+		if(g.isDirected()){
+			assertEquals(g.sinkOf(path.get(path.size()-1)), g.sourceOf(path.get(0)));
+		} else{
+			assertTrue(g.getSharedEndpoint(path.get(path.size()-1), path.get(0)) != null);
+		}
+	}
+
+	@Test
+	public void testFindCycleDirected(){
+		Graph<String, Integer> g = new Graph<>();
+
+		assertEquals(null, Algorithm.getCycle(g));
+
+		g.addVertex("A");
+		g.addEdge("A", "A", -1);
+
+		List<Integer> cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.addVertex("B");
+		g.addEdge("A","B",1);
+
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.removeEdge(-1);
+		assertEquals(null, Algorithm.getCycle(g));
+
+		g.addEdge("B", "A", 2);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.addVertex("C");
+		g.addEdge("A","C",3);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.addEdge("C", "B", 4);
+		g.removeEdge(1);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		//Test two cycles preset
+		g.addVertex("D");
+		g.addEdge("B", "D", 6);
+		g.addEdge("D", "C", 7);
+		for(int i = 0; i < 100; i++){ //Make sure each cycle gets checked. Hopefully.
+			cycle = Algorithm.getCycle(g);
+			assertTrue(cycle != null);
+			testIsValidCycle(g, cycle);
+		}
+
+		//Test extra component with no cycle (to not get stuck)
+		g.addVertex("X");
+		g.addVertex("Y");
+		g.addEdge("X", "Y", 12);		
+		for(int i = 0; i < 100; i++){
+			cycle = Algorithm.getCycle(g);
+			assertTrue(cycle != null);
+			testIsValidCycle(g, cycle);
+		}
+
+	}
+
+	@Test
+	public void testFindCycleUndirected(){
+		Graph<String, Integer> g = new Graph<String,Integer>(false);
+
+		assertEquals(null, Algorithm.getCycle(g));
+
+		g.addVertex("A");
+		g.addVertex("B");
+		g.addEdge("A", "A", -1);
+
+		List<Integer> cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.removeEdge(-1);
+
+		g.addEdge("A", "B", 1);
+		assertEquals(null, Algorithm.getCycle(g));
+
+		g.addVertex("C");
+		g.addEdge("B", "C", 2);
+		assertEquals(null, Algorithm.getCycle(g));
+
+		g.addEdge("A", "C", 3);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.addVertex("X");
+		g.addVertex("Y");
+		g.addEdge("X", "Y", 12);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.addVertex("D");
+		g.addEdge("A", "D", 4);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+
+		g.addEdge("D", "C", 5);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
+		
+		g.removeEdge(2);
+		cycle = Algorithm.getCycle(g);
+		assertTrue(cycle != null);
+		testIsValidCycle(g, cycle);
 	}
 }

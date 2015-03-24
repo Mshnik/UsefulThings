@@ -322,9 +322,7 @@ public class Graph<V,E> implements Cloneable{
 		return new Graph<V, E>(this);
 	}
 	
-	/** Returns a new Graph that is an unmodifiable view of this
-	 * 
-	 */
+	/** Returns a new Graph that is an unmodifiable view of this.*/
 	public Graph<V,E> unmodifiableGraph(){
 		return new UnmodifiableGraph(this);
 	}

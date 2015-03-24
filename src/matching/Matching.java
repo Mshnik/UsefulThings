@@ -2,63 +2,87 @@ package matching;
 
 import java.util.*;
 
-public class Matching {
+import common.dataStructures.BiMap;
+import common.types.*;
 
-	private HashSet<MatchObject> objects;
-	private HashMap<MatchObject, MatchObject> matching;
+public class Matching<A,B> {
+
+	private HashSet<A> aObjects;
+	private HashSet<B> bObjects;
+	private BiMap<A,B> matching;
 
 	public Matching(){
-		objects = new HashSet<>();
-		matching = new HashMap<>();
+		aObjects = new HashSet<>();
+		bObjects = new HashSet<>();
+		matching = new BiMap<>();
 	}
 	
-	public boolean add(MatchObject o){
-		if(objects.contains(o)) return false;
-		objects.add(o);
+	public boolean addA(A a){
+		if(aObjects.contains(a)) return false;
+		aObjects.add(a);
 		return true;
 	}
 	
-	public boolean isMatched(MatchObject o){
-		return matching.containsKey(o);
-	}
-	
-	public MatchObject getMatch(MatchObject o){
-		return matching.get(o);
-	}
-	
-	public boolean match(MatchObject o, MatchObject p){
-		if(o.type.equals(p.type)) return false;
-		
-		add(o);
-		add(p);
-		if(matching.containsKey(o))
-			matching.remove(matching.get(o));
-		if(matching.containsKey(p))
-			matching.remove(matching.get(p));
-		
-		matching.put(o, p);
-		matching.put(p, o);
-		
+	public boolean addB(B b){
+		if(bObjects.contains(b)) return false;
+		bObjects.add(b);
 		return true;
 	}
 	
-	public HashSet<Object> getMatched(){
-		HashSet<Object> obj = new HashSet<>();
-		for(MatchObject o : objects){
-			if(matching.containsKey(o))
-				obj.add(o);
+	public boolean isMatched(Object o){
+		return matching.containsKey(o) || matching.containsValue(o);
+	}
+	
+	public A getMatchedA(B b){
+		return matching.getKey(b);
+	}
+	
+	public B getMatchedB(A a){
+		return matching.getValue(a);
+	}
+	
+	public boolean match(A a, B b){		
+		addA(a);
+		addB(b);
+		matching.put(a, b);
+		return true;
+	}
+	
+	public Map<A,B> getMatching(){
+		return matching.toMap();
+	}
+	
+	public Map<B,A> getFlippedMatching(){
+		return matching.toFlippedMap();
+	}
+	
+	public HashSet<Either<A,B>> getMatched(){
+		HashSet<Either<A,B>> obj = new HashSet<>();
+		for(A a : aObjects){
+			if(matching.containsKey(a)){
+				obj.add(new Left<A,B>(a));
+			}
+		}
+		for(B b : bObjects){
+			if(matching.containsKey(b)){
+				obj.add(new Right<A,B>(b));
+			}
 		}
 		return obj;
 	}
 	
-	public HashSet<Object> getUnmatched(){
-		HashSet<Object> obj = new HashSet<>();
-		for(MatchObject o : objects){
-			if(! matching.containsKey(o))
-				obj.add(o);
+	public HashSet<Either<A,B>> getUnmatched(){
+		HashSet<Either<A,B>> obj = new HashSet<>();
+		for(A a : aObjects){
+			if(! matching.containsKey(a)){
+				obj.add(new Left<A,B>(a));
+			}
+		}
+		for(B b : bObjects){
+			if(! matching.containsKey(b)){
+				obj.add(new Right<A,B>(b));
+			}
 		}
 		return obj;
 	}
-	
-	
 }

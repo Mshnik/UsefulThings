@@ -1,5 +1,8 @@
 package graph;
 
+import graph.matching.Agent;
+import graph.matching.Matching;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,14 +10,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import common.Util;
 import common.types.Tuple2;
 import common.dataStructures.NotInCollectionException;
 
-/** Holder class for various algorithms for graphs **/
+/** Holder class for various algorithms for graphs and matching **/
 public class Algorithm {
 
+	/** Prevent construction on class MAlgorithm */
+	private Algorithm(){}
+	
 	/** Returns the sum of the weights for the given path in the given graph.
 	 * @throws an NotInCollectionException if the path makes an illegal jump -
 	 * there is no such edge to travel
@@ -319,6 +327,44 @@ public class Algorithm {
 		return new MaxFlow<V,E>(g, source, sink).computeMaxFlow();
 	}
 
+	/** Runs the SerialDictatorship algorithm on the given agents and items.
+	 * Uses a random ordering over the agents for the priority order.
+	 * @param agents - the set of agents. Each A must have a preference order over items.
+	 * @param items - the items. No preferences for items are taken into account.
+	 * @return - a Matching of agents and items.
+	 */
+	public static <A extends Agent<I>, I> Matching<A,I> serialDictator(Set<A> agents, Set<I> items){
+		List<A> ordering = new ArrayList<A>(agents);
+		Collections.shuffle(ordering);
+		return serialDictator(ordering, items);
+	}
 
+	/** Runs the SerialDictatorship algorithm on the given agents and items.
+	 * @param agents - the list of agents. Each A must have a preference order over items.
+	 * 						The order that the agents appear in the list is the preference order over agents
+	 * @param items - the items. No preferences for items are taken into account.
+	 * @return - a Matching of agents and items.
+	 * @throws IllegalArgumentException if any agent appears in the list twice.
+	 */
+	public static <A extends Agent<I>, I> Matching<A,I> serialDictator(List<A> agents, Set<I> items)
+			throws IllegalArgumentException {
+		//Make sure agent doesn't appear twice in ordering
+		HashSet<A> agentsSet = new HashSet<A>(agents);
+		if(agents.size() != agentsSet.size())
+			throw new IllegalArgumentException("Can't use ordering " + agents + " over agents " + agentsSet);
+
+		Matching<A,I> matching = new Matching<A,I>();
+		matching.addAllA(agents);
+		matching.addAllB(items);
+		for(A agent : agents){
+			for(I item : agent.getPreferences()){
+				if(matching.isUnmatched(item)){
+					matching.match(agent, item);
+					break;
+				}
+			}
+		}
+		return matching;
+	}	
 
 }

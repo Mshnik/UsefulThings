@@ -1,4 +1,4 @@
-package matching;
+package graph.matching;
 
 public interface Agent<X> {
 

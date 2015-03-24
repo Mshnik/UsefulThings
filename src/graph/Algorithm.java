@@ -15,7 +15,9 @@ import java.util.Set;
 
 import common.Util;
 import common.types.Tuple2;
+import common.dataStructures.ConsList;
 import common.dataStructures.NotInCollectionException;
+import common.dataStructures.UnionFind;
 
 /** Holder class for various algorithms for graphs and matching **/
 public class Algorithm {
@@ -56,73 +58,57 @@ public class Algorithm {
 	 */
 	public static <V, E extends Weighted> LinkedList<V> dijkstra(Graph<V, E> g, V start, V goal)
 			throws RuntimeException, NotInCollectionException{
-		if(! g.containsVertex(start) || ! g.containsVertex(goal))
-			throw new NotInCollectionException("Can't tun dijkstra's algorithm", start, goal);
-		for(E e : g.edgeSet()){
-			if(e.getWeight() <= 0)
-				throw new RuntimeException("Can't run dijkstra's algorithm on graph with non-positive weights");
-		}
-
-		final HashMap<V, Integer> distance = new HashMap<>();
-		Comparator<V> distanceComparator = new Comparator<V>(){
-			@Override
-			public int compare(V o1, V o2) {
-				return distance.get(o1) - distance.get(o2);
-			}
-		};
-
-		final HashMap<V, V> previous = new HashMap<>();
-
-		//Initalize step
-		for(V v : g.vertexSet()){
-			distance.put(v, Integer.MAX_VALUE);
-			previous.put(v, null);
-		}
-
-		distance.put(start, 0);
-		HashSet<V> frontier = new HashSet<V>();
-
-		frontier.add(start);
-
-		//Iteration
-		do{
-			//Find next node (closest) and remove from frontier
-			V next = Collections.min(frontier, distanceComparator);
-			frontier.remove(next);
-			//Found the goal - break out of loop
-			if(next.equals(goal))
-				break;
-
-			//Look at each edge leaving next
-			for(E e : g.edgeSetOfSource(next)){
-				V neighbor = g.getOther(e, next);
-				//Relax edge - check if shortest path to neighbor is beaten by next -> neighbor.
-				if(distance.get(neighbor) > distance.get(next) + e.getWeight()){
-					distance.put(neighbor, distance.get(next) + e.getWeight());
-					previous.put(neighbor, next);
-					if(! frontier.contains(neighbor))
-						frontier.add(neighbor);
-				}
-			}
-
-		}while(! frontier.isEmpty());
-
-		//If the frontier is empty and goal distance is infinite, then the goal was never found.
-		if(frontier.isEmpty() && distance.get(goal).equals(Integer.MAX_VALUE)){
-			return null;
-		}
-
-		//Assemble path
-		LinkedList<V> path = new LinkedList<V>();
-		V v = goal;
-		do{
-			path.push(v);
-			v = previous.get(v);
-		}while(v != null);
-
-		return path;
+		return null;
 	}
 
+	/** Returns an arbitrary cycle in the graph. If none are present,
+	 * returns null. This method is well slower than the isDAG method,
+	 * so if cycle detection (instead of identity) is desired and the graph
+	 * is directed, use that method.
+	 */
+	public static <V,E> List<E> getCycle(Graph<V,E> g){
+		//Check for self loops
+		for(E e : g.edgeSet()){
+			if(g.isSelfEdge(e)){
+				 List<E> lst = new ArrayList<E>();
+				 lst.add(e);
+				 return lst;
+			}
+		}
+		
+		//No self loops at this point
+		
+		if(g.isDirected()){
+			//Use DFS method
+		} else{
+			//Use Union-Find method
+			UnionFind<V> uf = new UnionFind<V>(g.vertexSet());
+			HashMap<V,E> childToParentEdge = new HashMap<>();
+			
+			for(E e : g.edgeSet()){
+				V v1 = g.sourceOf(e);
+				V v2 = g.sinkOf(e);
+				if(uf.find(v1).equals(uf.find(v2))){
+					//Found a cycle. Package and return. Start of cycle is v1.
+					ArrayList<E> cycle = new ArrayList<E>();
+					E current = e;
+					while(! g.isEndpointOf(current, v1) || g.isEndpointOf(current, v2)){
+						cycle.add(current);
+						current = childToParentEdge.get(current); //TODO
+					}
+					return cycle;
+				}
+				//We know that by calling union here v1 and v2 weren't connected before
+				V parent = uf.union(v1, v2);
+				V child = parent == v1 ? v2 : v1;
+				childToParentEdge.put(child, e);
+			}
+			
+			//No cycle found
+			return null;
+		}
+	}
+	
 	/** Returns true if the given graph is a DAG, using a topological sort */
 	public static <V,E> boolean isDAG(Graph<V,E> g){
 		if(! g.isDirected()) return false;

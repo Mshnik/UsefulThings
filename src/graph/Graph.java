@@ -644,6 +644,15 @@ public class Graph<V,E> implements Cloneable{
 		return sourceOf(e).equals(sinkOf(e));
 	}
 	
+	/** Returns true iff v is one endpoint of e, false otherwise
+	 * @throws NotInCollectionException if e is not in this graph
+	 */
+	public boolean isEndpointOf(E e, V endpoint) throws NotInCollectionException{
+		if(! edges.containsKey(e))
+			throw new NotInCollectionException("Can't determine if is self edge", e);
+		return endpoint.equals(sourceOf(e)) || endpoint.equals(sinkOf(e));
+	}
+	
 	/** Returns all neighbor vertices to {@code v}. In a directed graph
 	 * this is the set of vertices {@code a in A} for which there exists an edge e
 	 * with v as the source and a as the sink. In an undirected graph,

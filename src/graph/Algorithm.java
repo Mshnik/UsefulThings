@@ -1,6 +1,7 @@
 package graph;
 
 import graph.matching.Agent;
+import graph.matching.EndowedAgent;
 import graph.matching.Matching;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Algorithm {
 
 		return s;
 	}
-	
+
 	/** Returns a new directed graph that is a copy of g
 	 * If g is directed, merely clones g and returns that clone.
 	 * If g is undirected, creates a new directed graph that is a copy of g.
@@ -58,7 +59,7 @@ public class Algorithm {
 	 */
 	public static <V, E extends Copyable<E>> Graph<V,E> makeDirectedGraph(Graph<V,E> g){
 		if(g.isDirected()) return g.clone();
-		
+
 		Graph<V,E> g2 = new Graph<V,E>(true);
 		for(V v : g.vertexSet()){
 			g2.addVertex(v);
@@ -174,7 +175,7 @@ public class Algorithm {
 
 			HashSet<V> visited = new HashSet<V>();
 			HashMap<V, E> prev = new HashMap<V,E>();
-			
+
 			ArrayList<V> toTry = new ArrayList<V>(g.vertexSet());
 			while(! toTry.isEmpty()){				
 				LinkedList<V> queue = new LinkedList<V>();
@@ -188,7 +189,7 @@ public class Algorithm {
 
 						//Start one earlier to prevent off by one edge err
 						current = g.getOther(prev.get(current), current);
-						
+
 						E edge = prev.get(current);
 						V next = g.sourceOf(edge);
 						while(! cycle.contains(edge)){
@@ -207,7 +208,7 @@ public class Algorithm {
 						prev.put(next, travel);
 					}
 				}
-				
+
 				//This DFS didn't work. Remove all the things we looked at.
 				toTry.removeAll(visited);
 				visited.clear();
@@ -461,7 +462,7 @@ public class Algorithm {
 		if(! g.isDirected()){
 			throw new IllegalArgumentException("Can only compute maxflow on directed graphs");
 		}
-		
+
 		return new MaxFlow<V,E>(g, source, sink).computeMaxFlow();
 	}
 
@@ -504,5 +505,69 @@ public class Algorithm {
 		}
 		return matching;
 	}	
+
+	public static <A extends EndowedAgent<I>, I> Matching<A,I> ttc(Set<A> agents){
+		Matching<A,I> matching = new Matching<A,I>();
+		HashMap<I, A> reverseInitialEndowment = new HashMap<>();
+		
+		matching.addAllA(agents);
+		Graph<A, Object> g = new Graph<A,Object>();
+		for(A agent : agents){
+			g.addVertex(agent);
+			matching.addB(agent.getInitialEndowment());
+			reverseInitialEndowment.put(agent.getInitialEndowment(), agent);
+		}
+
+		HashMap<A, Integer> currentPreference = new HashMap<>();
+
+		//Add initial edges - top choice among present items for each agent
+		for(A agent : agents){
+
+			for(int i = 0; i < agent.getPreferences().length; i++){
+				if(matching.contains(agent.getPreferences()[i])){
+					currentPreference.put(agent, i);
+					g.addEdge(agent, reverseInitialEndowment.get(agent.getPreferences()[i]), new Object());
+					break;
+				}
+			}
+
+			if(! currentPreference.containsKey(agent))
+				throw new RuntimeException("Can't run ttc on " + agents + "," + agent + " doesn't like any item" );
+		}
+
+		while(g.vertexSize() > 0){
+			while(true){
+				List<Object> cycle = Algorithm.getCycle(g);
+				if(cycle == null) break;
+				
+				//For each edge, match along the edge
+				for(Object edge : cycle){
+					A taker = g.sourceOf(edge);
+					A giver = g.sinkOf(edge);
+					matching.match(taker, giver.getInitialEndowment());
+				}
+				//Remove cycle from graph
+				for(Object edge : cycle){
+					g.removeVertex(g.sourceOf(edge));
+					g.removeVertex(g.sinkOf(edge));
+				}
+			}
+			
+			//No cycles currently. Move everyone to their next choice in the graph
+			for(A agent : agents){
+				if(matching.isMatched(agent)) continue;
+				
+				for(int i = currentPreference.get(agent); i < agent.getPreferences().length; i++){
+					I pref = agent.getPreferences()[i];
+					if(! matching.isMatched(pref)){
+						currentPreference.put(agent, i);
+						g.addEdge(agent, reverseInitialEndowment.get(pref), new Object());
+						break;
+					}
+				}
+			}
+		}
+		return matching;
+	}
 
 }

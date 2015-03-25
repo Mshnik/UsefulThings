@@ -45,6 +45,11 @@ public class Matching<A,B> {
 		return changed;
 	}
 	
+	/** Returns true if the object exists in this matching (matched or not) */
+	public boolean contains(Object o){
+		return aObjects.contains(o) || bObjects.contains(o);
+	}
+	
 	/** Returns true iff o is currently matched in this matching */
 	public boolean isMatched(Object o){
 		return matching.containsKey(o) || matching.containsValue(o);

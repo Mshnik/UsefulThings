@@ -22,7 +22,7 @@ import common.dataStructures.UnionFind;
 /** Holder class for various algorithms for graphs and matching **/
 public class Algorithm {
 
-	/** Prevent construction on class MAlgorithm */
+	/** Prevent construction on class Algorithm */
 	private Algorithm(){}
 
 	/** Returns the sum of the weights for the given path in the given graph.
@@ -48,6 +48,32 @@ public class Algorithm {
 		}
 
 		return s;
+	}
+	
+	/** Returns a new directed graph that is a copy of g
+	 * If g is directed, merely clones g and returns that clone.
+	 * If g is undirected, creates a new directed graph that is a copy of g.
+	 * Each undirected edge in g is copied to two directed edges. Self edges
+	 * are only copied once to avoid redundancy.
+	 */
+	public static <V, E extends Copyable<E>> Graph<V,E> makeDirectedGraph(Graph<V,E> g){
+		if(g.isDirected()) return g.clone();
+		
+		Graph<V,E> g2 = new Graph<V,E>(true);
+		for(V v : g.vertexSet()){
+			g2.addVertex(v);
+		}
+		for(E e : g.edgeSet()){
+			if(g.isSelfEdge(e)){
+				g2.addEdge(g.sourceOf(e), g.sinkOf(e), e);
+			}
+			else{
+				g2.addEdge(g.sourceOf(e), g.sinkOf(e), e);
+				E e2 = e.copy();
+				g2.addEdge(g.sinkOf(e), g.sourceOf(e), e2);
+			}	
+		}
+		return g2;
 	}
 
 	/** Attempts to find the shortest path in g from start to goal

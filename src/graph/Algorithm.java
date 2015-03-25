@@ -420,17 +420,22 @@ public class Algorithm {
 	}
 
 	/** Returns the maximum flow possible on graph g.
-	 * Uses the preflow push algorithm to compute the max flow
+	 * Uses the preflow push algorithm to compute the max flow.
+	 * Only valid on directed graphs
 	 * @param g - the graph to find the flow on
 	 * @param source - the vertex to treat as the source of all flow
 	 * @param sink - the vertex to treat as the sink of all flow
 	 * @return - a flow object, contianing the value of the max flow and the placement of all flow
-	 * @throws IllegalArgumentException if source or sink is null, or if they are the same node
+	 * @throws IllegalArgumentException if source or sink is null, or if they are the same node, or if undirected
 	 */
 	public static <V, E extends Flowable> Flow<E> maxFlow(Graph<V,E> g, V source, V sink)
 			throws IllegalArgumentException{
 		if(source == null || sink == null || source.equals(sink))
 			throw new IllegalArgumentException("Source and Sink must be non-null and distinct");
+		if(! g.isDirected()){
+			throw new IllegalArgumentException("Can only compute maxflow on directed graphs");
+		}
+		
 		return new MaxFlow<V,E>(g, source, sink).computeMaxFlow();
 	}
 

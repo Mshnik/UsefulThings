@@ -761,32 +761,6 @@ public class GraphTest {
 
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-		//Test on undirected graph - should allow backwards edges to be used correcly
-		Graph<String, FlowEdge> g2 = new Graph<>(false);
-		g2.addVertex("SOURCE");
-		g2.addVertex("SINK");
-		g2.addVertex("A");
-		g2.addVertex("B");
-		g2.addVertex("C");
-
-		g2.addEdge("SOURCE", "A", new FlowEdge("a",10));
-		g2.addEdge("SOURCE", "B", new FlowEdge("b",5));
-		g2.addEdge("SOURCE", "C", new FlowEdge("c",10));
-
-		g2.addEdge("A", "SINK", new FlowEdge("a2",10));
-		g2.addEdge("B", "SINK", new FlowEdge("b2",10));
-		g2.addEdge("C", "SINK", new FlowEdge("c2",5));
-
-		assertEquals(new Integer(20), Algorithm.maxFlow(g2, "SOURCE", "SINK")._1);
-
-		//Use an edge backwards
-		g2.addEdge("B", "C", new FlowEdge("bc", 5));
-		assertEquals(new Integer(25), Algorithm.maxFlow(g2, "SOURCE", "SINK")._1);
-
-		//Use an edge backwards
-		g2.addEdge("SINK", "SOURCE", new FlowEdge("directReverse", 75));
-		assertEquals(new Integer(100), Algorithm.maxFlow(g2, "SOURCE", "SINK")._1);
-
 		//Test on unconnected graph
 		Graph<String, FlowEdge> g3 = new Graph<>();
 		g3.addVertex("SOURCE");

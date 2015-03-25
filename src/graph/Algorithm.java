@@ -506,10 +506,22 @@ public class Algorithm {
 		return matching;
 	}	
 
-	public static <A extends EndowedAgent<I>, I> Matching<A,I> ttc(Set<A> agents){
+	/** Runs the ttc algorithm on the set of endowedAgents
+	 * @param agents - the set of agents. The set of items to allocate is derived
+	 * 								from the initialEndowment of each agent in agents.
+	 * 								Each agent is expected to have preferences over the avaliable
+	 * 								items as their getPreferences() return. Preferences on items
+	 * 								that are unavailable are skipped.  
+	 * @return a Matching of agents and items.
+	 * @throws RuntimeException if an agent exists who finds none of the avaliable items
+	 * 				  acceptable at any step in the algorithm. If all agents have complete preferences
+	 * 					over the available items, this will never occur.
+	 */
+	public static <A extends EndowedAgent<I>, I> Matching<A,I> ttc(Set<A> agents)
+			throws RuntimeException{
 		Matching<A,I> matching = new Matching<A,I>();
 		HashMap<I, A> reverseInitialEndowment = new HashMap<>();
-		
+
 		matching.addAllA(agents);
 		Graph<A, Object> g = new Graph<A,Object>();
 		for(A agent : agents){
@@ -539,7 +551,7 @@ public class Algorithm {
 			while(true){
 				List<Object> cycle = Algorithm.getCycle(g);
 				if(cycle == null) break;
-				
+
 				//For each edge, match along the edge
 				for(Object edge : cycle){
 					A taker = g.sourceOf(edge);
@@ -552,19 +564,24 @@ public class Algorithm {
 					g.removeVertex(g.sinkOf(edge));
 				}
 			}
-			
+
 			//No cycles currently. Move everyone to their next choice in the graph
 			for(A agent : agents){
 				if(matching.isMatched(agent)) continue;
-				
+
+				boolean foundItem = false;
 				for(int i = currentPreference.get(agent); i < agent.getPreferences().length; i++){
 					I pref = agent.getPreferences()[i];
 					if(! matching.isMatched(pref)){
 						currentPreference.put(agent, i);
 						g.addEdge(agent, reverseInitialEndowment.get(pref), new Object());
+						foundItem = true;
 						break;
 					}
 				}
+
+				if(! foundItem)
+					throw new RuntimeException("Can't run ttc on " + agents + "," + agent + " doesn't like any item" );
 			}
 		}
 		return matching;

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import common.dataStructures.NotInCollectionException;
 
@@ -561,6 +562,40 @@ public class GraphTest {
 		assertEquals(g.vertexSet(), unmodifiableG.vertexSet());
 
 	}
+	
+	@Test
+	public void testMakeDirectedGraph(){
+		Graph<String, SuperEdge> g = new Graph<>();
+		g.addVertex("A");
+		g.addVertex("B");
+		g.addVertex("C");
+		g.addVertex("D");
+		g.addEdge("A", "B", new SuperEdge("ab", 1));
+		g.addEdge("A", "C", new SuperEdge("ac", 2));
+		g.addEdge("C", "D", new SuperEdge("cd", 3));
+		
+		//Make sure self edges are handled correctly
+		g.addEdge("D","D", new SuperEdge("dd", 4));
+		
+		assertEquals(g, Algorithm.makeDirectedGraph(g));
+		
+		g.addEdge("B", "A", new SuperEdge("ab-copy", 1));
+		g.addEdge("C", "A", new SuperEdge("ac-copy", 2));
+		g.addEdge("D", "C", new SuperEdge("cd-copy", 3));
+		
+		Graph<String, SuperEdge> gU = new Graph<String, SuperEdge>(false);
+		gU.addVertex("A");
+		gU.addVertex("B");
+		gU.addVertex("C");
+		gU.addVertex("D");
+		gU.addEdge("A", "B", new SuperEdge("ab", 1));
+		gU.addEdge("A", "C", new SuperEdge("ac", 2));
+		gU.addEdge("C", "D", new SuperEdge("cd", 3));
+		gU.addEdge("D","D", new SuperEdge("dd", 4));
+		
+		Graph<String, SuperEdge> directedG = Algorithm.makeDirectedGraph(gU);
+		assertEquals(g, directedG);
+	}
 
 	@Test
 	public void testIsDAG(){
@@ -630,21 +665,52 @@ public class GraphTest {
 		assertFalse(Algorithm.isBipartite(g));
 	}
 
-	private static class WeightedEdge implements Weighted{
+	private static class SuperEdge implements Weighted, Flowable, Copyable<SuperEdge>{
+		public final String name;
 		private final int w;
 
-		private WeightedEdge(int w){
+		private SuperEdge(String n, int w){
+			this.name = n;
 			this.w = w;
 		}
 
 		public int getWeight(){
 			return w;
 		}
+		
+		public int getCapacity(){
+			return w;
+		}
+		
+		public SuperEdge copy(){
+			return new SuperEdge(name + "-copy", w);
+		}
+		
+		public String getID(){
+			return name;
+		}
+		
+		public String toString(){
+			return name;
+		}
+		
+		public boolean equals(Object o){
+			try{
+				SuperEdge s = (SuperEdge)o;
+				return name.equals(s.name) && w == s.w;
+			}catch(ClassCastException e){
+				return false;
+			}
+		}
+		
+		public int hashCode(){
+			return Objects.hash(name, w);
+		}
 	}
 
 	@Test
 	public void testDijkstra(){
-		Graph<String, WeightedEdge> g = new Graph<>();
+		Graph<String, SuperEdge> g = new Graph<>();
 		LinkedList<String> path = new LinkedList<String>();
 		g.addVertex("A");
 		g.addVertex("B");
@@ -660,7 +726,7 @@ public class GraphTest {
 			fail("Ran dijkstra's on non-existent goal node");
 		}catch(NotInCollectionException e){}
 
-		g.addEdge("A", "B", new WeightedEdge(-1));
+		g.addEdge("A", "B", new SuperEdge("ab",-1));
 
 		try{
 			Algorithm.dijkstra(g, "A", "B");
@@ -669,7 +735,7 @@ public class GraphTest {
 
 		g.removeEdge(g.getConnection("A", "B"));
 
-		g.addEdge("A", "B", new WeightedEdge(3));
+		g.addEdge("A", "B", new SuperEdge("ab",3));
 		path.clear();
 
 		path.add("A");
@@ -682,7 +748,7 @@ public class GraphTest {
 		assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
 		assertEquals(null, Algorithm.dijkstra(g, "A", "C"));
 
-		g.addEdge("A", "C", new WeightedEdge(1));
+		g.addEdge("A", "C", new SuperEdge("ac",1));
 		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
 		assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
 
@@ -691,84 +757,67 @@ public class GraphTest {
 		path.add("C");
 		assertEquals(path, Algorithm.dijkstra(g, "A", "C"));
 
-		g.addEdge("C", "B", new WeightedEdge(1));
+		g.addEdge("C", "B", new SuperEdge("cb",1));
 		path.add("B");
 		assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
 
-		g.addEdge("B","A", new WeightedEdge(5));
+		g.addEdge("B","A", new SuperEdge("ba",5));
 		path.removeFirst();
 		path.add("A");
 		assertEquals(path, Algorithm.dijkstra(g, "C", "A"));
 	}
 
-	private static class FlowEdge implements Flowable{
-		private final int capacity;
-		private final String name;
-		private FlowEdge(String n, int c){
-			name = n;
-			capacity = c;
-		}
-		@Override
-		public int getCapacity() {
-			return capacity;
-		}
-		@Override
-		public String toString(){
-			return name;
-		}
-	}
-
 	@Test
 	public void testMaxflow(){
-		Graph<String, FlowEdge> g = new Graph<>();
+		Graph<String, SuperEdge> g = new Graph<>();
 		g.addVertex("SOURCE");
 		g.addVertex("SINK");
 		g.addVertex("A");
 		g.addVertex("B");
 		g.addVertex("C");
 
-		g.addEdge("SOURCE", "A", new FlowEdge("a",10));
-		g.addEdge("SOURCE", "B", new FlowEdge("b",5));
-		g.addEdge("SOURCE", "C", new FlowEdge("c",10));
+		g.addEdge("SOURCE", "A", new SuperEdge("a",10));
+		g.addEdge("SOURCE", "B", new SuperEdge("b",5));
+		g.addEdge("SOURCE", "C", new SuperEdge("c",10));
 
-		g.addEdge("A", "SINK", new FlowEdge("a2",10));
-		g.addEdge("B", "SINK", new FlowEdge("b2",10));
-		g.addEdge("C", "SINK", new FlowEdge("c2",5));
+		g.addEdge("A", "SINK", new SuperEdge("a2",10));
+		g.addEdge("B", "SINK", new SuperEdge("b2",10));
+		g.addEdge("C", "SINK", new SuperEdge("c2",5));
 
 		assertEquals(new Integer(20), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-		g.addEdge("SOURCE", "SINK", new FlowEdge("direct", 30));
+		g.addEdge("SOURCE", "SINK", new SuperEdge("direct", 30));
 		assertEquals(new Integer(50), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-		g.addEdge("C","B", new FlowEdge("cb", 5));
+		g.addEdge("C","B", new SuperEdge("cb", 5));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-		g.addEdge("B", "C", new FlowEdge("bc", 200));
+		g.addEdge("B", "C", new SuperEdge("bc", 200));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
 		g.addVertex("D");
-		g.addEdge("SOURCE", "D", new FlowEdge("d", 200));
+		g.addEdge("SOURCE", "D", new SuperEdge("d", 200));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-		g.addEdge("SINK", "A", new FlowEdge("rA", 100));
+		g.addEdge("SINK", "A", new SuperEdge("rA", 100));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-		g.addEdge("B","B", new FlowEdge("bb", 200));
+		g.addEdge("B","B", new SuperEdge("bb", 200));
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-		g.addEdge("SINK", "SINK", new FlowEdge("sink2", 200));
-		g.addEdge("SOURCE", "SOURCE", new FlowEdge("source2", 200));
+		g.addEdge("SINK", "SINK", new SuperEdge("sink2", 200));
+		g.addEdge("SOURCE", "SOURCE", new SuperEdge("source2", 200));
 
 		assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
 		//Test on unconnected graph
-		Graph<String, FlowEdge> g3 = new Graph<>();
+		Graph<String, SuperEdge> g3 = new Graph<>();
 		g3.addVertex("SOURCE");
 		g3.addVertex("SINK");
 
 		assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
 
-		g3.addEdge("SINK", "SOURCE", new FlowEdge("directReverse", 100));
+		g3.addEdge("SINK", "SOURCE", new SuperEdge("directReverse", 100));
 		assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
 	}
 

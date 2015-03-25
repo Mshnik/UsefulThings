@@ -383,7 +383,7 @@ public class Algorithm {
 			for(E e : g.edgeSetOfSource(source)){
 				if(! g.isSelfEdge(e)){
 					V edgeEnd = g.getOther(e, source);
-					excess.put(source, excess.get(source) + e.getCapacity());
+					excess.put(source, excess.get(source) - e.getCapacity());
 					excess.put(edgeEnd, excess.get(edgeEnd) + e.getCapacity());
 					flow.put(e, e.getCapacity());
 				}

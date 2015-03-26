@@ -138,6 +138,50 @@ public class Matching<A,B> {
 	public Map<B,A> getFlippedMatching(){
 		return matching.toFlippedMap();
 	}
+	
+	/** Returns a set of the A that are currently matched */
+	public Set<A> getMatchedA(){
+		HashSet<A> obj = new HashSet<>();
+		for(A a : aObjects){
+			if(matching.containsKey(a)){
+				obj.add(a);
+			}
+		}
+		return obj;
+	}
+	
+	/** Returns a set of the A that are currently matched */
+	public Set<B> getMatchedB(){
+		HashSet<B> obj = new HashSet<>();
+		for(B b : bObjects){
+			if(matching.containsValue(b)){
+				obj.add(b);
+			}
+		}
+		return obj;
+	}
+	
+	/** Returns a set of the A that are currently matched */
+	public Set<A> getUnmatchedA(){
+		HashSet<A> obj = new HashSet<>();
+		for(A a : aObjects){
+			if(! matching.containsKey(a)){
+				obj.add(a);
+			}
+		}
+		return obj;
+	}
+	
+	/** Returns a set of the A that are currently matched */
+	public Set<B> getUnmatchedB(){
+		HashSet<B> obj = new HashSet<>();
+		for(B b : bObjects){
+			if(! matching.containsValue(b)){
+				obj.add(b);
+			}
+		}
+		return obj;
+	}
 
 	/** Returns a set of the elements that are currently matched.
 	 * @return a set of Either{@literal <A,B>}, where each element
@@ -145,15 +189,11 @@ public class Matching<A,B> {
 	 */
 	public HashSet<Either<A,B>> getMatched(){
 		HashSet<Either<A,B>> obj = new HashSet<>();
-		for(A a : aObjects){
-			if(matching.containsKey(a)){
-				obj.add(new Left<A,B>(a));
-			}
+		for(A a : getMatchedA()){
+			obj.add(new Left<A,B>(a));
 		}
-		for(B b : bObjects){
-			if(matching.containsKey(b)){
-				obj.add(new Right<A,B>(b));
-			}
+		for(B b : getMatchedB()){
+			obj.add(new Right<A,B>(b));
 		}
 		return obj;
 	}
@@ -164,15 +204,11 @@ public class Matching<A,B> {
 	 */
 	public HashSet<Either<A,B>> getUnmatched(){
 		HashSet<Either<A,B>> obj = new HashSet<>();
-		for(A a : aObjects){
-			if(! matching.containsKey(a)){
-				obj.add(new Left<A,B>(a));
-			}
+		for(A a : getUnmatchedA()){
+			obj.add(new Left<A,B>(a));
 		}
-		for(B b : bObjects){
-			if(! matching.containsKey(b)){
-				obj.add(new Right<A,B>(b));
-			}
+		for(B b : getUnmatchedB()){
+			obj.add(new Right<A,B>(b));
 		}
 		return obj;
 	}

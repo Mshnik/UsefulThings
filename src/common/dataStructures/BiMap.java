@@ -14,7 +14,7 @@ import java.util.Set;
  * @param <K> - the Key type
  * @param <V> - the Value type
  */
-public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable{
+public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V>{
 
 	private HashMap<K,V> forwardMap = new HashMap<K,V>();
 	private HashMap<V,K> backMap = new HashMap<V,K>();

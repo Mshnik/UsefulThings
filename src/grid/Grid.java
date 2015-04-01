@@ -15,8 +15,8 @@ import common.dataStructures.ConsList;
 
 public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	
-	private final Object[] vals;
-	private final int[] bounds;
+	protected final Object[] vals;
+	protected final int[] bounds;
 	
 	/** The dimensionality of this Grid - how many coordinates a location has */
 	public final int dimension;

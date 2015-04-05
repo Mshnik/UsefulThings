@@ -56,5 +56,12 @@ public abstract class Tuple{
 	public int size(){
 		return vals.length;
 	}
+	
+	/** Returns an array that represents this tuple. The returned array
+	 * is a copy of the underlying array, so changes will not affect the tuple 
+	 */
+	public Object[] toArray(){
+		return Arrays.copyOf(vals, vals.length);
+	}
 
 }

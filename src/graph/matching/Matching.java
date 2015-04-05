@@ -128,15 +128,15 @@ public class Matching<A,B> {
 	/** Returns a Map of As to their current matchings B. Unmatched elements
 	 * will not be included
 	 */
-	public Map<A,B> getMatching(){
-		return matching.toMap();
+	public BiMap<A,B> getMatching(){
+		return matching.clone();
 	}
 
 	/** Returns a Map of Bs to their current matchings A. Unmatched elements
 	 * will not be included
 	 */
-	public Map<B,A> getFlippedMatching(){
-		return matching.toFlippedMap();
+	public BiMap<B,A> getFlippedMatching(){
+		return matching.flip();
 	}
 	
 	/** Returns a set of the A that are currently matched */

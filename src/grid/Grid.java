@@ -11,16 +11,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import common.Util;
 import common.dataStructures.ConsList;
 
+/** A collection for arbitrarily deep nested arrays
+ * Allows for the creation of variable-depth (determined at runtime) matrices.
+ * Elements in a grid must extend tile, which allows an element to know its
+ * location (treated like a hashcode). A grid is treated as an array,
+ * meaning that get and set (and similar) operations may throw an
+ * ArrayIndexOutOfBoundsException if the listed location is outside the 
+ * bounds of the grid
+ * @author Mshnik
+ * @param <T> - The type of elements to store.
+ */
 public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	
 	protected final Object[] vals;
 	protected final int[] bounds;
 	
-	/** The dimensionality of this Grid - how many coordinates a location has */
+	/** The dimensionality of this Grid - how many coordinates a location has.
+	 * All get and set operations must be Integer arrays of this length */
 	public final int dimension;
 	
+	/** The number of elements currently stored in this Grid */
 	private int size;
 	
 	/** Initializes an empty grid
@@ -56,7 +69,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 		return Arrays.copyOf(bounds, bounds.length);
 	}
 	
-	/** Returns the size (number of tiles) in the grid */
+	/** Returns the size (number of tiles) of the grid */
 	public int size(){
 		return size;
 	}
@@ -79,7 +92,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	}
 	
 	/** Returns all tiles in this grid, in order of iteration */
-	public Collection<T> getAll(){
+	public List<T> getAll(){
 		LinkedList<T> l = new LinkedList<T>();
 		for(T t : this){
 			l.add(t);
@@ -144,9 +157,9 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	 * @param loc - the location as a set of coordinates to find a tile
 	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB
 	 * @throws IllegalDimensionException if number of coordinates provided is incorrect
-	 * @return the tile at the given location, or null if none.
+	 * @return true iff there is a tile at the given location.
 	 */
-	public boolean containsAt(Integer... loc){
+	public boolean containsAt(Integer... loc) throws IllegalDimensionException{
 		if(loc.length != dimension)
 			throw new IllegalDimensionException(loc.length, this);
 		return get(loc) != null;
@@ -239,6 +252,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	/** Clears a tile from the given position 
 	 * @throws ArrayIndexOutOfBoundsException if any of the coordinates are OOB
 	 * @throws IllegalDimensionException if number of coordinates provided is incorrect
+	 * @return the tile that was removed, or null if no tile was at the listed coordinates.
 	 **/
 	public T remove(Integer... pos){
 		if(pos.length != dimension)
@@ -305,7 +319,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	}
 
 	/** Returns a deep string of the array represented by this grid as
-	 * its toString
+	 * its toString. Uses Arrays.deepToString to fully express the grid
 	 */
 	public String toString(){
 		return Arrays.deepToString(vals);
@@ -336,23 +350,20 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	
 	/** Returns a copy of this Grid - contains the same elements. */
 	public Grid<T> clone(){
-		Integer[] i = new Integer[dimension];
-		for(int z  = 0; z < dimension; z++){
-			i[z] = bounds[z];
-		}
-		Grid<T> g = new Grid<T>(i);
-		g.addAll(this);
-		
-		return g;
+		return clone(Util.boxArr(bounds));
 	}
 	
 	/** Returns a copy of this Grid with the given bounds.
-	 * Must be the same number of bounds as this, but can be resized.
+	 * Must be the same dimension of bounds as this, but can be resized.
 	 * Elements that are now out of bounds will not be added.
+	 * Elements are shallowly copied - no copies of the elements are made.
 	 * @param bounds - the bounds of the new grid
-	 * @return
+	 * @return a copy of this grid according to the above rules.
 	 */
 	public Grid<T> clone(Integer... bounds){
+		if(bounds.length != this.bounds.length)
+			throw new IllegalDimensionException(bounds.length, this);
+		
 		Grid<T> g = new Grid<T>(bounds);
 		for(T t : this){
 			try{
@@ -433,7 +444,6 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 			T t = next();
 			Grid.this.remove(t);
 		}
-		
-		
+			
 	}
 }

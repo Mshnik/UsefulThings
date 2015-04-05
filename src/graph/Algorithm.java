@@ -584,21 +584,22 @@ public class Algorithm {
 		}
 		return matching;
 	}
-	
+
 	/** */
 	public static <A extends StrictAgent<B>, B extends StrictAgent<A>> Matching<A,B> stableMarriage(Set<A> proposers, Set<B> proposees){
+
 		Matching<A,B> matching = new Matching<A,B>(proposers, proposees);
-		
+
 		HashMap<A, Integer> lowestProposal = new HashMap<A, Integer>();
 		HashMap<A, Boolean> doneProposing = new HashMap<A, Boolean>();
 		for(A a : proposers){
 			lowestProposal.put(a, -1); //Hasn't proposed to anyone yet
 			doneProposing.put(a, false); //Not done yet
 		}
-		
+
 		while(true){
 			Set<A> unmatchedProposers = matching.getUnmatchedA();
-			
+
 			//Base case - everyone left unmatched doesn't find anyone acceptable
 			//Also true if there are no unmatched people
 			boolean unmatchedAreHappier = true;
@@ -608,13 +609,13 @@ public class Algorithm {
 			if(unmatchedAreHappier){
 				return matching;
 			}
-			
+
 			//Otherwise, for each proposer, go through and propose to his lowest proposal + 1
 			for(A a : unmatchedProposers){
 				int nextProposal = lowestProposal.get(a);
-				
+
 				boolean proposing = true;
-				
+
 				//Find next actual existing woman
 				do{
 					nextProposal++;
@@ -623,11 +624,11 @@ public class Algorithm {
 						doneProposing.put(a, true);
 					}
 				}while(proposing && ! proposees.contains(a.getRankPreferences()[nextProposal]));
-				
+
 				//If not proposing, just do nothing - no good proposees left to propose to
 				if(proposing){
 					B b = a.getRankPreferences()[nextProposal];
-					
+
 					if(matching.isUnmatched(b) && Agent.isAcceptable(b, a) 
 							|| Agent.prefers(b, a, matching.getMatchedA(b))){
 						matching.match(a, b);

@@ -1,5 +1,7 @@
 package common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -34,10 +36,28 @@ public class Util {
 	public static int mod(int a, int b){
 		return ((a % b) + b) % b;
 	}
+
+	/** Returns an Short array that is equivalent to the given short array */
+	public static Short[] boxArr(short[] arr){
+		Short[] arr2 = new Short[arr.length];
+		for(int i = 0; i < arr.length; i++){
+			arr2[i] = arr[i];
+		}
+		return arr2;
+	}
 	
 	/** Returns an Integer array that is equivalent to the given int array */
 	public static Integer[] boxArr(int[] arr){
 		Integer[] arr2 = new Integer[arr.length];
+		for(int i = 0; i < arr.length; i++){
+			arr2[i] = arr[i];
+		}
+		return arr2;
+	}
+	
+	/** Returns an Long array that is equivalent to the given long array */
+	public static Long[] boxArr(long[] arr){
+		Long[] arr2 = new Long[arr.length];
 		for(int i = 0; i < arr.length; i++){
 			arr2[i] = arr[i];
 		}
@@ -71,9 +91,27 @@ public class Util {
 		return arr2;
 	}
 	
+	/** Returns an short array that is equivalent to the given Short array */
+	public static short[] unboxArr(Short[] arr){
+		short[] arr2 = new short[arr.length];
+		for(int i = 0; i < arr.length; i++){
+			arr2[i] = arr[i];
+		}
+		return arr2;
+	}
+	
 	/** Returns an int array that is equivalent to the given Integer array */
 	public static int[] unboxArr(Integer[] arr){
 		int[] arr2 = new int[arr.length];
+		for(int i = 0; i < arr.length; i++){
+			arr2[i] = arr[i];
+		}
+		return arr2;
+	}
+	
+	/** Returns an long array that is equivalent to the given Long array */
+	public static long[] unboxArr(Long[] arr){
+		long[] arr2 = new long[arr.length];
 		for(int i = 0; i < arr.length; i++){
 			arr2[i] = arr[i];
 		}
@@ -105,6 +143,39 @@ public class Util {
 			arr2[i] = arr[i];
 		}
 		return arr2;
+	}
+	
+	/** Returns all permutations of the given array */
+	public static <T> ArrayList<T[]> permute(T[] arr){
+		return permute(Arrays.copyOf(arr, arr.length), new ArrayList<T[]>(), 0);
+	}
+	
+	/** Helper function for permute. Recursively builds permutations of the given array
+	 * @param arr - the array to permute. Already permuted [0... index-1]
+	 * @param built - the permutations of the array that have already been built
+	 * @param index - the next index to permute over. When this is arr.length, recursion stops
+	 */
+	private static <T> ArrayList<T[]> permute(T[] arr, ArrayList<T[]> built, int index){
+		if(index == arr.length){
+			built.add(Arrays.copyOf(arr, arr.length));
+			return built;
+		}
+		
+		for(int i = index; i < arr.length; i++){
+			//Swap i and index
+			T temp = arr[i];
+			arr[i] = arr[index];
+			arr[index] = temp;
+			
+			permute(arr, built, index+1);
+			
+			//Swap back
+			temp = arr[i];
+			arr[i] = arr[index];
+			arr[index] = temp;
+		}
+		
+		return built;
 	}
 	
 }

@@ -91,56 +91,62 @@ public class Util {
 		return arr2;
 	}
 	
-	/** Returns an short array that is equivalent to the given Short array */
+	/** Returns an short array that is equivalent to the given Short array.
+	 * Any null values encountered are given the value 0 */
 	public static short[] unboxArr(Short[] arr){
 		short[] arr2 = new short[arr.length];
 		for(int i = 0; i < arr.length; i++){
-			arr2[i] = arr[i];
+			arr2[i] = arr[i] == null ? 0 : arr[i];
 		}
 		return arr2;
 	}
 	
-	/** Returns an int array that is equivalent to the given Integer array */
+	/** Returns an int array that is equivalent to the given Integer array.
+	 * Any null values encountered are given the value 0 */
 	public static int[] unboxArr(Integer[] arr){
 		int[] arr2 = new int[arr.length];
 		for(int i = 0; i < arr.length; i++){
-			arr2[i] = arr[i];
+			arr2[i] = arr[i] == null ? 0 : arr[i];
 		}
 		return arr2;
 	}
 	
-	/** Returns an long array that is equivalent to the given Long array */
+	/** Returns an long array that is equivalent to the given Long array.
+	 * Any null values encountered are given the value 0 */
 	public static long[] unboxArr(Long[] arr){
 		long[] arr2 = new long[arr.length];
 		for(int i = 0; i < arr.length; i++){
-			arr2[i] = arr[i];
+			arr2[i] = arr[i] == null ? 0L : arr[i];
 		}
 		return arr2;
 	}
 	
-	/** Returns an float array that is equivalent to the given Float array */
+	/** Returns an float array that is equivalent to the given Float array.
+	 * Any null values encountered are given the value 0.0 */
 	public static float[] unboxArr(Float[] arr){
 		float[] arr2 = new float[arr.length];
 		for(int i = 0; i < arr.length; i++){
-			arr2[i] = arr[i];
+			arr2[i] = arr[i] == null ? 0.0f : arr[i];
 		}
 		return arr2;
 	}
 	
-	/** Returns an double array that is equivalent to the given Double array */
+	/** Returns an double array that is equivalent to the given Double array.
+	 * Any null values encountered are given the value 0.0 */
 	public static double[] unboxArr(Double[] arr){
 		double[] arr2 = new double[arr.length];
 		for(int i = 0; i < arr.length; i++){
-			arr2[i] = arr[i];
+			arr2[i] = arr[i] == null ? 0.0 : arr[i];
 		}
 		return arr2;
 	}
 	
-	/** Returns an char array that is equivalent to the given Character array */
+	/** Returns an char array that is equivalent to the given Character array.
+	 * Any null values encountered are given the value 0 */
 	public static char[] unboxArr(Character[] arr){
 		char[] arr2 = new char[arr.length];
 		for(int i = 0; i < arr.length; i++){
-			arr2[i] = arr[i];
+			arr2[i] = arr[i] == null ? 0 : arr[i];
 		}
 		return arr2;
 	}

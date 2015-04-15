@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import common.dataStructures.util.UnmodifiableEntry;
 import common.dataStructures.util.ViewIterator;
 import common.dataStructures.util.ViewSet;
 
@@ -261,7 +262,9 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 
 	/** An iterator over the entry set of keys and values in this map.
 	 * Behaves as a viewIterator - thus alterations made
-	 * to this iterator will alter the BiMap 
+	 * to this iterator will alter the BiMap.
+	 * Notably, the entries returned by this EntryIterator do not support
+	 * the setValue() method, as that could cause the BiMap invariant to be broken 
 	 * @author Mshnik
 	 */
 	private class EntryIterator<E, O> extends ViewIterator<Entry<E,O>>{
@@ -271,6 +274,12 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 		public EntryIterator(Map<E,O> f, Map<O,E> b) {
 			super(f.entrySet().iterator());
 			backMap = b;
+		}
+		
+		@Override
+		public Entry<E,O> next(){
+			Entry<E,O> e = super.next();
+			return new UnmodifiableEntry<E,O>(e.getKey(), e.getValue());
 		}
 
 		@Override

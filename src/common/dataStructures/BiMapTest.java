@@ -286,6 +286,11 @@ public class BiMapTest {
 				entriesIterator.remove();
 				entriesIterator.remove(); //Make sure double removal doesn't hurt
 			}			
+			
+			try{
+				e.setValue(999);
+				fail("Altered a value in a biMap");
+			}catch(UnsupportedOperationException e1){}
 		}
 		
 		assertEquals(b.size(), b.keySet().size());
@@ -307,7 +312,12 @@ public class BiMapTest {
 			if(e.getKey().equals(5)){
 				rentriesIterator.remove();
 				rentriesIterator.remove(); //Make sure double removal doesn't hurt
-			}			
+			}		
+			
+			try{
+				e.setValue("ASDFADFS");
+				fail("Altered a key in a biMap");
+			}catch(UnsupportedOperationException e1){}
 		}
 		
 		b2.remove("A");

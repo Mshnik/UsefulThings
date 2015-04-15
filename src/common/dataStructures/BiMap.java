@@ -177,27 +177,35 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 		backMap.clear();
 	}
 
-	/** Returns the set of keys in this BiMap */
+	/** Returns the set of keys in this BiMap
+	 * This is a read-only view of the map. Changes in the returned
+	 * set will not be reflected by the BiMap */
 	@Override
 	public Set<K> keySet(){
-		return forwardMap.keySet();
+		return new HashSet<K>(forwardMap.keySet());
 	}
 
-	/** Returns the set of values in this BiMap */
+	/** Returns the set of values in this BiMap 
+	 * This is a read-only view of the map. Changes in the returned
+	 * set will not be reflected by the BiMap */
 	@Override
 	public Set<V> values(){
-		return backMap.keySet();
+		return new HashSet<V>(backMap.keySet());
 	}
 
-	/** Returns the set of entries<Key, Value> in this BiMap */
+	/** Returns the set of entries<Key, Value> in this BiMap.
+	 * This is a read-only view of the map. Changes in the returned
+	 * set will not be reflected by the BiMap */
 	@Override
 	public Set<Entry<K, V>> entrySet() {
-		return forwardMap.entrySet();
+		return new HashSet<Entry<K,V>>(forwardMap.entrySet());
 	}
 	
-	/** Returns the set of entries<Value, Key> in this BiMap */
+	/** Returns the set of entries<Value, Key> in this BiMap
+	 * This is a read-only view of the map. Changes in the returned
+	 * set will not be reflected by the BiMap */
 	public Set<Entry<V,K>> entrySetFlipped(){
-		return backMap.entrySet();
+		return new HashSet<Entry<V,K>>(backMap.entrySet());
 	}
 
 	/** Returns true if O is a BiMap and they have the same entryset */

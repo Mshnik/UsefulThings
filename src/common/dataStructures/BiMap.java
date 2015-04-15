@@ -3,8 +3,12 @@ package common.dataStructures;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import common.dataStructures.util.ViewIterator;
+import common.dataStructures.util.ViewSet;
 
 /** A BiMap is a Bidirectional Map between the two given generic types.
  * Thus both keys and values exist in a set, so there cannot be duplicate values.
@@ -19,16 +23,33 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	private HashMap<K,V> forwardMap = new HashMap<K,V>();
 	private HashMap<V,K> backMap = new HashMap<V,K>();
 
+	private Set<K> keySet = new KeySet();
+	private Set<V> valueSet = new ValueSet();
+	private Set<Entry<K,V>> entrySet = new EntrySet();
+	private Set<Entry<V,K>> rEntrySet = new REntrySet();
+
 	/** Constructs a new empty BiMap */
 	public BiMap(){
 
 	}
-	
+
 	/** Constructs a new BiMap that is a copy of this BiMap */
 	public BiMap<K,V> clone(){
 		BiMap<K,V> b = new BiMap<K,V>();
 		b.putAll(this);
 		return b;
+	}
+
+	/** Returns true if O is a BiMap and they have the same entryset */
+	@Override
+	public boolean equals(Object o){
+		try{
+			@SuppressWarnings("unchecked")
+			BiMap<K,V> b = (BiMap<K,V>) o;
+			return entrySet().equals(b.entrySet());
+		}catch(ClassCastException e){
+			return false;
+		}
 	}
 
 	/** Returns a new BiMap with the keys and values flipped. */
@@ -64,10 +85,14 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 
 	/** Puts the key, value pair in this BiMap. Because this is a bymap,
 	 * also updates the value to point to the given key.
+	 * Doesn't permit null keys or null values.
 	 * @return the old value associated with the given key, or null if none.
 	 */
 	@Override
 	public V put(K k, V v){
+		if(k == null || v == null)
+			throw new IllegalArgumentException("Null keys or values aren't valid in a BiMap");
+
 		V old = forwardMap.put(k, v);
 		K old2 = backMap.put(v, k);
 		if(old2 != null && ! old2.equals(k)){
@@ -118,7 +143,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	public V get(Object key){
 		return forwardMap.get(key);
 	}
-	
+
 	/** Returns the value associated with the given key, or the default if none */
 	@Override
 	public V getOrDefault(Object key, V defaultV){
@@ -130,7 +155,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	public V getValue(K key){
 		return get(key);
 	}
-	
+
 	/** @see getOrDefault(Object key) */
 	public V getValueOrDefault(K key, V defaultV){
 		return getOrDefault(key, defaultV);
@@ -146,7 +171,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 		K k = getKey(value);
 		return k != null ? k : defaultK;
 	}
-	
+
 	/** Removes the given key from this map, if present. Returns the value associated
 	 * with the given key, or null if not present
 	 */
@@ -177,20 +202,20 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 		backMap.clear();
 	}
 
-	/** Returns the set of keys in this BiMap
-	 * This is a read-only view of the map. Changes in the returned
-	 * set will not be reflected by the BiMap */
+	/** Returns the set of keys in this BiMap. This is a view of the map,
+	 * and only one set is ever returned. Alterations in the set will
+	 * cause similar alterations on the map */
 	@Override
 	public Set<K> keySet(){
-		return new HashSet<K>(forwardMap.keySet());
+		return keySet;
 	}
 
-	/** Returns the set of values in this BiMap 
-	 * This is a read-only view of the map. Changes in the returned
-	 * set will not be reflected by the BiMap */
+	/** Returns the set of values in this BiMap. This is a view of the map,
+	 * and only one set is ever returned. Alterations in the set will
+	 * cause similar alterations on the map  */
 	@Override
 	public Set<V> values(){
-		return new HashSet<V>(backMap.keySet());
+		return valueSet;
 	}
 
 	/** Returns the set of entries<Key, Value> in this BiMap.
@@ -198,25 +223,165 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	 * set will not be reflected by the BiMap */
 	@Override
 	public Set<Entry<K, V>> entrySet() {
-		return new HashSet<Entry<K,V>>(forwardMap.entrySet());
+		return entrySet;
 	}
-	
+
 	/** Returns the set of entries<Value, Key> in this BiMap
 	 * This is a read-only view of the map. Changes in the returned
 	 * set will not be reflected by the BiMap */
 	public Set<Entry<V,K>> entrySetFlipped(){
-		return new HashSet<Entry<V,K>>(backMap.entrySet());
+		return rEntrySet;
 	}
 
-	/** Returns true if O is a BiMap and they have the same entryset */
-	@Override
-	public boolean equals(Object o){
-		try{
-			@SuppressWarnings("unchecked")
-			BiMap<K,V> b = (BiMap<K,V>) o;
-			return entrySet().equals(b.entrySet());
-		}catch(ClassCastException e){
-			return false;
+	/** An iterator over the keys or all the values in this map.
+	 * Behaves as a viewIterator - thus alterations made
+	 * to this iterator will alter the BiMap 
+	 * @author Mshnik
+	 */
+	private class SingleIterator<E,O> extends ViewIterator<E>{
+
+		private Map<E,O> forwardMap;
+		private Map<O,E> backMap;
+
+		public SingleIterator(Map<E,O> f, Map<O,E> b) {
+			super(f.keySet().iterator());
+			forwardMap = f;
+			backMap = b;
+		}
+
+		@Override
+		public void remove(){
+			if(removed) return;
+			O o = forwardMap.get(current);
+			iterator.remove();
+			if(o != null) backMap.remove(o);
+			removed = true;
+		}
+	}
+
+	/** An iterator over the entry set of keys and values in this map.
+	 * Behaves as a viewIterator - thus alterations made
+	 * to this iterator will alter the BiMap 
+	 * @author Mshnik
+	 */
+	private class EntryIterator<E, O> extends ViewIterator<Entry<E,O>>{
+
+		private Map<O,E> backMap;
+
+		public EntryIterator(Map<E,O> f, Map<O,E> b) {
+			super(f.entrySet().iterator());
+			backMap = b;
+		}
+
+		@Override
+		public void remove(){
+			if(removed) return;
+			iterator.remove();
+			backMap.remove(current.getValue());
+			removed = true;
+		}
+	}
+
+	/** A view of the keys in this BiMap as a set.
+	 * Behaves as a viewSet - thus alterations made to this set
+	 * will alter the BiMap
+	 * @author Mshnik
+	 */
+	private class KeySet extends ViewSet<K>{
+
+		public KeySet() {
+			super(BiMap.this);
+		}
+
+		@Override
+		public boolean remove(Object o) {
+			return BiMap.this.remove(o) != null;
+		}
+
+		@Override
+		public Iterator<K> iterator(){
+			return new SingleIterator<K,V>(forwardMap, backMap);
+		}
+	}
+
+	/** A view of the keys in this BiMap as a set.
+	 * Behaves as a viewSet - thus alterations made to this set
+	 * will alter the BiMap
+	 * @author Mshnik
+	 */
+	private class ValueSet extends ViewSet<V>{
+
+		public ValueSet() {
+			super(BiMap.this);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean remove(Object o) {
+			try{
+				return BiMap.this.removeValue((V)o) != null;
+			}catch(ClassCastException e){
+				return false;
+			}
+		}
+
+		@Override
+		public Iterator<V> iterator(){
+			return new SingleIterator<V,K>(backMap, forwardMap);
+		}
+	}
+	
+	/** A view of the K,V entries in this BiMap as a set.
+	 * Behaves as a viewSet - thus alterations made to this set
+	 * will alter the BiMap
+	 * @author Mshnik
+	 */
+	private class EntrySet extends ViewSet<Entry<K,V>>{
+
+		public EntrySet() {
+			super(BiMap.this);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean remove(Object o) {
+			try{
+				return BiMap.this.remove( ((Entry<K,V>) o).getKey()) != null;
+			}catch(ClassCastException e){
+				return false;
+			}
+		}
+
+		@Override
+		public Iterator<Entry<K,V>> iterator(){
+			return new EntryIterator<K,V>(forwardMap, backMap);
+		}
+	}
+	
+	/** A view of the V,K entries in this BiMap as a set.
+	 * Behaves as a viewSet - thus alterations made to this set
+	 * will alter the BiMap
+	 * @author Mshnik
+	 */
+	private class REntrySet extends ViewSet<Entry<V,K>>{
+
+		public REntrySet() {
+			super(BiMap.this);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean remove(Object o) {
+			try{
+				return BiMap.this.remove( ((Entry<V,K>) o).getValue()) != null;
+			}catch(ClassCastException e){
+				return false;
+			}
+		}
+
+		@Override
+		public Iterator<Entry<V,K>> iterator(){
+			return new EntryIterator<V,K>(backMap, forwardMap);
 		}
 	}
 }

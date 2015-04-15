@@ -3,17 +3,18 @@ package common.dataStructures;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.AbstractMap;
 import java.util.Objects;
 import java.util.Set;
 
 public class LinkedHashMap<K, V> implements Map<K, V> {
 
 	private int size;
+	private final float loadFactor;
 	private Object[] vals; //Each element is a bucket, a linked list of LinkedHashEntries
 
+	
 	private static final int DEFAULT_SIZE = 16;
+	private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
 	private class LinkedHashEntry implements Entry<K,V>{
 
@@ -43,12 +44,38 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 			val = value;
 			return oldVal;
 		}
-
+		
+		@Override
+		public boolean equals(Object o){
+			try{
+				@SuppressWarnings("unchecked")
+				LinkedHashEntry e = (LinkedHashEntry)o;
+				
+				return key.equals(e.key) && Objects.equals(val, e.val);
+			}catch(ClassCastException e){
+				return false;
+			}
+		}
+		
+		@Override
+		public int hashCode(){
+			return Objects.hash(key, val);
+		}
+		
+		@Override
+		public String toString(){
+			return key + "=" + val;
+		}
 	}
 
 	public LinkedHashMap(){
-		vals = new Object[DEFAULT_SIZE];
+		this(DEFAULT_SIZE, DEFAULT_LOAD_FACTOR);
+	}
+	
+	public LinkedHashMap(int initalCapacity, float loadFactor){
+		vals = new Object[initalCapacity];
 		size = 0;
+		this.loadFactor = loadFactor;
 		clear(); //Inits buckets
 	}
 
@@ -60,6 +87,15 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 	@Override
 	public boolean isEmpty() {
 		return size() != 0;
+	}
+	
+	@Override
+	public String toString(){
+		String s = "{";
+		for(Object o : vals){
+			s += o.toString();
+		}
+		return s + "}";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -115,9 +151,29 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 		}
 		
 		//Check for rehash
-		//TODO
+		boolean rehashed = false;
+		if(size() >= loadFactor * vals.length){
+			LinkedList<LinkedHashEntry> temp = new LinkedList<>();
+			for(Object b : vals){
+				@SuppressWarnings("unchecked")
+				LinkedList<LinkedHashEntry> l = (LinkedList<LinkedHashEntry>)b;
+				temp.addAll(l);
+			}
+			vals = new Object[vals.length * 2 + 1]; //Keep odd
+			clear();
+			
+			for(LinkedHashEntry e : temp){
+				LinkedList<LinkedHashEntry> bucket2 = getBucketFor(e.key);
+				bucket2.add(e);
+				size++;
+			}
+			rehashed = true;
+		}
 		
-		bucket.add(new LinkedHashEntry(key, value));
+		if(rehashed) bucket = getBucketFor(key);
+		
+		LinkedHashEntry e = new LinkedHashEntry(key, value);
+		bucket.add(e);
 		size++;
 		return null; //Return null is correct here - no previous mapping
 	}
@@ -162,7 +218,6 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 
 	@Override
 	public Collection<V> values() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

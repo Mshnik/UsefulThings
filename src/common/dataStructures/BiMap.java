@@ -44,6 +44,9 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	/** Returns true if O is a BiMap and they have the same entryset */
 	@Override
 	public boolean equals(Object o){
+		if(o == this) return true;
+		if(o == null) return false;
+		
 		try{
 			@SuppressWarnings("unchecked")
 			BiMap<K,V> b = (BiMap<K,V>) o;

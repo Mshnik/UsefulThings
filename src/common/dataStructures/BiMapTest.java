@@ -100,6 +100,32 @@ public class BiMapTest {
 		assertEquals(null, b.getValue('b'));
 		assertEquals(null, b.getKey(1));
 	}
+	
+	@Test
+	public void testEqualityHashcode(){
+		BiMap<String, Integer> b = new BiMap<>();
+		assertEquals(b, b);
+		assertEquals(b.hashCode(), b.hashCode());
+		assertFalse(b.equals(null));
+		
+		BiMap<String, Integer> b2 = new BiMap<>();
+		assertEquals(b, b2);
+		assertEquals(b.hashCode(), b2.hashCode());
+		
+		b.put("1", 1);
+		
+		assertFalse(b.equals(b2));
+		assertFalse(b2.equals(b));
+		
+		b2.put("2", 1);
+		
+		assertFalse(b.equals(b2));
+		assertFalse(b2.equals(b));
+		
+		b.put("2", 1);
+		assertEquals(b, b2);
+		assertEquals(b.hashCode(), b2.hashCode());
+	}
 
 	@Test
 	public void testViews(){

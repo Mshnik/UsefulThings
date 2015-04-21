@@ -1,22 +1,29 @@
 package common.dataStructures;
 
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
 import common.dataStructures.util.ViewSet;
 
-public class LinkedHashMap<K, V> implements Map<K, V> {
+public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, Iterable<Entry<K,V>>{
 
 	private int size;
 	private final float loadFactor;
 	private Object[] vals; //Each element is a bucket, a linked list of LinkedHashEntries
 
+	private LinkedHashEntry head;
+	private LinkedHashEntry tail;
+	
 	protected int modCount; //Number of times this LinkedHashMap has been structurally modified
 
 	private KeySet keySet;
@@ -30,6 +37,8 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 
 		private final K key;
 		private V val;
+		
+		LinkedHashEntry next; // The next hashEntry in the chain
 
 		LinkedHashEntry(K k, V v) throws IllegalArgumentException{
 			if(k == null)
@@ -102,15 +111,6 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 		return size() != 0;
 	}
 
-	@Override
-	public String toString(){
-		String s = "{";
-		for(Object o : vals){
-			s += o.toString();
-		}
-		return s + "}";
-	}
-
 	@SuppressWarnings("unchecked")
 	/** Returns the bucket at the given index
 	 * @param index - the index to get a bucket at. Shouldn't be out of vals bounds
@@ -163,6 +163,7 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 	public V put(K key, V value) {
 		LinkedList<LinkedHashEntry> bucket = getBucketFor(key);
 
+		//Check for updating currently present key
 		for(LinkedHashEntry e : bucket){
 			if(e.getKey().equals(key)){
 				V oldVal = e.getValue();
@@ -170,6 +171,7 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 				return oldVal;
 			}
 		}
+		
 		//Check for rehash
 		boolean rehashed = false;
 		if(size() >= loadFactor * vals.length){
@@ -194,9 +196,30 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 
 		LinkedHashEntry e = new LinkedHashEntry(key, value);
 		bucket.add(e);
+		
+		//Fix pointers
+		if(size == 0){
+			head = e;
+			tail = e;
+		} else {
+			tail.next = e;
+			tail = e;
+		}
+		
 		size++;
 		modCount++;
 		return null; //Return null is correct here - no previous mapping
+	}
+	
+	/** Adds the given entry to the end of this LinkedHashMap
+	 * iff the key for the entry isn't already in the map
+	 * @param e - the entry to add
+	 * @return - true iff the entry was added this way
+	 */
+	public boolean add(Entry<K, V> e) {
+		if(containsKey(e.getKey())) return false;
+		put(e.getKey(), e.getValue());
+		return true;
 	}
 
 	@Override
@@ -213,6 +236,12 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 			}
 		}
 		return null;
+	}
+	
+	private V safeRemove(K key){
+		V v = remove(key);
+		if(v != null) modCount--;
+		return v;
 	}
 
 	@Override
@@ -246,34 +275,53 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 	public Set<Entry<K, V>> entrySet() {
 		return entrySet;
 	}
-
-	private abstract class HashIterator<E> implements Iterator<E>{
-		private int index; //bucket this is on
-		private int expectedModCount;
-		private boolean removed;
-		private boolean hasNext;
-		private Iterator<LinkedHashEntry> bucket;
-
-		public HashIterator(){
-			index = 0;
-			removed = false;
-			expectedModCount = LinkedHashMap.this.modCount;
-			moveToNextBucket();
+	
+	/** Returns an iterator over the entries in this LinkedHashMap */
+	public Iterator<Entry<K, V>> iterator() {
+		return entrySet.iterator();
+	}
+	
+	/** Returns an array of Entries, in the iteration order of this LinkedHashMap */
+	public Object[] toArray() {
+		Object[] o = new Object[size()];
+		
+		int i = 0;
+		for(Entry<K,V> e : this){
+			o[i] = e;
+			i++;
 		}
 		
-		private void moveToNextBucket(){
-			while(vals[index] == null || ((List<?>)vals[index]).size() == 0) index++;
-			if(index < vals.length){
-				bucket = getBucketAt(index).iterator();
-				hasNext = true;
-			} else{
-				hasNext = false;
-			}
+		return o;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T[] toArray(T[] a) throws ClassCastException {
+		T[] arr = a.length >= size() ? a : Arrays.copyOf(a, size());
+		
+		int i = 0;
+		for(Entry<K,V> e : this){
+			arr[i] = (T)e;
+			i++;
+		}
+		
+		return arr;
+	}
+
+	private abstract class HashIterator<E> implements Iterator<E>{
+		private int expectedModCount;
+		private boolean removed;
+		
+		private LinkedHashEntry current;
+
+		public HashIterator(){
+			removed = false;
+			expectedModCount = LinkedHashMap.this.modCount;
+			current = head;
 		}
 
 		@Override
 		public boolean hasNext() {
-			return hasNext;
+			return current != null;
 		}
 
 		protected abstract E valFromEntry(Entry<K,V> e);
@@ -283,15 +331,9 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 			if(expectedModCount != modCount)
 				throw new ConcurrentModificationException();
 			
-			Entry<K,V> e = bucket.next();
-
+			Entry<K,V> e = current;
 			removed = false;
-			
-			//Figure out next bucket
-			if(! bucket.hasNext()){
-				index++;
-				moveToNextBucket();
-			}
+			current = current.next;
 			return valFromEntry(e);
 		}
 		
@@ -299,7 +341,7 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 		public void remove(){
 			if(removed) return;
 			
-			bucket.remove();
+			safeRemove(current.key);
 			expectedModCount++;
 			removed = true;
 		}
@@ -373,6 +415,68 @@ public class LinkedHashMap<K, V> implements Map<K, V> {
 		}
 	}
 
-	
+	public boolean addAll(Collection<? extends Entry<K, V>> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
+	public boolean addAll(int index, Collection<? extends Entry<K, V>> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean removeAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean retainAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Entry<K, V> get(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Entry<K, V> set(int index, Entry<K, V> element) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void add(int index, Entry<K, V> element) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Entry<K, V> remove(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int indexOf(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int lastIndexOf(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public ListIterator<Entry<K, V>> listIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ListIterator<Entry<K, V>> listIterator(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Entry<K, V>> subList(int fromIndex, int toIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

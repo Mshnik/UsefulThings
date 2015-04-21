@@ -41,9 +41,31 @@ public class LinkedHashMapTest {
 		}
 		for(int i = 65; i < 90; i++){
 			assertEquals(new Integer(i), h.get((char)i + ""));
-		}
-		
+		}	
+	}
 	
+	@Test
+	public void testEqualityAndHashcode(){
+		LinkedHashMap<String, Integer> m = new LinkedHashMap<String, Integer>();
+		assertEquals(m,m);
+		assertFalse(m.equals(null));
+		
+		LinkedHashMap<String, Integer> m2 = new LinkedHashMap<String, Integer>();
+		assertEquals(m, m2);
+		assertEquals(m.hashCode(), m2.hashCode());
+		
+		m.put("1", 1);
+		assertFalse(m.equals(m2));
+		assertFalse(m2.equals(m));
+		
+		m2.put("1", 1);
+		assertEquals(m, m2);
+		assertEquals(m.hashCode(), m2.hashCode());
+		
+		m.put("2", 2);
+		m2.put("3", 3);
+		assertFalse(m.equals(m2));
+		assertFalse(m2.equals(m));
 	}
 
 }

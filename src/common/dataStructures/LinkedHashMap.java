@@ -4,22 +4,17 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-
 import common.dataStructures.util.ViewSet;
 
 public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, Iterable<Entry<K,V>>{
 
-	private int size;
-	private final float loadFactor;
-	private Object[] vals; //Each element is a bucket, a linked list of LinkedHashEntries
+	private HashMap<K,LinkedHashEntry> map;
 
 	private LinkedHashEntry head;
 	private LinkedHashEntry tail;
@@ -35,10 +30,11 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 
 	private class LinkedHashEntry implements Entry<K,V>{
 
-		private final K key;
+		private K key;
 		private V val;
 		
 		LinkedHashEntry next; // The next hashEntry in the chain
+		LinkedHashEntry prev;
 
 		LinkedHashEntry(K k, V v) throws IllegalArgumentException{
 			if(k == null)
@@ -92,123 +88,158 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 	}
 
 	public LinkedHashMap(int initalCapacity, float loadFactor){
-		vals = new Object[initalCapacity];
-		size = 0;
-		this.loadFactor = loadFactor;
+		map = new HashMap<>(initalCapacity, loadFactor);
 		keySet = new KeySet();
 		values = new ValueCollection();
 		entrySet = new EntrySet();
-		clear(); //Inits buckets
 	}
 
 	@Override
 	public int size() {
-		return size;
+		return map.size();
 	}
 
 	@Override
 	public boolean isEmpty() {
 		return size() != 0;
 	}
-
-	@SuppressWarnings("unchecked")
-	/** Returns the bucket at the given index
-	 * @param index - the index to get a bucket at. Shouldn't be out of vals bounds
-	 * @return - the bucket at the given index. Will never be null.
-	 */
-	private LinkedList<LinkedHashEntry> getBucketAt(int index){
-		return (LinkedList<LinkedHashEntry>) vals[index];
-	}
-
-	/** Returns the bucket associated with the given key, for the 
-	 * current length of vals. Hashes the key, mods by length, and finds that indexed bucket.
-	 * @param key - the key to hash
-	 * @return - the associated bucket. Will never be null.
-	 */
-	private LinkedList<LinkedHashEntry> getBucketFor(Object key){
-		return getBucketAt(key.hashCode() % vals.length);
+	
+	@Override
+	public String toString(){
+		if(size() == 0) return "{}";
+		String s = "{";
+		for(Entry<K,V> e : this){
+			s += e.getKey() + "=" + e.getValue() + ", ";
+		}
+		return s.substring(0, s.length() - 2) + "}";
 	}
 
 	@Override
 	public boolean containsKey(Object key) {
-		LinkedList<LinkedHashEntry> bucket = getBucketFor(key);
-		for(LinkedHashEntry e : bucket){
-			if(e.getKey().equals(key)){
-				return true;
-			}
-		}
-		return false;
+		return map.containsKey(key);
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
 		for(V v : values()){
-			if(Objects.equals(v, value)) return true;
+			if(Objects.equals(v,value)) return true;
 		}
 		return false;
 	}
 
+	private LinkedHashEntry getEntry(K key){
+		return map.get(key);
+	}
+	
 	@Override
 	public V get(Object key) {
-		LinkedList<LinkedHashEntry> bucket = getBucketFor(key);
-		for(LinkedHashEntry e : bucket){
-			if(e.getKey().equals(key)){
-				return e.getValue();
-			}
+		if(! map.containsKey(key)) return null;
+		return map.get(key).val;
+	}
+	
+	public Entry<K, V> get(int index) {
+		if(index < 0 || index >= size())
+			throw new IllegalArgumentException(index + " is OOB for " + this);
+		
+		LinkedHashEntry current = head;
+		while(index > 0){
+			current = current.next;
+			index--;
 		}
-		return null;
+		
+		return current;
 	}
 
+	public Entry<K,V> getFirst(){
+		return get(0);
+	}
+	
+	public Entry<K,V> getLast(){
+		return get(size() - 1);
+	}
+	
+	public int indexOf(Object o) {
+		LinkedHashEntry current = head;
+		int i = 0;
+		while(current != null){
+			if(Objects.equals(current, o) || Objects.equals(current.key, o) || Objects.equals(current.val, o))
+				return i;
+			current = current.next;
+			i++;
+		}
+		return -1;
+	}
+
+	public int lastIndexOf(Object o) {
+		LinkedHashEntry current = tail;
+		int i = 0;
+		while(current != null){
+			if(Objects.equals(current, o) || Objects.equals(current.key, o) || Objects.equals(current.val, o))
+				return i;
+			current = current.prev;
+			i++;
+		}
+		return -1;
+	}
+	
+	private V putHelper(K key, V value, int index){
+		if(index < 0 || index > size())
+			throw new IllegalArgumentException("Can't put;" + index + " is OOB for " + this);
+				
+		if(containsKey(key)){
+			V oldVal = getEntry(key).val;
+			getEntry(key).val = value;
+			return oldVal;
+		} else {
+			LinkedHashEntry e = new LinkedHashEntry(key, value);			
+			if(size() == 0){
+				head = e;
+				tail = e;
+			} else if(index == size()){
+				tail.next = e;
+				e.prev = tail;
+				tail = e;
+			} else if(index == 0){
+				head.prev = e;
+				e.next = head;
+				head = e;
+			} else {
+				LinkedHashEntry e2 = (LinkedHashEntry)get(index);
+				LinkedHashEntry e2P = e2.prev;
+				e2P.next = e;
+				e2.prev = e;
+				e.prev = e2P;
+				e.next = e2;
+			}
+			
+			map.put(key, e);
+			modCount++;
+			return null;
+		}
+	}
+	
 	@Override
 	public V put(K key, V value) {
-		LinkedList<LinkedHashEntry> bucket = getBucketFor(key);
-
-		//Check for updating currently present key
-		for(LinkedHashEntry e : bucket){
-			if(e.getKey().equals(key)){
-				V oldVal = e.getValue();
-				e.setValue(value);
-				return oldVal;
-			}
-		}
-		
-		//Check for rehash
-		boolean rehashed = false;
-		if(size() >= loadFactor * vals.length){
-			LinkedList<LinkedHashEntry> temp = new LinkedList<>();
-			for(Object b : vals){
-				@SuppressWarnings("unchecked")
-				LinkedList<LinkedHashEntry> l = (LinkedList<LinkedHashEntry>)b;
-				temp.addAll(l);
-			}
-			vals = new Object[vals.length * 2 + 1]; //Keep odd
-			clear();
-
-			for(LinkedHashEntry e : temp){
-				LinkedList<LinkedHashEntry> bucket2 = getBucketFor(e.key);
-				bucket2.add(e);
-				size++;
-			}
-			rehashed = true;
-		}
-
-		if(rehashed) bucket = getBucketFor(key);
-
-		LinkedHashEntry e = new LinkedHashEntry(key, value);
-		bucket.add(e);
-		
-		//Fix pointers
-		if(size == 0){
-			head = e;
-			tail = e;
-		} else {
-			tail.next = e;
-			tail = e;
-		}
-		
-		size++;
-		modCount++;
-		return null; //Return null is correct here - no previous mapping
+		return putHelper(key, value, size());
+	}
+	
+	public V putLast(K key, V value){
+		return putAt(key, value, size());
+	}
+	
+	public V putFirst(K key, V value){
+		return putAt(key, value, 0);
+	}
+	
+	public V putAt(K key, V value, int index){
+		if(containsKey(key))
+			throw new RuntimeException("Can't call putAt on an already existing key");
+		return putHelper(key, value, index);
+	}
+	
+	@Override
+	public void putAll(Map<? extends K, ? extends V> m) {
+		throw new UnsupportedOperationException("Can't put all of an unordered Map");
 	}
 	
 	/** Adds the given entry to the end of this LinkedHashMap
@@ -218,47 +249,106 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 	 */
 	public boolean add(Entry<K, V> e) {
 		if(containsKey(e.getKey())) return false;
-		put(e.getKey(), e.getValue());
+		putLast(e.getKey(), e.getValue());
 		return true;
+	}
+	
+	public boolean add(int index, Entry<K, V> element) {
+		if(containsKey(element.getKey())) return false;
+		putAt(element.getKey(), element.getValue(), index);
+		return true;
+	}
+
+	public boolean addAll(Collection<? extends Entry<K, V>> c) {
+		boolean altered = false;
+		for(Entry<K,V> e : c){
+			altered = add(e) || altered;
+		}
+		return altered;
+	}
+
+	public boolean addAll(int index, Collection<? extends Entry<K, V>> c) {
+		boolean altered = false;
+		for(Entry<K,V> e : c){
+			altered = add(index, e) || altered;
+			index++;
+		}
+		return altered;
+	}
+	
+	public Entry<K, V> set(int index, Entry<K, V> element) {
+		if(containsKey(element.getKey()))
+			throw new IllegalArgumentException("Can't call set with already present key " + element.getKey());
+		
+		LinkedHashEntry old = (LinkedHashEntry)get(index);
+		LinkedHashEntry oldCopy = new LinkedHashEntry(old.key, old.val);
+		
+		old.key = element.getKey();
+		old.val = element.getValue();
+		
+		return oldCopy;
 	}
 
 	@Override
 	public V remove(Object key) {
-		LinkedList<LinkedHashEntry> bucket = getBucketFor(key);
 
-		for(LinkedHashEntry e : bucket){
-			if(e.getKey().equals(key)){
-				V oldVal = e.getValue();
-				bucket.remove(e);
-				size--;
-				modCount++;
-				return oldVal;
-			}
+		LinkedHashEntry entry = map.get(key);
+		if(entry == null) return null;
+		
+		LinkedHashEntry e0 = entry.prev;
+		LinkedHashEntry e1 = entry.next;
+		
+		if(e0 != null){
+			e0.next = e1;
 		}
-		return null;
+		if(e1 != null){
+			e1.prev = e0;
+		}
+		if(entry == head){
+			head = e1;
+		}
+		if(entry == tail){
+			tail = e0;
+		}
+		
+		map.remove(key);
+		modCount++;
+		
+		return entry.val;
 	}
 	
-	private V safeRemove(K key){
-		V v = remove(key);
-		if(v != null) modCount--;
-		return v;
+	public Entry<K, V> remove(int index) {
+		Entry<K,V> e = get(index);
+		remove(e.getKey());
+		return e;
 	}
 
-	@Override
-	public void putAll(Map<? extends K, ? extends V> m) {
-		throw new UnsupportedOperationException("Can't put all of an unordered Map");
+	public boolean removeAll(Collection<?> c) {
+		boolean altered = false;
+		for(Object o : c){
+			altered = remove(o) != null || altered;
+		}
+		return altered;
 	}
 
+	public boolean retainAll(Collection<?> c) {
+		Iterator<K> iter = keySet.iterator();
+		boolean altered = false;
+		while(iter.hasNext()){
+			K k = iter.next();
+			if(! c.contains(k)){
+				iter.remove();
+				altered = true;
+			}
+		}
+		return altered;
+	}
+	
 	@Override
 	public void clear() {
-		size = 0;
-		modCount++;
-		for(int i = 0; i < vals.length; i++){
-			if(vals[i] != null) 
-				((LinkedList<?>)vals[i]).clear();
-			else 
-				vals[i] = new LinkedList<LinkedHashEntry>();
-		}
+		map.clear();
+		head = null;
+		tail = null;
 	}
 
 	@Override
@@ -341,7 +431,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		public void remove(){
 			if(removed) return;
 			
-			safeRemove(current.key);
+			LinkedHashMap.this.remove(current.key);
 			expectedModCount++;
 			removed = true;
 		}
@@ -415,68 +505,15 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		}
 	}
 
-	public boolean addAll(Collection<? extends Entry<K, V>> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean addAll(int index, Collection<? extends Entry<K, V>> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public Entry<K, V> get(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Entry<K, V> set(int index, Entry<K, V> element) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void add(int index, Entry<K, V> element) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public Entry<K, V> remove(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int indexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int lastIndexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public ListIterator<Entry<K, V>> listIterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public ListIterator<Entry<K, V>> listIterator(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Entry<K, V>> subList(int fromIndex, int toIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public ListIterator<Entry<K, V>> listIterator() {
+//		return null;
+//	}
+//
+//	public ListIterator<Entry<K, V>> listIterator(int index) {
+//		return null;
+//	}
+//
+//	public List<Entry<K, V>> subList(int fromIndex, int toIndex) {
+//		return null;
+//	}
 }

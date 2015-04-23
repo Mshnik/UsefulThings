@@ -2,6 +2,9 @@ package common.dataStructures;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import org.junit.Test;
 
 public class LinkedHashMapTest {
@@ -68,4 +71,56 @@ public class LinkedHashMapTest {
 		assertFalse(m2.equals(m));
 	}
 
+	@Test
+	public void testIterators(){
+		LinkedHashMap<String, Integer> m = new LinkedHashMap<String, Integer>();
+
+		for(int i = 65; i < 90; i++){
+			m.put( (char)i + "", i);
+		}
+		
+		
+		int n = 65;
+		Iterator<Entry<String,Integer>> i = m.iterator();
+		while(i.hasNext()){
+			Entry<String,Integer> e = i.next();
+			assertEquals(e.getValue(), new Integer(n));
+			assertEquals(e.getKey(), (char)n + "");
+			n++;
+		}
+		
+		i = m.iterator();
+		while(i.hasNext()){
+			i.remove();
+			i.next();
+		}
+		assertEquals(m.size(), 0);
+	}
+	
+	@Test
+	public void testPutAt(){
+		LinkedHashMap<String, Integer> m = new LinkedHashMap<String, Integer>();
+
+		assertEquals("{}", m.toString());
+		
+		m.put("A", 1);
+		assertEquals("{A=1}", m.toString());
+		
+		m.put("B", 2);
+		assertEquals("{A=1, B=2}", m.toString());
+
+		m.putLast("C", 2);
+		assertEquals("{A=1, B=2, C=2}", m.toString());
+		
+		m.putFirst("D", 5);
+		assertEquals("{D=5, A=1, B=2, C=2}", m.toString());
+		
+		m.putAt("E", 4, 1);
+		assertEquals("{D=5, E=4, A=1, B=2, C=2}", m.toString());
+
+		m.putAt("F", 6, m.size());
+		assertEquals("{D=5, E=4, A=1, B=2, C=2, F=6}", m.toString());
+
+	}
+	
 }

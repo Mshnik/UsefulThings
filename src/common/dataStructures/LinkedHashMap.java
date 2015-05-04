@@ -28,31 +28,52 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 	private static final int DEFAULT_SIZE = 16;
 	private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
+	/** A single entry in the hashmap. Maintains a key and value,
+	 *  along with previous and next elements
+	 * @author Mshnik
+	 *
+	 */
 	private class LinkedHashEntry implements Entry<K,V>{
 
+		/** The key stored in this LinkedHashEntry */
 		private K key;
+		
+		/** The value stored in this LinkedHashEntry */
 		private V val;
 		
-		LinkedHashEntry next; // The next hashEntry in the chain
-		LinkedHashEntry prev;
+		/** The entry after this LinkedHashEntry. Null if this is the tail */
+		private LinkedHashEntry next;
+		
+		/** The entry before this LinkedHashEntry. Null if this is the head */
+		private LinkedHashEntry prev;
 
-		LinkedHashEntry(K k, V v) throws IllegalArgumentException{
+		/** Constructs a new LinkedHashEntry with the given key and value
+		 * The next and previous fields are left as null.
+		 * @param k - the key to give this LinkedHashEntry
+		 * @param v - the value to give this LinkedHashEntry
+		 * @throws IllegalArgumentException - if k == null
+		 */
+		private LinkedHashEntry(K k, V v) throws IllegalArgumentException{
 			if(k == null)
 				throw new IllegalArgumentException("Null keys not allowed");
 			key = k;
 			val = v;
 		}
 
+		/** Returns the key stored in this LinkedHashEntry */
 		@Override
 		public K getKey() {
 			return key;
 		}
-
+		
+		
+		/** Returns the value stored in this LinkedHashEntry */
 		@Override
 		public V getValue() {
 			return val;
 		}
 
+		/** Sets the value stored in this LinkedHashEntry to {@code value} */
 		@Override
 		public V setValue(V value) {
 			V oldVal = val;
@@ -60,6 +81,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 			return oldVal;
 		}
 
+		/** Two LinkedHashEntries are equivalent iff they have the same key and value */
 		@Override
 		public boolean equals(Object o){
 			try{
@@ -72,11 +94,14 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 			}
 		}
 
+		/** Hashes a LinkedHashEntry based off of its key and value */
 		@Override
 		public int hashCode(){
 			return Objects.hash(key, val);
 		}
 
+		/** Returns {@code key + "=" + value}
+		 */
 		@Override
 		public String toString(){
 			return key + "=" + val;
@@ -100,21 +125,6 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return size() != 0;
-	}
-	
-	@Override
-	public String toString(){
-		if(size() == 0) return "{}";
-		String s = "{";
-		for(Entry<K,V> e : this){
-			s += e.getKey() + "=" + e.getValue() + ", ";
-		}
-		return s.substring(0, s.length() - 2) + "}";
-	}
-
-	@Override
 	public boolean containsKey(Object key) {
 		return map.containsKey(key);
 	}
@@ -127,6 +137,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		return false;
 	}
 
+	/** Returns the linkedHashEntry that corresponds to {@code key} */
 	private LinkedHashEntry getEntry(K key){
 		return map.get(key);
 	}
@@ -137,7 +148,12 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		return map.get(key).val;
 	}
 	
-	public Entry<K, V> get(int index) {
+	/** Returns the entry at index {@code index} in the map. 
+	 * Does this by starting at the end of the map and iterating in
+	 * until the desired index is reached.
+	 * @throws IllegalArgumentException - if index < 0 || index >= size()
+	 */
+	public Entry<K, V> get(int index) throws IllegalArgumentException {
 		if(index < 0 || index >= size())
 			throw new IllegalArgumentException(index + " is OOB for " + this);
 		
@@ -150,10 +166,12 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		return current;
 	}
 
+	/** Returns the first entry in this LinkedHashMap: the element at {@code get(0)} */
 	public Entry<K,V> getFirst(){
 		return get(0);
 	}
 	
+	/** Returns the last entry in this LinkedHashMap: the element at {@code get(size() - 1)} */
 	public Entry<K,V> getLast(){
 		return get(size() - 1);
 	}

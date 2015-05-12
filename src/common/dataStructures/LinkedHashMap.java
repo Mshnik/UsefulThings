@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+
 import common.dataStructures.util.ViewSet;
 
 public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, Iterable<Entry<K,V>>{
@@ -18,13 +19,13 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 
 	private LinkedHashEntry head;
 	private LinkedHashEntry tail;
-	
+
 	protected int modCount; //Number of times this LinkedHashMap has been structurally modified
 
 	private KeySet keySet;
 	private ValueCollection values; //not actually a set
 	private EntrySet entrySet;
-	
+
 	private static final int DEFAULT_SIZE = 16;
 	private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
@@ -37,13 +38,13 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 
 		/** The key stored in this LinkedHashEntry */
 		private K key;
-		
+
 		/** The value stored in this LinkedHashEntry */
 		private V val;
-		
+
 		/** The entry after this LinkedHashEntry. Null if this is the tail */
 		private LinkedHashEntry next;
-		
+
 		/** The entry before this LinkedHashEntry. Null if this is the head */
 		private LinkedHashEntry prev;
 
@@ -65,8 +66,8 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		public K getKey() {
 			return key;
 		}
-		
-		
+
+
 		/** Returns the value stored in this LinkedHashEntry */
 		@Override
 		public V getValue() {
@@ -141,13 +142,13 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 	private LinkedHashEntry getEntry(K key){
 		return map.get(key);
 	}
-	
+
 	@Override
 	public V get(Object key) {
 		if(! map.containsKey(key)) return null;
 		return map.get(key).val;
 	}
-	
+
 	/** Returns the entry at index {@code index} in the map. 
 	 * Does this by starting at the end of the map and iterating in
 	 * until the desired index is reached.
@@ -156,26 +157,42 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 	public Entry<K, V> get(int index) throws IllegalArgumentException {
 		if(index < 0 || index >= size())
 			throw new IllegalArgumentException(index + " is OOB for " + this);
+		LinkedHashEntry current = null;
 		
-		LinkedHashEntry current = head;
-		while(index > 0){
-			current = current.next;
-			index--;
+		if(index < size() / 2){
+			current = head;
+			while(index > 0){
+				current = current.next;
+				index--;
+			}
+		} else {
+			current = tail;
+			index = size() - 1 - index;
+			while(index > 0){
+				current = current.prev;
+				index--;
+			}
 		}
-		
+
 		return current;
 	}
 
-	/** Returns the first entry in this LinkedHashMap: the element at {@code get(0)} */
+	/** Returns the first entry in this LinkedHashMap */
 	public Entry<K,V> getFirst(){
-		return get(0);
+		return head;
 	}
-	
-	/** Returns the last entry in this LinkedHashMap: the element at {@code get(size() - 1)} */
+
+	/** Returns the last entry in this LinkedHashMap */
 	public Entry<K,V> getLast(){
-		return get(size() - 1);
+		return tail;
 	}
-	
+
+	/** Returns the index {@code i} such that at index {@code i} in this 
+	 * LinkedHashMap, either the entry equals o, or the key equals o, or the value equals o.
+	 * Thus finds the indexOf any matching object type. If a specific collection is desired,
+	 * use the collection getter (keySet(), values(), entrySet()) and call indexOf there
+	 * @return the index of the equivalent object if found, -1 otherwise
+	 */
 	public int indexOf(Object o) {
 		LinkedHashEntry current = head;
 		int i = 0;
@@ -199,11 +216,11 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		}
 		return -1;
 	}
-	
+
 	private V putHelper(K key, V value, int index){
 		if(index < 0 || index > size())
 			throw new IllegalArgumentException("Can't put;" + index + " is OOB for " + this);
-				
+
 		if(containsKey(key)){
 			V oldVal = getEntry(key).val;
 			getEntry(key).val = value;
@@ -229,37 +246,37 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 				e.prev = e2P;
 				e.next = e2;
 			}
-			
+
 			map.put(key, e);
 			modCount++;
 			return null;
 		}
 	}
-	
+
 	@Override
 	public V put(K key, V value) {
 		return putHelper(key, value, size());
 	}
-	
+
 	public V putLast(K key, V value){
 		return putAt(key, value, size());
 	}
-	
+
 	public V putFirst(K key, V value){
 		return putAt(key, value, 0);
 	}
-	
+
 	public V putAt(K key, V value, int index){
 		if(containsKey(key))
 			throw new RuntimeException("Can't call putAt on an already existing key");
 		return putHelper(key, value, index);
 	}
-	
+
 	@Override
 	public void putAll(Map<? extends K, ? extends V> m) {
 		throw new UnsupportedOperationException("Can't put all of an unordered Map");
 	}
-	
+
 	/** Adds the given entry to the end of this LinkedHashMap
 	 * iff the key for the entry isn't already in the map
 	 * @param e - the entry to add
@@ -270,7 +287,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		putLast(e.getKey(), e.getValue());
 		return true;
 	}
-	
+
 	public boolean add(int index, Entry<K, V> element) {
 		if(containsKey(element.getKey())) return false;
 		putAt(element.getKey(), element.getValue(), index);
@@ -293,17 +310,17 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		}
 		return altered;
 	}
-	
+
 	public Entry<K, V> set(int index, Entry<K, V> element) {
 		if(containsKey(element.getKey()))
 			throw new IllegalArgumentException("Can't call set with already present key " + element.getKey());
-		
+
 		LinkedHashEntry old = (LinkedHashEntry)get(index);
 		LinkedHashEntry oldCopy = new LinkedHashEntry(old.key, old.val);
-		
+
 		old.key = element.getKey();
 		old.val = element.getValue();
-		
+
 		return oldCopy;
 	}
 
@@ -312,10 +329,10 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 
 		LinkedHashEntry entry = map.get(key);
 		if(entry == null) return null;
-		
+
 		LinkedHashEntry e0 = entry.prev;
 		LinkedHashEntry e1 = entry.next;
-		
+
 		if(e0 != null){
 			e0.next = e1;
 		}
@@ -328,13 +345,13 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		if(entry == tail){
 			tail = e0;
 		}
-		
+
 		map.remove(key);
 		modCount++;
-		
+
 		return entry.val;
 	}
-	
+
 	public Entry<K, V> remove(int index) {
 		Entry<K,V> e = get(index);
 		remove(e.getKey());
@@ -361,7 +378,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		}
 		return altered;
 	}
-	
+
 	@Override
 	public void clear() {
 		map.clear();
@@ -383,42 +400,42 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 	public Set<Entry<K, V>> entrySet() {
 		return entrySet;
 	}
-	
+
 	/** Returns an iterator over the entries in this LinkedHashMap */
 	public Iterator<Entry<K, V>> iterator() {
 		return entrySet.iterator();
 	}
-	
+
 	/** Returns an array of Entries, in the iteration order of this LinkedHashMap */
 	public Object[] toArray() {
 		Object[] o = new Object[size()];
-		
+
 		int i = 0;
 		for(Entry<K,V> e : this){
 			o[i] = e;
 			i++;
 		}
-		
+
 		return o;
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T[] toArray(T[] a) throws ClassCastException {
 		T[] arr = a.length >= size() ? a : Arrays.copyOf(a, size());
-		
+
 		int i = 0;
 		for(Entry<K,V> e : this){
 			arr[i] = (T)e;
 			i++;
 		}
-		
+
 		return arr;
 	}
 
 	private abstract class HashIterator<E> implements Iterator<E>{
 		private int expectedModCount;
 		private boolean removed;
-		
+
 		private LinkedHashEntry current;
 
 		public HashIterator(){
@@ -433,22 +450,22 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		}
 
 		protected abstract E valFromEntry(Entry<K,V> e);
-		
+
 		@Override
 		public E next() {
 			if(expectedModCount != modCount)
 				throw new ConcurrentModificationException();
-			
+
 			Entry<K,V> e = current;
 			removed = false;
 			current = current.next;
 			return valFromEntry(e);
 		}
-		
+
 		@Override
 		public void remove(){
 			if(removed) return;
-			
+
 			LinkedHashMap.this.remove(current.key);
 			expectedModCount++;
 			removed = true;
@@ -475,7 +492,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 			};
 		}
 	}
-	
+
 	private class ValueCollection extends ViewSet<V>{
 		public ValueCollection() {
 			super(LinkedHashMap.this);
@@ -497,7 +514,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 			};
 		}
 	}
-	
+
 	private class EntrySet extends ViewSet<Entry<K,V>>{
 		public EntrySet() {
 			super(LinkedHashMap.this);
@@ -523,15 +540,15 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		}
 	}
 
-//	public ListIterator<Entry<K, V>> listIterator() {
-//		return null;
-//	}
-//
-//	public ListIterator<Entry<K, V>> listIterator(int index) {
-//		return null;
-//	}
-//
-//	public List<Entry<K, V>> subList(int fromIndex, int toIndex) {
-//		return null;
-//	}
+	//	public ListIterator<Entry<K, V>> listIterator() {
+	//		return null;
+	//	}
+	//
+	//	public ListIterator<Entry<K, V>> listIterator(int index) {
+	//		return null;
+	//	}
+	//
+	//	public List<Entry<K, V>> subList(int fromIndex, int toIndex) {
+	//		return null;
+	//	}
 }

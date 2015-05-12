@@ -7,7 +7,8 @@ import java.util.Iterator;
 
 import common.Util;
 
-/** A DeArrList is a Double-Ended Array List.
+/** A DeArrList is a Double-Ended Array List. It behaves like a mashup of
+ * a Deque and an ArrayList. <br>
  * By allowing the array to wrap around the underlying array in either direction,
  * it does not shift elements when adding to the beginning or the end of the array.
  * This allows it to achieve amortized O(1) append (add to end) and prepend (add to front)
@@ -36,40 +37,60 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 	private int size; //Number of elements in list
 	private Object[] vals;
 
+	/** The default size DeArLists are initialized to if not provided a size */
 	static final int DEFAULT_SIZE = 16;
 
+	/** Constructs a new DeArrList with size 16 */
 	public DeArrList(){
 		this(DEFAULT_SIZE);
 	}
 
+	/** Constructs a new DeArrList containing all of the elements in c
+	 * @param c - the collection to initially add to this DeArrList.
+	 * 						Elements are added in the order of iteration over c.
+	 */
 	public DeArrList(Collection<? extends E> c){
 		this(Math.max(DEFAULT_SIZE, c.size()));
 		addAll(c);
 	}
 
+	/** Returns a new DeArrList with initial size {@code size} */
 	public DeArrList(int size){
 		vals = new Object[size];
 		start = size/4;
 		end = size/4;
 	}
 
+	/** Returns a new DeArrList with the same elements (in the same order) as this */
 	public DeArrList<E> clone(){
 		return new DeArrList<E>(this);
 	}
 
+	/** Returns the number of elements in this DeArrList */
 	@Override
 	public int size(){
 		return size;
 	}
 	
+	/** Returns the index in the array of values that represents the
+	 *  start of this DeArrList. This is purely an internal operation and 
+	 *  doesn't affect the list this represents from the outside
+	 **/
 	int getStart(){
 		return start;
 	}
 	
+	/** Returns the index in the array of values that represents the end
+	 *  of this DeArrList.  This is purely an internal operation and 
+	 *  doesn't affect the list this represents from the outside
+	 */
 	int getEnd(){
 		return end;
 	}
 
+	/** Returns the length of the array of values that represents this DeArrList.
+	 *  This is purely an internal operation and 
+	 *  doesn't affect the list this represents from the outside */
 	int getArrLength(){
 		return vals.length;
 	}
@@ -106,6 +127,9 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		vals = arr;
 	}
 	
+	/** Returns a string representation of this DeArrList. Surrounded with "("
+	 * and with elements seperated by ",".
+	 */
 	@Override
 	public String toString(){
 		if(size() == 0)
@@ -117,7 +141,9 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		return s.substring(0, s.length() - 1) + ")";
 	}
 	
-	/** Moves vals to a new array of double the length, starting at length / 4. */
+	/** Moves vals to a new array of double the length, starting at length / 4.
+	 * This is purely an internal operation and doesn't affect the list this represents
+	 * from the outside. It is used when the internal array must be increased in size. */
 	private boolean reArray(){
 		if(size() >= vals.length){
 			Object[] oArr = new Object[vals.length * 2];
@@ -135,8 +161,11 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		return false;
 	}
 
+	/** Adds the given element at the given index to this DeArrList.
+	 * @throws ArrayIndexOutOfBoundsException if index < 0 or index > size().
+	 */
 	@Override
-	public void add(int index, E element) {
+	public void add(int index, E element) throws ArrayIndexOutOfBoundsException {
 		if(index < 0 || index > size())
 			throw new ArrayIndexOutOfBoundsException();
 		reArray();
@@ -169,40 +198,53 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		size++;
 	}
 	
+	/** Adds {@code e} to the front of this DeArrList */
 	@Override
 	public void push(E e) {
 		add(0, e);		
 	}
 	
+	/** Adds {@code e} to the back of this DeArrList.
+	 * @returns true */
 	@Override
 	public boolean offer(E e) {
 		add(e);
 		return true;
 	}
 	
+	/** Adds {@code e} to the front of this DeArrList */
 	@Override
 	public void addFirst(E e) {
 		add(0, e);
 	}
 
+	/** Adds {@code e} to the back of this DeArrList. */
 	@Override
 	public void addLast(E e) {
 		add(e);
 	}
 
+	/** Adds {@code e} to the front of this DeArrList.
+	 * @returns true */
 	@Override
 	public boolean offerFirst(E e) {
 		add(0,e);
 		return true;
 	}
 
+	/** Adds {@code e} to the back of this DeArrList.
+	 * @returns true */
 	@Override
 	public boolean offerLast(E e) {
-		return add(e);
+		add(e);
+		return true;
 	}
 
+	/** Returns the element at index {@code index} in this DeArrList.
+	 * @throws ArrayIndexOutOfBoundsException if index < 0 or index >= size().
+	 */
 	@Override
-	public E get(int index){
+	public E get(int index) throws ArrayIndexOutOfBoundsException {
 		if(index < 0 || index >= size())
 			throw new ArrayIndexOutOfBoundsException();
 
@@ -211,26 +253,36 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		return e;
 	}
 	
+	/** Returns the element at index 0 (the first element) in this DeArrList.
+	 * @throws ArrayIndexOutOfBoundsException if the DeArrList is empty. */
 	@Override
-	public E element() {
+	public E element() throws ArrayIndexOutOfBoundsException {
 		return get(0);
 	}
 	
+	/** Returns the element at index 0 (the first element) in this DeArrList.
+	 * @throws ArrayIndexOutOfBoundsException if the DeArrList is empty.*/
 	@Override
-	public E getFirst() {
+	public E getFirst() throws ArrayIndexOutOfBoundsException {
 		return get(0);
 	}
 
+	/** Returns the element at index size()-1 (the last element) in this DeArrList.
+	 * @throws ArrayIndexOutOfBoundsException if the DeArrList is empty.*/
 	@Override
-	public E getLast() {
+	public E getLast() throws ArrayIndexOutOfBoundsException {
 		return get(size() - 1);
 	}
 
+	/** Returns the element at index 0 (the first element) in this DeArrList.
+	 * Returns null if the DeArrList is empty */
 	@Override
 	public E peek() {
 		return peekFirst();
 	}
 	
+	/** Returns the element at index 0 (the first element) in this DeArrList
+	 *  Returns null if the DeArrList is empty */
 	@Override
 	public E peekFirst() {
 		try{
@@ -240,6 +292,8 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 
+	/** Returns the element at index size()-1 (the last element) in this DeArrList
+	 *  Returns null if the DeArrList is empty */
 	@Override
 	public E peekLast() {
 		try{
@@ -249,8 +303,12 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 
+	/** Sets the value of index {@code index} to be {@code element}.
+	 * @throws ArrayIndexOutOfBoundsException if index < 0 or index >= size().
+	 * @return the old value at that index, that was just overwritten by the set operation.
+	 */
 	@Override
-	public E set(int index, E element) {
+	public E set(int index, E element) throws ArrayIndexOutOfBoundsException {
 		if(index < 0 || index >= size())
 			throw new ArrayIndexOutOfBoundsException();
 
@@ -259,8 +317,13 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		return prev;
 	}
 
+	/** Removes the element at index {@index} from the DeArrList.
+	 * Shifts elements to close the gap.
+	 * @throws ArrayIndexOutOfBoundsException if index < 0 or index >= size().
+	 * @return the element that was removed by this operation.
+	 */
 	@Override
-	public E remove(int index) {
+	public E remove(int index) throws ArrayIndexOutOfBoundsException {
 		E e = get(index);
 		if(index == size() - 1){
 			vals[Util.mod(end - 1, vals.length)] = null;
@@ -288,6 +351,9 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		return e;
 	}
 
+	/** Removes and returns the element at the front of this DeArrList
+	 * Returns null if this DeArrList is empty.
+	 */
 	@Override
 	public E poll() {
 		try{
@@ -297,26 +363,41 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 	
+	/** Removes and returns the element at the front of this DeArrList
+	 * @throws ArrayIndexOutOfBoundsException if this DeArrList is empty
+	 */
 	@Override
-	public E pop() {
-		return poll();
-	}
-	
-	@Override
-	public E remove() {
+	public E pop() throws ArrayIndexOutOfBoundsException {
 		return removeFirst();
 	}
 	
+	/** Removes and returns the element at the front of this DeArrList
+	 * @throws ArrayIndexOutOfBoundsException if this DeArrList is empty
+	 */
 	@Override
-	public E removeFirst() {
+	public E remove() throws ArrayIndexOutOfBoundsException {
+		return removeFirst();
+	}
+	
+	/** Removes and returns the element at the front of this DeArrList
+	 * @throws ArrayIndexOutOfBoundsException if this DeArrList is empty
+	 */
+	@Override
+	public E removeFirst() throws ArrayIndexOutOfBoundsException {
 		return remove(0);
 	}
 
+	/** Removes and returns the element at the back of this DeArrList
+	 * @throws ArrayIndexOutOfBoundsException if this DeArrList is empty
+	 */
 	@Override
-	public E removeLast() {
+	public E removeLast() throws ArrayIndexOutOfBoundsException {
 		return remove(size() - 1);
 	}
 
+	/** Removes and returns the element at the front of this DeArrList
+	 * Returns null if this DeArrList is empty.
+	 */
 	@Override
 	public E pollFirst() {
 		try{
@@ -326,6 +407,9 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 
+	/** Removes and returns the element at the back of this DeArrList
+	 * Returns null if this DeArrList is empty.
+	 */
 	@Override
 	public E pollLast() {
 		try{
@@ -335,6 +419,10 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 
+	/** Removes the first occurrence of Object {@ o} in this DeArrList
+	 * @return true if the DeArrList was modified as a result of this call
+	 * 		(If o was contained in this DeArrList).
+	 */
 	@Override
 	public boolean removeFirstOccurrence(Object o) {
 		try{
@@ -344,6 +432,10 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 
+	/** Removes the last occurrence of Object {@ o} in this DeArrList
+	 * @return true if the DeArrList was modified as a result of this call
+	 * 		(If o was contained in this DeArrList).
+	 */
 	@Override
 	public boolean removeLastOccurrence(Object o) {
 		try{

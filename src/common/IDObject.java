@@ -24,14 +24,6 @@ public class IDObject {
 		return next_id.get();
 	}
 	
-	/** Resets the nextId to be nextID - the next instantiation of an IDObject will 
-	 * have id nextID.<br>
-	 * Only use this when all prior instantiations of IDObjects are no longer in use.
-	 */
-	public static void setNextID(int nextID){
-		next_id.set(nextID);
-	}
-	
 	/** The id of this IDObject */
 	private final int id;
 	
@@ -40,6 +32,15 @@ public class IDObject {
 	 */
 	public IDObject(){
 		id = next_id.getAndIncrement();
+	}
+	
+	/** Constructor for the IDObject class with the given id.
+	 * Creates a new IDObject with the given identifier. 
+	 * Only use when the new object is supposed to be equivalent to existing
+	 * objects with the given identifier (such as during cloning).
+	 */
+	public IDObject(int id){
+		this.id = id;
 	}
 	
 	/** Returns the ID of this IDObject. */

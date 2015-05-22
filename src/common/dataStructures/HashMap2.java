@@ -28,6 +28,8 @@ public class HashMap2<K1, K2, V> extends HashMap<Tuple2<K1, K2>, V>{
 		super();
 	}
 	
+	/** Constructs a map that intially contains all of the elements in m.
+	 * This is a shallow copy - elements will be contained in both this and m */
 	public HashMap2(Map<? extends Tuple2<K1,K2>, V> m ){
 		super(m);
 	}

@@ -309,15 +309,19 @@ public class Graph<V,E> implements Cloneable{
 	 * The two graphs contain the same elements but are completely independent
 	 * in terms of underlying structure, so modifications to this Graph
 	 * won't alter the returned graph, and modifications to the returned
-	 * graph won't alter this graph.
+	 * graph won't alter this graph.<br><br>
+	 * However, the graph is shallowly copied - V and E instances are not
+	 * copied - they will be contained in both this graph and g.
+	 * If deep copy behavior is necessary for V or E, extend graph re-write this 
+	 * constructor.
 	 */
-	public Graph(Graph<V,E> g){
+	public Graph(Graph<? extends V,? extends E> g){
 		this(g.directed);
 		for(V v : g.vertexSet()){
 			addVertex(v);
 		}
 		for(E e : g.edgeSet()){
-			Edge edge = g.edges.get(e);
+			Graph<? extends V, ? extends E>.Edge edge = g.edges.get(e);
 			addEdge(edge.getSource().v, edge.getSink().v, e);
 		}
 	}
@@ -326,7 +330,11 @@ public class Graph<V,E> implements Cloneable{
 	 * The two graphs contain the same elements but are completely independent
 	 * in terms of underlying structure, so modifications to this Graph
 	 * won't alter the returned graph, and modifications to the returned
-	 * graph won't alter this graph.
+	 * graph won't alter this graph.<br><br>
+	 * However, the graph is shallowly copied - V and E instances are not
+	 * copied - they will be contained in both this graph and g.
+	 * If deep copy behavior is necessary for V or E, extend graph and overwrite
+	 * this method.
 	 */
 	public Graph<V, E> clone(){
 		return new Graph<V, E>(this);

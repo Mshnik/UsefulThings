@@ -14,8 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IDObject {
 
-	/** The ID that will be assigned to the next IDObject that is created */
-	private static AtomicInteger next_id = new AtomicInteger();
+	/** The ID that will be assigned to the next IDObject that is created.
+	 * Package protected (not private) so test suite can directly access it */
+	static AtomicInteger next_id = new AtomicInteger();
 	
 	/** Returns the nextId - the value that will be given to the next instantiation
 	 * of an IDObject
@@ -48,6 +49,11 @@ public class IDObject {
 		return id;
 	}
 	
+	/** Simple toString implementation that returns only the id of this IDObject */
+	public String toString(){
+		return getID() + "";
+	}
+	
 	/** Returns the ID of this IDObject as its hashcode.
 	 * As this is unique to each IDObject, this will only be the same as
 	 * another IDObject's hashCode if the two objects are equivalent.
@@ -62,6 +68,8 @@ public class IDObject {
 	 * this method can be inherited without problem.
 	 */
 	public boolean equals(Object o){
+		if(this == o) return true;
+		if(o == null) return false;
 		try{
 			IDObject i = (IDObject) o;
 			return hashCode() == i.hashCode();

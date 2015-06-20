@@ -64,11 +64,11 @@ public class TextIO {
 	}
 	
 	/**
-	 * Take in a string and divide it into an array list of strings, broken up by the tab markers
+	 * Take in a string and divide it into an array list of strings, broken up by the delimiter marker
 	 * @param line: the string to parse
 	 * @return an array of strings. Each string should have no whitespace in it.
 	 */
-	public static String[] parseToArray(String line){
+	public static String[] parseToArray(String line, char delim){
 
 		ArrayList <String> asArrayList = new ArrayList <String> ();
 
@@ -79,12 +79,12 @@ public class TextIO {
 			while ( newBreak != -1){
 
 				line = line.trim();
-				newBreak = line.indexOf('\t');
+				newBreak = line.indexOf(delim);
 
 				if(newBreak != -1)	
 				{
 					asArrayList.add(line.substring(0, newBreak));
-					line = line.substring(newBreak);
+					line = line.substring(newBreak + 1);
 				}
 				else
 					asArrayList.add(line.substring(0,line.length()));

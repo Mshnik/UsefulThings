@@ -715,4 +715,12 @@ public class Graph<V,E> implements Cloneable{
 		return neighbors;
 	}
 
+	/** Returns all vertices that are shared neighbors of v1 and v2.
+	 */
+	public Set<V> sharedNeighborsOf(V v1, V v2) throws NotInCollectionException{
+		Set<V> neighbors = neighborsOf(v1);
+		neighbors.retainAll(neighborsOf(v2));
+		return neighbors;
+	}
+	
 }

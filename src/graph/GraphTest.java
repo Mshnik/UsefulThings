@@ -436,6 +436,14 @@ public class GraphTest {
 		neighbors.clear();
 		neighbors.add("A");
 		assertEquals(neighbors, gU.neighborsOf("B"));
+		
+		neighbors.clear();
+		neighbors.add("C");
+		assertEquals(neighbors, g.sharedNeighborsOf("A", "C"));
+		
+		neighbors.clear();
+		assertEquals(neighbors, g.sharedNeighborsOf("A", "B"));
+		
 	}
 
 	@Test

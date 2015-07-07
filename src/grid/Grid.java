@@ -49,6 +49,16 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 		size = 0;
 	}
 	
+	/** Initializes an empty grid
+	 * @param bounds - the bounds of this grid. This also determines the dimensionality of the grid
+	 */
+	public Grid(int[] bounds){
+		dimension = bounds.length;
+		this.bounds = Arrays.copyOf(bounds, bounds.length);
+		vals = recCreateArrays(0);
+		size = 0;
+	}
+	
 	/** Creates arrays of the given depth, up to the length of bounds
 	 * Used as a helper during construction, shouldn't be used otherwise.
 	 */

@@ -1,4 +1,6 @@
-package grid;
+package grid.matrix;
+
+import grid.Tile;
 
 import java.util.Arrays;
 
@@ -8,6 +10,8 @@ public class NumberTile<N extends Number> implements Tile {
   private Integer[] loc;
 
   public NumberTile(N val, Integer... loc){
+  	if(val == null)
+  		throw new IllegalArgumentException("Can't construct number tile with null number");
     this.val = val;
     this.loc = loc;
   }

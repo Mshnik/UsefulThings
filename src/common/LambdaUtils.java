@@ -12,4 +12,8 @@ public class LambdaUtils {
     public boolean validate(T t);
   }
 
+  public static interface Combinor<T>{
+    public T combine(T t1, T t2);
+  }
+
 }

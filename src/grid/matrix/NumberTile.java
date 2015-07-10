@@ -45,5 +45,4 @@ public class NumberTile<N extends Number> implements Tile {
       return false;
     }
   }
-
 }

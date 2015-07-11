@@ -1,7 +1,7 @@
 package grid;
 
 /** An abstract cursor implementation that is able to select things
- * in any matrix
+ * in any grid
  * @param <T> - the type of the elements in the matrix this is choosing from. */
 public class Cursor<T extends Tile>{
 
@@ -9,9 +9,9 @@ public class Cursor<T extends Tile>{
 	private T elm;
 
 	/** The grid this cursor is selecting over */
-	protected final Grid<T> grid;
+	public final Grid<? extends T> grid;
 
-	public Cursor(Grid<T> grid, T startingElm){
+	public Cursor(Grid<? extends T> grid, T startingElm){
 		this.grid = grid;
 		elm = startingElm;
 	}
@@ -31,16 +31,10 @@ public class Cursor<T extends Tile>{
 		return elm.getLocation();
 	}
 
-
-	/** Returns the grid this is cursing over */
-	public Grid<T> getGrid(){
-		return grid;
-	}
-
 	/** Called internally whenever a move would occur.
 	 * Do validation, return true if move is ok, false otherwise
 	 * Basic implementation - move is ok so long as the destination is non-null.
-	 * Can be completely overriden in subclasses.
+	 * Can be completely overridden in subclasses.
 	 */
 	protected boolean willMoveTo(Direction d, T destination){
 		return destination != null;
@@ -59,8 +53,8 @@ public class Cursor<T extends Tile>{
 		}
 	}
 
-	/** Called after a move occurs to do painting and the like. 
-	 * Can be overriden, but this method should be called first 
+	/** Called after a move occurs to do painting and the like.
+	 * Can be overridden, but this method should be called first
 	 * before adding new behavior */
 	protected void moved(){}
 

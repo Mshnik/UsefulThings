@@ -67,7 +67,8 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	 *                   The first argument to combine will be a tile from grid1, and the second will be a tile from grid2.
 	 * @return - A grid with array size equal to the max of the two grids on each dimension, and each element combined
 	 */
-  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, Combinor<T> combinor){
+  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, Combinor<T> combinor)
+      throws IllegalDimensionException{
     if(grid1.dimension != grid2.dimension)
       throw new IllegalDimensionException(grid2.dimension, grid1);
 
@@ -82,6 +83,16 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
     }
 
     return grid;
+  }
+
+  /** Returns the union of of this with other. If this and other both have a tile
+   * at a given location, uses this' tile. Only places null at a location of both tiles
+   * at that location are null
+   * @param other - the grid to merge with
+   * @return - the merged grid
+   */
+  public Grid<T> union(Grid<? extends T> other) throws IllegalDimensionException {
+    return merge(this, other, (t,t2) -> t != null ? t : t2);
   }
 
 	/** Creates arrays of the given depth, up to the length of bounds
@@ -128,7 +139,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 
 	 /** Returns the tile at the given location. Returns null if the coordinates are OOB or illegal dimension
    * @param loc - the location as a set of coordinates to find a tile
-   * @return the tile at the given location, or null if none.
+   * @return the tile at the given location, or null if none or OOB/IllegalDimension
    */
   public T getSafe(Integer... loc){
     if(loc.length != dimension)

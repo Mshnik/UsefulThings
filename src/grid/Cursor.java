@@ -13,7 +13,7 @@ public class Cursor<T extends Tile>{
 
 	public Cursor(Grid<? extends T> grid, T startingElm){
 		this.grid = grid;
-		elm = startingElm;
+		setElm(startingElm);
 	}
 
 	/** Returns the element this cursor is currently on */

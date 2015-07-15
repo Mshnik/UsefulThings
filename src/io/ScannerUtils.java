@@ -1,14 +1,14 @@
 package io;
 
 import java.util.Scanner;
-import common.LambdaUtils.Getter;
-import common.LambdaUtils.Validator;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ScannerUtils {
 
   private ScannerUtils(){}
 
-  private static <T> Getter<T> createGetter(Class<T> clazz, Scanner s) {
+  private static <T> Supplier<T> createSupplier(Class<T> clazz, Scanner s) {
     if(clazz.equals(Short.class)) return () -> clazz.cast(s.nextShort());
     if(clazz.equals(Integer.class)) return () -> clazz.cast(s.nextInt());
     if(clazz.equals(Long.class)) return () -> clazz.cast(s.nextLong());
@@ -27,13 +27,13 @@ public class ScannerUtils {
     return get(clazz, s, prompt, failMessage, (t) -> true);
   }
 
-  public static <T> T get(Class<T> clazz,  Scanner s, String prompt, String failMessage, Validator<T> validator){
-    Getter<T> getter = createGetter(clazz, s);
+  public static <T> T get(Class<T> clazz,  Scanner s, String prompt, String failMessage, Predicate<T> validator){
+    Supplier<T> getter = createSupplier(clazz, s);
     while(true){
       System.out.print(prompt);
       try{
         T t = getter.get();
-        if(validator.validate(t)) return t;
+        if(validator.test(t)) return t;
       }catch(Exception e){
         System.out.println("\n"+failMessage);
       }

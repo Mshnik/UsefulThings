@@ -10,8 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.BinaryOperator;
 
-import common.LambdaUtils.Combinor;
 import common.Util;
 import common.dataStructures.ConsList;
 
@@ -67,7 +67,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 	 *                   The first argument to combine will be a tile from grid1, and the second will be a tile from grid2.
 	 * @return - A grid with array size equal to the max of the two grids on each dimension, and each element combined
 	 */
-  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, Combinor<T> combinor)
+  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, BinaryOperator<T> combinor)
       throws IllegalDimensionException{
     if(grid1.dimension != grid2.dimension)
       throw new IllegalDimensionException(grid2.dimension, grid1);
@@ -79,7 +79,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
 
     Grid<T> grid = new Grid<T>(bounds);
     for(Integer[] loc : grid.buildCoordinates()){
-      grid.add(combinor.combine(grid1.getSafe(loc), grid2.getSafe(loc)));
+      grid.add(combinor.apply(grid1.getSafe(loc), grid2.getSafe(loc)));
     }
 
     return grid;
@@ -94,7 +94,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable{
   public Grid<T> union(Grid<? extends T> other) throws IllegalDimensionException {
     return merge(this, other, (t,t2) -> t != null ? t : t2);
   }
-
+  
 	/** Creates arrays of the given depth, up to the length of bounds
 	 * Used as a helper during construction, shouldn't be used otherwise.
 	 */

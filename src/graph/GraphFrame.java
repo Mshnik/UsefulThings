@@ -382,15 +382,27 @@ public class GraphFrame<V,E> extends JFrame {
 		/** Default thickness of lines when they are drawn on the GUI */
 		public static final int LINE_THICKNESS = 2;
 
+		/** Padding for bounds to prevent clipping */
+		public static final int PADDING = 5;
+		
 		/** Default color of lines when they are drawn on the GUI */
 		public final Color DEFAULT_COLOR = Color.DARK_GRAY;
 
 		private Circle c1;  //Endpoint one of this line
 		private Circle c2;  //Endpoint two of this line
 
+		private float centerXLoc = 0.5f;
+		private float centerYLoc = 0.5f;
+		private float cachedCenterXLoc = centerXLoc;
+		private float cachedCenterYLoc = centerXLoc;
+		
 		boolean arrowEnd1;
 		boolean arrowEnd2;
 
+		private Point clickPoint;
+		private int maxX;   //Boundary for dragging on the x
+		private int maxY;   //Boundary for dragging on the y
+		
 		private Color color; //The color to draw this line; should stay in sync with the color policy
 
 		private Graph<V,E>.Edge represents; //The Edge this represents
@@ -402,11 +414,56 @@ public class GraphFrame<V,E> extends JFrame {
 		 * @param r - the Edge this Line represents when drawn on the GUI
 		 */
 		public Line(Circle c1, Circle c2, Graph<V,E>.Edge r) {
-			setBounds(0, 0, GraphFrame.this.getContentPane().getWidth(), 
-					GraphFrame.this.getContentPane().getHeight());
 			setC1(c1);
 			setC2(c2);
 			represents = r;
+			
+			MouseListener clickListener = new MouseListener(){
+
+				/** When clicked, store the initial point at which this is clicked. */
+				@Override
+				public void mousePressed(MouseEvent e) {
+					clickPoint = e.getPoint();
+					maxX = GraphFrame.this.drawPanel.getWidth();
+					maxY = GraphFrame.this.drawPanel.getHeight();
+				}
+				public void mouseReleased(MouseEvent e) {
+					clickPoint = null;
+					cachedCenterXLoc = centerXLoc;
+					cachedCenterYLoc = centerYLoc;
+				}
+
+				public void mouseClicked(MouseEvent e) {}
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}
+			};
+			
+			addMouseListener(clickListener);
+			
+			MouseMotionListener motionListener = new MouseMotionListener(){
+
+				/** When this is dragged, perform the translation from the point
+				 * where this was clicked to the new dragged point. */
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					if(clickPoint != null) {
+						Point p = e.getPoint();
+						int newX = Math.min(maxX, Math.max(0, getXMid() + p.x - clickPoint.x));
+						int newY = Math.min(maxY, Math.max(0, getYMid() + p.y - clickPoint.y));
+						centerXLoc = ((float) (newX - getXMin())) / ((float) (getXMax() - getXMin()));
+						centerYLoc = ((float) (newY - getYMin())) / ((float) (getYMax() - getYMin()));
+						fixBounds();
+					}
+				
+				}
+
+				@Override
+				public void mouseMoved(MouseEvent e) {}
+			};
+
+			addMouseListener(clickListener);
+			addMouseMotionListener(motionListener);
+			
 			fixBounds();
 			setOpaque(false);
 		}
@@ -451,26 +508,46 @@ public class GraphFrame<V,E> extends JFrame {
 			return c2.getY1();
 		}
 
+		public int getXMin(){
+			return Math.min(c1.getX1(), c2.getX1());
+		}
+		
+		public int getXMax(){
+			return Math.max(c1.getX1(), c2.getX1());
+		}
+		
+		public int getYMin(){
+			return Math.min(c1.getY1(), c2.getY1());
+		}
+		
+		public int getYMax(){
+			return Math.max(c1.getY1(), c2.getY1());
+		}
+		
 		/** Return the midpoint of this line. */
 		public Point getMid() {
 			return new Point(getXMid(), getYMid());
 		}
-
+		
 		/** Return the x value of the midpoint of this line. */
 		public int getXMid() {
-			return (c1.getX1() + c2.getX1()) / 2;
+			return getXMin() + (int) ((getXMax() - getXMin()) * cachedCenterXLoc);
 		}
 
 		/** Return the y value of the midpoint of this line. */
 		public int getYMid() {
-			return (c1.getY1() + c2.getY1()) / 2;
+			return getYMin() + (int) ((getYMax() - getYMin()) * cachedCenterYLoc);
 		}
 
 		/** Dynamically resize the drawing boundaries of this line based on the
 		 * height and width of the line, with a minimum sized box of.
 		 * Call whenever circles move to fix the drawing boundaries of this. */
-		public void fixBounds() {
-			setBounds(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
+		private void fixBounds() {
+			int minX = Math.min(getXMin(), getXMid()) - PADDING;
+			int maxX = Math.max(getXMax(), getXMid()) + PADDING;
+			int minY = Math.min(getYMin(), getYMid()) - PADDING;
+			int maxY = Math.max(getYMax(), getYMid()) + PADDING;
+			setBounds(minX, minY, maxX - minX, maxY - minY);
 			drawPanel.repaint();
 		}
 
@@ -512,6 +589,16 @@ public class GraphFrame<V,E> extends JFrame {
 		private static final double ARROW_LENGTH = GraphFrame.Circle.DEFAULT_DIAMETER / 2;
 		private static final double ARROW_ANGLE = Math.PI / 6.0; 
 
+		private double getAngle(double x1, double x2, double y1, double y2) {
+			double diffX = (x2 - x1);
+			double diffY = (y2 - y1);
+			double hypotenuse = Math.sqrt(diffX * diffX + diffY * diffY);
+			double angle = Math.acos(diffX/hypotenuse);
+			if(y2 < y1)
+				angle = 2*Math.PI - angle;
+			return angle;
+		}
+		
 		/** Paint this line */
 		@Override
 		public void paintComponent(Graphics g) {
@@ -520,29 +607,31 @@ public class GraphFrame<V,E> extends JFrame {
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setStroke(new BasicStroke(LINE_THICKNESS));
 
-			double diffX = (getX2() - getX1());
-			double diffY = (getY2() - getY1());
-			double hypotenuse = Math.sqrt(diffX * diffX + diffY * diffY);
-			double angle = Math.acos(diffX/hypotenuse);
-			if(getY2() < getY1())
-				angle = 2*Math.PI - angle;
-
-			double y1 = getY1() + Math.sin(angle)*c1.diameter/2 + 1;
-			double x1 = getX1() + Math.cos(angle)*c1.diameter/2 + 1;
-			double y2 = getY2() - Math.sin(angle)*c2.diameter/2;
-			double x2 = getX2() - Math.cos(angle)*c2.diameter/2;
-			Line2D line2d = new Line2D.Double(x1, y1, x2, y2);
+			double angle1 = getAngle(getX1(), getX2(), getY1(), getY2());
+			
+			double y1 = getY1() + Math.sin(angle1)*c1.diameter/2 + 1 - getYMin() + PADDING;
+			double x1 = getX1() + Math.cos(angle1)*c1.diameter/2 + 1 - getXMin() + PADDING;	
+			double y3 = getY2() - Math.sin(angle1)*c2.diameter/2 - getYMin() + PADDING;
+			double x3 = getX2() - Math.cos(angle1)*c2.diameter/2 - getXMin() + PADDING;
+			double x2 = (x1 + x3) * centerXLoc;
+			double y2 = (y1 + y3) * centerYLoc;
+			
+			
+			GeneralPath generalPath = new GeneralPath();
+			generalPath.moveTo(x1, y1);
+			generalPath.curveTo(x1, y1, x2, y2, x3, y3);
 			g2d.setColor(getColor());
-			g2d.draw(line2d);
+			g2d.draw(generalPath);
 
 			if(directed){
+				double angle2 = getAngle(x2, x3, y2, y3);
 				Polygon arrow = new Polygon();
 
-				arrow.addPoint((int)x2, (int)y2);
-				arrow.addPoint((int)(x2 + ARROW_LENGTH * Math.cos(angle + Math.PI - ARROW_ANGLE)), 
-						(int)(y2 + ARROW_LENGTH * Math.sin(angle + Math.PI - ARROW_ANGLE)));
-				arrow.addPoint((int)(x2 + ARROW_LENGTH * Math.cos(angle + Math.PI + ARROW_ANGLE)), 
-						(int)(y2 + ARROW_LENGTH * Math.sin(angle + Math.PI + ARROW_ANGLE)));
+				arrow.addPoint((int)x3, (int)y3);
+				arrow.addPoint((int)(x3 + ARROW_LENGTH * Math.cos(angle2 + Math.PI - ARROW_ANGLE)), 
+						(int)(y3 + ARROW_LENGTH * Math.sin(angle2 + Math.PI - ARROW_ANGLE)));
+				arrow.addPoint((int)(x3 + ARROW_LENGTH * Math.cos(angle2 + Math.PI + ARROW_ANGLE)), 
+						(int)(y3 + ARROW_LENGTH * Math.sin(angle2 + Math.PI + ARROW_ANGLE)));
 				g2d.fill(arrow);
 			}
 			g2d.drawString(represents._2.toString(), getXMid(), getYMid() - 10);

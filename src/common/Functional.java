@@ -3,6 +3,7 @@ package common;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleUnaryOperator;
@@ -119,6 +120,47 @@ public class Functional {
 			dest[i] = f.apply(arr[i]);
 		}
 		return dest;
+	}
+	
+	/** Applies f to each element in arr, putting the results into a new list
+	 * @param arr - an array of values
+	 * @param f - a consumer function
+	 * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
+	 */
+	public static <T> List<T> map(Iterable<T> col, UnaryOperator<T> f){
+		DeArrList<T> lst = new DeArrList<>();
+		for(T t : col){
+			lst.add(f.apply(t));
+		}
+		return lst;
+	}
+	
+	/** Folds over the given array. Folds from left to right, with the accumulator given as the
+	 * first argument and the element as the second argument.
+	 * @param start - the default value to begin the folding with.
+	 * @param arr - the array of values to fold over
+	 * @param f - the folding function
+	 * @return - the folded value. If arr is empty, returns start.
+	 */
+	public static <T, R> R foldLeft(R start, T[] arr, BiFunction<R, T, R> f) {
+		for(T t : arr) {
+			start = f.apply(start, t);
+		}
+		return start;
+	}
+	
+	/** Folds over the given array. Folds from left to right, with the accumulator given as the
+	 * first argument and the element as the second argument.
+	 * @param start - the default value to begin the folding with.
+	 * @param col - the Iterable of values to fold over
+	 * @param f - the folding function
+	 * @return - the folded value. If col is empty, returns start.
+	 */
+	public static <T, R> R foldLeft(R start, Iterable<T> col, BiFunction<R, T, R> f) {
+		for(T t : col) {
+			start = f.apply(start, t);
+		}
+		return start;
 	}
 	
 	/** Zips lst and lst2 together. If either list is longer, the extra 

@@ -14,8 +14,8 @@ public class GraphFrame<V,E> extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private HashMap<V, Circle> nodes;
-	private HashMap<E, Line> edges;
+	protected HashMap<V, Circle> nodes;
+	protected HashMap<E, Line> edges;
 	private final boolean directed;
 	
 	private GraphFrame<V,E>.Circle selectedCircle;
@@ -25,7 +25,7 @@ public class GraphFrame<V,E> extends JFrame {
 	private final JPanel drawPanel;
 	private final JSlider sizeSlider;
 	
-	private GraphFrame(Graph<V,E> graph){
+	protected GraphFrame(Graph<V,E> graph){
 		directed = graph.isDirected();
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
@@ -121,7 +121,7 @@ public class GraphFrame<V,E> extends JFrame {
 	 * Each Circle is tied to and represents a Vertex in the graph.
 	 * @author MPatashnik
 	 */
-	class Circle extends JPanel {
+	protected class Circle extends JPanel {
 
 		private static final long serialVersionUID = 1250263410666963976L;
 
@@ -375,7 +375,7 @@ public class GraphFrame<V,E> extends JFrame {
 	 * (x1, y1, x2, y2).
 	 * @author MPatashnik
 	 */
-	class Line  extends JPanel{
+	protected class Line  extends JPanel{
 
 		private static final long serialVersionUID = -1688624827819736589L;
 

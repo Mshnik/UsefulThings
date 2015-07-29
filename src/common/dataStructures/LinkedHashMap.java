@@ -143,12 +143,6 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		return map.get(key);
 	}
 
-	@Override
-	public V get(Object key) {
-		if(! map.containsKey(key)) return null;
-		return map.get(key).val;
-	}
-
 	/** Returns the entry at index {@code index} in the map. 
 	 * Does this by starting at the end of the map and iterating in
 	 * until the desired index is reached.
@@ -175,6 +169,13 @@ public class LinkedHashMap<K, V> extends AbstractMap<K,V> implements Map<K, V>, 
 		}
 
 		return current;
+	}
+
+	
+	@Override
+	public V get(Object key) {
+		if(! map.containsKey(key)) return null;
+		return map.get(key).val;
 	}
 
 	/** Returns the first entry in this LinkedHashMap */

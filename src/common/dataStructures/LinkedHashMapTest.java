@@ -1,5 +1,6 @@
 package common.dataStructures;
 
+import static common.JUnitUtil.shouldFail;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
@@ -128,10 +129,7 @@ public class LinkedHashMapTest {
 		m.put("B", 8);
 		assertEquals("{D=5, E=4, A=1, B=8, C=2, F=6}", m.toString());
 
-		try{
-			m.putAt("E", 5, 2);
-			fail("Put existing key at new index");
-		}catch(Exception e){}
+		shouldFail(m::putAt, "E", 5, 2, RuntimeException.class);
 	}
 
 	private static class E extends Tuple2<String, Integer> implements Entry<String, Integer>{
@@ -205,17 +203,6 @@ public class LinkedHashMapTest {
 		assertEquals("A", m.getFirst().getKey());
 		assertEquals("B", m.get(1).getKey());
 		assertEquals(new Integer(3), m.getLast().getValue());
-		
-		try{
-			m.get(-1);
-			fail("Got out of bounds index");
-		}catch(IllegalArgumentException i){}
-		
-		try{
-			m.get(m.size());
-			fail("Got out of bounds index");
-		}catch(IllegalArgumentException i){}
-		
 		//TODO - set testing
 		
 	}

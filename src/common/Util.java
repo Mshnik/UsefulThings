@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.*;
 
 public class Util {
 
@@ -184,4 +185,78 @@ public class Util {
 		return built;
 	}
 	
+	/** Returns a generic version of the given intConsumer */
+	public static Consumer<Integer> asGeneric(IntConsumer intConsumer) {
+		return (i) -> intConsumer.accept(i);
+	}
+	
+	/** Returns a generic version of the given intFunction */
+	public static UnaryOperator<Integer> asGeneric(IntUnaryOperator intFunction) {
+		return (i) -> intFunction.applyAsInt(i);
+	}
+	
+	/** Returns a generic version of the given intFunction */
+	public static <R> Function<Integer, R> asGeneric(IntFunction<R> intFunction) {
+		return (i) -> intFunction.apply(i);
+	}
+	
+	/** Returns a generic version of the given intPredicate */
+	public static Predicate<Integer> asGeneric(IntPredicate intPredicate) {
+		return (i) -> intPredicate.test(i);
+	}
+	
+	/** Returns a generic version of the given intSupplier */
+	public static Supplier<Integer> asGeneric(IntSupplier intSupplier) {
+		return () -> intSupplier.getAsInt();
+	}
+	
+	/** Returns a generic version of the given longConsumer */
+	public static Consumer<Long> asGeneric(LongConsumer longConsumer) {
+		return (l) -> longConsumer.accept(l);
+	}
+	
+	/** Returns a generic version of the given longFunction */
+	public static UnaryOperator<Long> asGeneric(LongUnaryOperator longFunction) {
+		return (l) -> longFunction.applyAsLong(l);
+	}
+	
+	/** Returns a generic version of the given longFunction */
+	public static <R> Function<Long, R> asGeneric(LongFunction<R> longFunction) {
+		return (l) -> longFunction.apply(l);
+	}
+	
+	/** Returns a generic version of the given longPredicate */
+	public static Predicate<Long> asGeneric(LongPredicate longPredicate) {
+		return (l) -> longPredicate.test(l);
+	}
+	
+	/** Returns a generic version of the given doubleSupplier */
+	public static Supplier<Long> asGeneric(LongSupplier longSupplier) {
+		return () -> longSupplier.getAsLong();
+	}
+	
+	/** Returns a generic version of the given doubleConsumer */
+	public static Consumer<Double> asGeneric(DoubleConsumer doubleConsumer) {
+		return (d) -> doubleConsumer.accept(d);
+	}
+	
+	/** Returns a generic version of the given doubleFunction */
+	public static UnaryOperator<Double> asGeneric(DoubleUnaryOperator doubleFunction) {
+		return (d) -> doubleFunction.applyAsDouble(d);
+	}
+	
+	/** Returns a generic version of the given doubleFunction */
+	public static <R> Function<Double, R> asGeneric(DoubleFunction<R> doubleFunction) {
+		return (d) -> doubleFunction.apply(d);
+	}
+	
+	/** Returns a generic version of the given doublePredicate */
+	public static Predicate<Double> asGeneric(DoublePredicate doublePredicate) {
+		return (d) -> doublePredicate.test(d);
+	}
+	
+	/** Returns a generic version of the given doubleSupplier */
+	public static Supplier<Double> asGeneric(DoubleSupplier doubleSupplier) {
+		return () -> doubleSupplier.getAsDouble();
+	}
 }

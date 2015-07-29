@@ -1,5 +1,6 @@
 package grid;
 
+import static common.JUnitUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
@@ -100,15 +101,8 @@ public class GridTest {
 		assertTrue(g.contains(t3));
 		assertTrue(g.contains(t2));
 		assertEquals(2, g.size());
-
-		//Add OOB
-		ok = false;
-		try{
-			g.add(new IntTile(new Integer[]{11, 5}, 2));
-		}catch(ArrayIndexOutOfBoundsException e){
-			ok = true;
-		}
-		assertTrue(ok);
+		
+		shouldFail(g::add, new IntTile(new Integer[]{11, 5}, 2), ArrayIndexOutOfBoundsException.class);		
 		checkInvariants(g);
 		assertEquals(2, g.size());
 	}
@@ -215,14 +209,8 @@ public class GridTest {
 	  g.add(t3);
 	  assertEquals(t3, g.getFrom(t2, loc2));
 
-	  Integer[] loc0 = {-1,0};
-	  try{
-	    g.get(loc0);
-	    fail("Got OOB tile");
-	  }catch(ArrayIndexOutOfBoundsException e){}
+	  shouldFail(g::get, new Integer[]{-1, 0}, ArrayIndexOutOfBoundsException.class);
 
-	  assertEquals(null, g.getSafe(loc0));
-
+	  assertEquals(null, g.getSafe(new Integer[]{-1, 0}));
 	}
-
 }

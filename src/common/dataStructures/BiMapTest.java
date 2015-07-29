@@ -1,5 +1,6 @@
 package common.dataStructures;
 
+import static common.JUnitUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
@@ -153,10 +154,7 @@ public class BiMapTest {
 		assertEquals(b.keySet().size(), keys.size());
 		assertEquals(b.keySet(), keys);
 
-		try{
-			b.keySet().add("F");
-			fail("Added an element to a keyset");
-		}catch(UnsupportedOperationException e){}
+		shouldFail(b.keySet()::add, "F", UnsupportedOperationException.class);
 		
 		b.keySet().clear();
 		keys.clear();
@@ -214,10 +212,7 @@ public class BiMapTest {
 		assertEquals(b.values().size(), vals.size());
 		assertEquals(b.values(), vals);
 
-		try{
-			b.values().add(7);
-			fail("Added an element to a valueSet");
-		}catch(UnsupportedOperationException e){}
+		shouldFail(b.values()::add, 7, UnsupportedOperationException.class);
 		
 		b.values().clear();
 		vals.clear();
@@ -313,10 +308,7 @@ public class BiMapTest {
 				entriesIterator.remove(); //Make sure double removal doesn't hurt
 			}			
 			
-			try{
-				e.setValue(999);
-				fail("Altered a value in a biMap");
-			}catch(UnsupportedOperationException e1){}
+			shouldFail(e::setValue, 999, UnsupportedOperationException.class);
 		}
 		
 		assertEquals(b.size(), b.keySet().size());
@@ -340,10 +332,7 @@ public class BiMapTest {
 				rentriesIterator.remove(); //Make sure double removal doesn't hurt
 			}		
 			
-			try{
-				e.setValue("ASDFADFS");
-				fail("Altered a key in a biMap");
-			}catch(UnsupportedOperationException e1){}
+			shouldFail(e::setValue, "VAL", UnsupportedOperationException.class);
 		}
 		
 		b2.remove("A");

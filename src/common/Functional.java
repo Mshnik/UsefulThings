@@ -3,21 +3,36 @@ package common;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.IntConsumer;
-import java.util.function.IntUnaryOperator;
-import java.util.function.LongConsumer;
-import java.util.function.LongUnaryOperator;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 
 import common.dataStructures.DeArrList;
 import common.types.Tuple2;
 
 public class Functional {
 
+	@FunctionalInterface
+	public static interface Unit {
+		void perform();
+	}
+	
+	@FunctionalInterface
+	public static interface TriConsumer<T,U,V> {
+		void accept(T t, U u, V v);
+	}
+	
+	@FunctionalInterface
+	public static interface TriFunction<T,U,V,W> {
+		W apply(T t, U u, V v);
+	}
+	
+	@FunctionalInterface
+	public static interface TriPredicate<T,U,V> {
+		boolean test(T t, U u, V v);
+	}
+	
+	@FunctionalInterface
+	public static interface TrinaryOperator<T> extends TriFunction<T,T,T,T>{}
+	
 	private Functional(){}
 
 	/** Applies f to each element in arr

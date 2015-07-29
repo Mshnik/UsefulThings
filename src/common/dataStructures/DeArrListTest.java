@@ -1,5 +1,6 @@
 package common.dataStructures;
 
+import static common.JUnitUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -160,15 +161,8 @@ public class DeArrListTest {
 		assertEquals("(10,1,12,4,2,3,45,5,6,99)",a.toString());
 		assertEquals(10, a.size());
 		
-		try{
-			a.add(12, 3);
-			fail("Added at out of bounds position");
-		}catch(ArrayIndexOutOfBoundsException e){}
-
-		try{
-			a.add(-1, 3);
-			fail("Added at out of bounds position");
-		}catch(ArrayIndexOutOfBoundsException e){}
+		shouldFail(a::add, 12, 3, ArrayIndexOutOfBoundsException.class);
+		shouldFail(a::add, -1, 3, ArrayIndexOutOfBoundsException.class);
 		
 		//Test reArraying working correctly
 		DeArrList<Integer> a2 = new DeArrList<Integer>(4);
@@ -274,15 +268,8 @@ public class DeArrListTest {
 		assertEquals(5,a.size());
 		assertEquals("(11,2,31,4,51)",a.toString());
 		
-		try{
-			a.set(-1, 2);
-			fail("Set an element oob");
-		}catch(ArrayIndexOutOfBoundsException e){}
-		
-		try{
-			a.set(6, 2);
-			fail("Set an element oob");
-		}catch(ArrayIndexOutOfBoundsException e){}
+		shouldFail(a::set, -1, 2, ArrayIndexOutOfBoundsException.class);
+		shouldFail(a::set, 6, 2, ArrayIndexOutOfBoundsException.class);
 	}
 
 	@Test
@@ -369,6 +356,7 @@ public class DeArrListTest {
 				a.add(k, elm);
 			}
 		}
+		
 	}
 	
 	@Test
@@ -457,25 +445,9 @@ public class DeArrListTest {
 		assertEquals(null, a.pollFirst());
 		assertEquals(null, a.pollLast());
 		
-		try{
-			a.getFirst();
-			fail("Performed throwing operation on empty DeArrList");
-		}catch(Exception e){}
-		
-		try{
-			a.getLast();
-			fail("Performed throwing operation on empty DeArrList");
-		}catch(Exception e){}
-		
-		try{
-			a.removeFirst();
-			fail("Performed throwing operation on empty DeArrList");
-		}catch(Exception e){}
-
-		try{
-			a.removeLast();
-			fail("Performed throwing operation on empty DeArrList");
-		}catch(Exception e){}
-		
+		shouldFail(a::getFirst, ArrayIndexOutOfBoundsException.class);
+		shouldFail(a::getLast, ArrayIndexOutOfBoundsException.class);
+		shouldFail(a::removeFirst, ArrayIndexOutOfBoundsException.class);
+		shouldFail(a::removeLast, ArrayIndexOutOfBoundsException.class);
 	}
 }

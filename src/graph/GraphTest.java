@@ -1,5 +1,6 @@
 package graph;
 
+import static common.JUnitUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -180,15 +181,8 @@ public class GraphTest {
 		changed = gU.addEdge("B", "A", 12);
 		assertFalse(changed);
 
-		try{
-			g.addEdge("A","F", 5);
-			fail("Able to add edge to non-existant node");
-		}catch(NotInCollectionException e){}
-
-		try{
-			g.addEdge("F","B", 6);
-			fail("Able to add edge to non-existant node");
-		}catch(NotInCollectionException e){}
+		shouldFail(g::addEdge, "A", "F", 5, NotInCollectionException.class);
+		shouldFail(g::addEdge, "F", "B", 6, NotInCollectionException.class);
 	}
 
 	@Test
@@ -203,23 +197,10 @@ public class GraphTest {
 		assertEquals(new Integer(2), gU.getConnection("C", "A"));
 		assertEquals(new Integer(3), gU.getConnection("C", "C"));
 
-		try{
-			g.getConnection("A", "F");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
-		try{
-			gU.getConnection("A", "F");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			g.getConnection("F", "A");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
-		try{
-			gU.getConnection("F", "A");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
+		shouldFail(g::getConnection, "A", "F", NotInCollectionException.class);
+		shouldFail(gU::getConnection, "A", "F", NotInCollectionException.class);
+		shouldFail(g::getConnection, "F", "A", NotInCollectionException.class);
+		shouldFail(gU::getConnection, "F", "A", NotInCollectionException.class);
 
 		assertTrue(g.isConnected("A", "B"));
 		assertFalse(g.isConnected("B", "A"));
@@ -233,23 +214,10 @@ public class GraphTest {
 		assertFalse(gU.isConnected("A", "A"));
 		assertTrue(gU.isConnected("C", "C"));
 
-		try{
-			g.isConnected("A", "F");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
-		try{
-			gU.isConnected("A", "F");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			g.isConnected("F", "A");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
-		try{
-			gU.isConnected("F", "A");
-			fail("Got connection to vertex not in graph");
-		}catch(NotInCollectionException e){}
+		shouldFail(g::isConnected, "A", "F", NotInCollectionException.class);
+		shouldFail(gU::isConnected, "A", "F", NotInCollectionException.class);
+		shouldFail(g::isConnected, "F", "A", NotInCollectionException.class);
+		shouldFail(gU::isConnected, "F", "A", NotInCollectionException.class);
 
 		assertEquals("B", g.getOther(1, "A"));
 		assertEquals("A", g.getOther(1, "B"));
@@ -263,15 +231,8 @@ public class GraphTest {
 		assertEquals("C", gU.getOther(3, "C"));
 		assertEquals(null, gU.getOther(1, "C"));
 
-		try{
-			g.getOther(15, "A");
-			fail("Got other endpoint of edge not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			gU.getOther(15, "A");
-			fail("Got other endpoint of edge not in graph");
-		}catch(NotInCollectionException e){}
+		shouldFail(g::getOther, 15, "A", NotInCollectionException.class);
+		shouldFail(gU::getOther, 15, "A", NotInCollectionException.class);
 	}
 
 	@Test
@@ -311,35 +272,12 @@ public class GraphTest {
 		assertEquals(iSet, gU.edgeSetOfSink("C"));
 		assertEquals(iSet, gU.edgeSetOfSource("C"));
 
-		try{
-			g.edgeSetOf("F");
-			fail("Got edge set of vertex not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			g.edgeSetOfSink("F");
-			fail("Got edge set of vertex not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			g.edgeSetOfSource("F");
-			fail("Got edge set of vertex not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			gU.edgeSetOf("F");
-			fail("Got edge set of vertex not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			gU.edgeSetOfSink("F");
-			fail("Got edge set of vertex not in graph");
-		}catch(NotInCollectionException e){}
-
-		try{
-			gU.edgeSetOfSource("F");
-			fail("Got edge set of vertex not in graph");
-		}catch(NotInCollectionException e){}
+		shouldFail(g::edgeSetOf, "F", NotInCollectionException.class);
+		shouldFail(g::edgeSetOfSink, "F", NotInCollectionException.class);
+		shouldFail(g::edgeSetOfSource, "F", NotInCollectionException.class);
+		shouldFail(gU::edgeSetOf, "F", NotInCollectionException.class);
+		shouldFail(gU::edgeSetOfSink, "F", NotInCollectionException.class);
+		shouldFail(gU::edgeSetOfSource, "F", NotInCollectionException.class);
 
 		assertTrue(g.isEndpointOf(1, "A"));
 		assertTrue(g.isEndpointOf(1, "B"));
@@ -352,10 +290,7 @@ public class GraphTest {
 		assertTrue(g.isEndpointOf(3, "C"));
 		assertFalse(g.isEndpointOf(2, "ZZ"));
 
-		try{
-			g.isEndpointOf(12, "A");
-			fail("Checked endpoint of non-existent edge");
-		}catch(NotInCollectionException e){}
+		shouldFail(g::isEndpointOf, 12, "A", NotInCollectionException.class);
 
 		assertTrue(gU.isEndpointOf(1, "A"));
 		assertTrue(gU.isEndpointOf(1, "B"));
@@ -368,29 +303,19 @@ public class GraphTest {
 		assertTrue(gU.isEndpointOf(3, "C"));
 		assertFalse(gU.isEndpointOf(2, "ZZ"));
 
-		try{
-			gU.isEndpointOf(12, "A");
-			fail("Checked endpoint of non-existent edge");
-		}catch(NotInCollectionException e){}
+		shouldFail(gU::isEndpointOf, 12, "A", NotInCollectionException.class);
 
 		assertEquals("A", g.getSharedEndpoint(1, 2));
 		assertEquals("C", g.getSharedEndpoint(2, 3));
 		assertEquals(null, g.getSharedEndpoint(1, 3));
 
-		try{
-			g.getSharedEndpoint(12, 2);
-			fail("Found shared endpoint of non-existant edge");
-		}catch(NotInCollectionException e){}
+		shouldFail(g::getSharedEndpoint, 12, 2, NotInCollectionException.class);
 
 		assertEquals("A", gU.getSharedEndpoint(1, 2));
 		assertEquals("C", gU.getSharedEndpoint(2, 3));
 		assertEquals(null, gU.getSharedEndpoint(1, 3));
 
-		try{
-			gU.getSharedEndpoint(12, 2);
-			fail("Found shared endpoint of non-existant edge");
-		}catch(NotInCollectionException e){}
-
+		shouldFail(gU::getSharedEndpoint, 12, 2, NotInCollectionException.class);
 	}
 
 	@Test
@@ -539,36 +464,16 @@ public class GraphTest {
 
 		assertTrue(unmodifiableG == unmodifiableG.unmodifiableGraph());
 
-		try{
-			unmodifiableG.addVertex("ASDF");
-			fail("Modified UnmodifiableGraph");
-		}catch(UnsupportedOperationException e){}
-
-		try{
-			unmodifiableG.addEdge("C", "C", 15);
-			fail("Modified UnmodifiableGraph");
-		}catch(UnsupportedOperationException e){}
-
-		try{
-			unmodifiableG.removeVertex("B");
-			fail("Modified UnmodifiableGraph");
-		}catch(UnsupportedOperationException e){}
-
-		try{
-			unmodifiableG.removeEdge(1);
-			fail("Modified UnmodifiableGraph");
-		}catch(UnsupportedOperationException e){}
-
-		try{
-			unmodifiableG.clear();
-			fail("Modified UnmodifiableGraph");
-		}catch(UnsupportedOperationException e){}
+		shouldFail(unmodifiableG::addVertex, "ASDF", UnsupportedOperationException.class);
+		shouldFail(unmodifiableG::addEdge, "C", "C", 10, UnsupportedOperationException.class);
+		shouldFail(unmodifiableG::removeVertex, "B", UnsupportedOperationException.class);
+		shouldFail(unmodifiableG::removeEdge, 1, UnsupportedOperationException.class);
+		shouldFail(unmodifiableG::clear, UnsupportedOperationException.class);
 
 		//Test adding a vertex is reflected in view
 		g.addVertex("Z");
 
 		assertEquals(g.vertexSet(), unmodifiableG.vertexSet());
-
 	}
 	
 	@Test
@@ -724,22 +629,12 @@ public class GraphTest {
 		g.addVertex("B");
 		g.addVertex("C");
 
-		try{
-			Algorithm.dijkstra(g, "X", "A");
-			fail("Ran dijkstra's on non-existent start node");
-		}catch(NotInCollectionException e){}
-
-		try{
-			Algorithm.dijkstra(g, "A", "X");
-			fail("Ran dijkstra's on non-existent goal node");
-		}catch(NotInCollectionException e){}
+		shouldFail(Algorithm::dijkstra, g, "X", "A", NotInCollectionException.class);
+		shouldFail(Algorithm::dijkstra, g, "A", "X", NotInCollectionException.class);
 
 		g.addEdge("A", "B", new SuperEdge("ab",-1));
 
-		try{
-			Algorithm.dijkstra(g, "A", "B");
-			fail("Ran dijkstra's algorithm on a graph with a negative weight");
-		}catch(Exception e){}
+		shouldFail(Algorithm::dijkstra, g, "A", "B", Exception.class);
 
 		g.removeEdge(g.getConnection("A", "B"));
 

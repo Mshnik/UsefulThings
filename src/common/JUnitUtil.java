@@ -6,9 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import common.Functional.TriConsumer;
-import common.Functional.TriFunction;
-import common.Functional.Unit;
+import functional.*;
 import static org.junit.Assert.*;
 
 public class JUnitUtil {
@@ -28,7 +26,7 @@ public class JUnitUtil {
 		boolean got = false;
 		Exception ex = null;
 		try{
-			request.perform();
+			request.apply();
 			got = true;
 		}catch(Exception e){
 			ex = e;
@@ -194,7 +192,7 @@ public class JUnitUtil {
 		boolean got = false;
 		Exception ex = null;
 		try{
-			request.accept(arg1, arg2, arg3);
+			request.apply(arg1, arg2, arg3);
 			got = true;
 		}catch(Exception e){
 			ex = e;

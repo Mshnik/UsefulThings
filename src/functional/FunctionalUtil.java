@@ -1,4 +1,4 @@
-package common;
+package functional;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -8,33 +8,137 @@ import java.util.function.*;
 import common.dataStructures.DeArrList;
 import common.types.Tuple2;
 
-public class Functional {
-
-	@FunctionalInterface
-	public static interface Unit {
-		void perform();
+public class FunctionalUtil {
+	
+	/** Curries one argument into f.
+	 * @param f - the trifunction to curry
+	 * @param t - the argument to include into the curried function
+	 * @return - the curried BiFunction
+	 */
+	public static <T,U,V,W> BiFunction<U,V,W> curry(TriFunction<T,U,V,W> f, T t) {
+		return (u, v) -> f.apply(t, u, v);
 	}
 	
-	@FunctionalInterface
-	public static interface TriConsumer<T,U,V> {
-		void accept(T t, U u, V v);
+	/** Curries one argument into f.
+	 * @param f - the bifunction to curry
+	 * @param u - the argument to include into the curried function
+	 * @return - the curried Function
+	 */
+	public static <U,V,W> Function<V,W> curry(BiFunction<U,V,W> f, U u) {
+		return (v) -> f.apply(u, v);
 	}
 	
-	@FunctionalInterface
-	public static interface TriFunction<T,U,V,W> {
-		W apply(T t, U u, V v);
+	/** Curries one argument into f.
+	 * @param f - the function to curry
+	 * @param u - the argument to include into the curried function
+	 * @return - the curried Supplier
+	 */
+	public static <U,V,W> Supplier<W> curry(Function<V,W> f, V v) {
+		return () -> f.apply(v);
 	}
 	
-	@FunctionalInterface
-	public static interface TriPredicate<T,U,V> {
-		boolean test(T t, U u, V v);
+	/** Curries one argument into f.
+	 * @param f - the triConsumer to curry
+	 * @param t - the argument to include into the curried function
+	 * @return - the curried biconsumer
+	 */
+	public static <T,U,V> BiConsumer<U,V> curry(TriConsumer<T,U,V> f, T t) {
+		return (u, v) -> f.apply(t, u, v);
 	}
 	
-	@FunctionalInterface
-	public static interface TrinaryOperator<T> extends TriFunction<T,T,T,T>{}
+	/** Curries one argument into f.
+	 * @param f - the biconsumer to curry
+	 * @param u - the argument to include into the curried function
+	 * @return - the curried Consumer
+	 */
+	public static <U,V> Consumer<V> curry(BiConsumer<U,V> f, U u) {
+		return (v) -> f.apply(u, v);
+	}
 	
-	private Functional(){}
-
+	/** Curries one argument into f.
+	 * @param f - the consumer to curry
+	 * @param u - the argument to include into the curried function
+	 * @return - the curried unit
+	 */
+	public static <V> Unit curry(Consumer<V> f, V v) {
+		return () -> f.apply(v);
+	}
+	
+	/** Returns a generic version of the given intConsumer */
+	public static Consumer<Integer> asGeneric(IntConsumer intConsumer) {
+		return (i) -> intConsumer.accept(i);
+	}
+	
+	/** Returns a generic version of the given intFunction */
+	public static UnaryOperator<Integer> asGeneric(IntUnaryOperator intFunction) {
+		return (i) -> intFunction.applyAsInt(i);
+	}
+	
+	/** Returns a generic version of the given intFunction */
+	public static <R> Function<Integer, R> asGeneric(IntFunction<R> intFunction) {
+		return (i) -> intFunction.apply(i);
+	}
+	
+	/** Returns a generic version of the given intPredicate */
+	public static Predicate<Integer> asGeneric(IntPredicate intPredicate) {
+		return (i) -> intPredicate.test(i);
+	}
+	
+	/** Returns a generic version of the given intSupplier */
+	public static Supplier<Integer> asGeneric(IntSupplier intSupplier) {
+		return () -> intSupplier.getAsInt();
+	}
+	
+	/** Returns a generic version of the given longConsumer */
+	public static Consumer<Long> asGeneric(LongConsumer longConsumer) {
+		return (l) -> longConsumer.accept(l);
+	}
+	
+	/** Returns a generic version of the given longFunction */
+	public static UnaryOperator<Long> asGeneric(LongUnaryOperator longFunction) {
+		return (l) -> longFunction.applyAsLong(l);
+	}
+	
+	/** Returns a generic version of the given longFunction */
+	public static <R> Function<Long, R> asGeneric(LongFunction<R> longFunction) {
+		return (l) -> longFunction.apply(l);
+	}
+	
+	/** Returns a generic version of the given longPredicate */
+	public static Predicate<Long> asGeneric(LongPredicate longPredicate) {
+		return (l) -> longPredicate.test(l);
+	}
+	
+	/** Returns a generic version of the given doubleSupplier */
+	public static Supplier<Long> asGeneric(LongSupplier longSupplier) {
+		return () -> longSupplier.getAsLong();
+	}
+	
+	/** Returns a generic version of the given doubleConsumer */
+	public static Consumer<Double> asGeneric(DoubleConsumer doubleConsumer) {
+		return (d) -> doubleConsumer.accept(d);
+	}
+	
+	/** Returns a generic version of the given doubleFunction */
+	public static UnaryOperator<Double> asGeneric(DoubleUnaryOperator doubleFunction) {
+		return (d) -> doubleFunction.applyAsDouble(d);
+	}
+	
+	/** Returns a generic version of the given doubleFunction */
+	public static <R> Function<Double, R> asGeneric(DoubleFunction<R> doubleFunction) {
+		return (d) -> doubleFunction.apply(d);
+	}
+	
+	/** Returns a generic version of the given doublePredicate */
+	public static Predicate<Double> asGeneric(DoublePredicate doublePredicate) {
+		return (d) -> doublePredicate.test(d);
+	}
+	
+	/** Returns a generic version of the given doubleSupplier */
+	public static Supplier<Double> asGeneric(DoubleSupplier doubleSupplier) {
+		return () -> doubleSupplier.getAsDouble();
+	}
+	
 	/** Applies f to each element in arr
 	 * @param arr - an array of values.
 	 * @param f - a consumer function
@@ -71,7 +175,7 @@ public class Functional {
 	 */
 	public static <T> void forEach(T[] arr, Consumer<T> f){
 		for(int i = 0; i < arr.length; i++){
-			f.accept(arr[i]);
+			f.apply(arr[i]);
 		}
 	}
 	
@@ -81,7 +185,7 @@ public class Functional {
 	 */
 	public static <T> void forEach(Iterable<T> col, Consumer<T> f){
 		for(T t : col){
-			f.accept(t);
+			f.apply(t);
 		}
 	}
 
@@ -201,5 +305,5 @@ public class Functional {
 		return zLst;
 	}
 	
-	
+	private FunctionalUtil(){}
 }

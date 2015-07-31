@@ -3,7 +3,7 @@ package common.math;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import common.Functional;
+import functional.FunctionalUtil;
 
 public class Vector implements Iterable<Double> {
 
@@ -52,7 +52,7 @@ public class Vector implements Iterable<Double> {
 	}
 	
 	public Vector invert(){
-		return new Vector(Functional.map(vec, (d) -> (-d)));
+		return new Vector(FunctionalUtil.map(vec, (d) -> (-d)));
 	}
 	
 	public Vector subtract(Vector other){

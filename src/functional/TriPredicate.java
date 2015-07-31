@@ -4,7 +4,7 @@ package functional;
 public interface TriPredicate<A,B,C> extends FuncShell {
 	boolean apply(A a, B b, C c);
 	
-	default BSupplier partialApply(A a, B b, C c) {
+	default Supplier<Boolean> partialApply(A a, B b, C c) {
 		return () -> apply(a, b, c);
 	}
 	

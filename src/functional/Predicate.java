@@ -4,7 +4,7 @@ package functional;
 public interface Predicate<A> extends FuncShell {
 	boolean apply(A a);
 	
-	default BSupplier partialApply(A a) {
+	default Supplier<Boolean> partialApply(A a) {
 		return () -> apply(a);
 	}
 	

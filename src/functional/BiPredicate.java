@@ -3,7 +3,7 @@ package functional;
 public interface BiPredicate<A, B> extends FuncShell {
 	boolean apply(A a, B b);
 	
-	default BSupplier partialApply(A a, B b) {
+	default Supplier<Boolean> partialApply(A a, B b) {
 		return () -> apply(a, b);
 	}
 	

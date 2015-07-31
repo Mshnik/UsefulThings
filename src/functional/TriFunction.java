@@ -15,4 +15,12 @@ public interface TriFunction<A,B,C,R> extends FuncShell {
 	default BiFunction<B, C, R> partialApply(A a) {
 		return (b, c) -> apply(a,b,c);
 	}
+	
+	default <S> TriFunction<A, B, C, S> andThen(Function<R,S> next) {
+		return (a, b, c) -> next.apply(apply(a, b, c));
+	}	 
+	
+	default TriFunction<C,A,B,R> rotate() {
+		return (c,a,b) -> apply(a,b,c);
+	}
 }

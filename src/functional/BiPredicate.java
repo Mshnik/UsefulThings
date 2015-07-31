@@ -15,6 +15,10 @@ public interface BiPredicate<A, B> extends FuncShell {
 		return (a,b,c) -> apply(a,b);
 	}
 	
+	default BiPredicate<B,A> rotate() {
+		return (b,a) -> apply(a,b);
+	}
+	
 	default BiPredicate<A, B> and(BiPredicate<A, B> other) {
 		return (a, b) -> apply(a, b) && other.apply(a, b);
 	}

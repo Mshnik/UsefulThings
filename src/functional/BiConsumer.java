@@ -15,4 +15,8 @@ public interface BiConsumer<A,B> extends FuncShell {
 	default <C> TriConsumer<A,B,C> unApply(Class<C> clazz) {
 		return (a,b,c) -> apply(a,b);
 	}
+	
+	default BiConsumer<B,A> rotate() {
+		return (b,a) -> apply(a,b);
+	}
 }

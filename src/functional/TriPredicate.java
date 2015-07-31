@@ -16,6 +16,10 @@ public interface TriPredicate<A,B,C> extends FuncShell {
 		return (b, c) -> apply(a,b,c);
 	}
 	
+	default TriPredicate<C,A,B> rotate() {
+		return (c,a,b) -> apply(a,b,c);
+	}
+	
 	default TriPredicate<A, B, C> and(TriPredicate<A, B, C> other) {
 		return (a, b, c) -> apply(a, b, c) && other.apply(a, b, c);
 	}

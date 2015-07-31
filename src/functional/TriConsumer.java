@@ -15,4 +15,8 @@ public interface TriConsumer<A,B,C> extends FuncShell {
 	default BiConsumer<B, C> partialApply(A a) {
 		return (b, c) -> apply(a,b,c);
 	}
+	
+	default TriConsumer<C,A,B> rotate() {
+		return (c,a,b) -> apply(a,b,c);
+	}
 }

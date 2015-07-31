@@ -10,60 +10,6 @@ import common.types.Tuple2;
 
 public class FunctionalUtil {
 	
-	/** Curries one argument into f.
-	 * @param f - the trifunction to curry
-	 * @param t - the argument to include into the curried function
-	 * @return - the curried BiFunction
-	 */
-	public static <T,U,V,W> BiFunction<U,V,W> curry(TriFunction<T,U,V,W> f, T t) {
-		return (u, v) -> f.apply(t, u, v);
-	}
-	
-	/** Curries one argument into f.
-	 * @param f - the bifunction to curry
-	 * @param u - the argument to include into the curried function
-	 * @return - the curried Function
-	 */
-	public static <U,V,W> Function<V,W> curry(BiFunction<U,V,W> f, U u) {
-		return (v) -> f.apply(u, v);
-	}
-	
-	/** Curries one argument into f.
-	 * @param f - the function to curry
-	 * @param u - the argument to include into the curried function
-	 * @return - the curried Supplier
-	 */
-	public static <U,V,W> Supplier<W> curry(Function<V,W> f, V v) {
-		return () -> f.apply(v);
-	}
-	
-	/** Curries one argument into f.
-	 * @param f - the triConsumer to curry
-	 * @param t - the argument to include into the curried function
-	 * @return - the curried biconsumer
-	 */
-	public static <T,U,V> BiConsumer<U,V> curry(TriConsumer<T,U,V> f, T t) {
-		return (u, v) -> f.apply(t, u, v);
-	}
-	
-	/** Curries one argument into f.
-	 * @param f - the biconsumer to curry
-	 * @param u - the argument to include into the curried function
-	 * @return - the curried Consumer
-	 */
-	public static <U,V> Consumer<V> curry(BiConsumer<U,V> f, U u) {
-		return (v) -> f.apply(u, v);
-	}
-	
-	/** Curries one argument into f.
-	 * @param f - the consumer to curry
-	 * @param u - the argument to include into the curried function
-	 * @return - the curried unit
-	 */
-	public static <V> Unit curry(Consumer<V> f, V v) {
-		return () -> f.apply(v);
-	}
-	
 	/** Returns a generic version of the given intConsumer */
 	public static Consumer<Integer> asGeneric(IntConsumer intConsumer) {
 		return (i) -> intConsumer.accept(i);

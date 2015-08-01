@@ -137,16 +137,20 @@ public class FunctionalUtil {
 	
 	/** Applies f to each element in arr, putting the results into a new list
 	 * @param arr - an array of values
-	 * @param f - a consumer function
+	 * @param f - a function
 	 * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
 	 */
 	public static <T,S> List<S> map(T[] arr, Function<T,S> f){
-		return map(Arrays.asList(arr), f);
+		DeArrList<S> lst = new DeArrList<>();
+		for(T t : arr){
+			lst.add(f.apply(t));
+		}
+		return lst;
 	}
 	
 	/** Applies f to each element in arr, putting the results into a new list
 	 * @param arr - an array of values
-	 * @param f - a consumer function
+	 * @param f - a function
 	 * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
 	 */
 	public static <T,S> List<S> map(Iterable<T> col, Function<T,S> f){
@@ -178,6 +182,37 @@ public class FunctionalUtil {
 	public static <T, R> R foldLeft(R start, Iterable<T> col, BiFunction<R, T, R> f) {
 		for(T t : col) {
 			start = f.apply(start, t);
+		}
+		return start;
+	}
+	
+	/** Folds over the given array. Folds from left to right, with the accumulator given as the
+	 * first argument and the element as the second argument.
+	 * @param start - the default value to begin the folding with.
+	 * @param arr - the array of values to fold over
+	 * @param f - the folding function
+	 * @return - the folded value. If arr is empty, returns start.
+	 */
+	public static <T, S, R> R foldLeft2(R start, T[] arr, S[] arr2, TriFunction<R, T, S, R> f) {
+		int min = Math.min(arr.length, arr2.length);
+		for(int i = 0; i < min; i++) {
+			start = f.apply(start, arr[i], arr2[i]);
+		}
+		return start;
+	}
+	
+	/** Folds over the given collection. Folds from left to right, with the accumulator given as the
+	 * first argument and the element as the second argument.
+	 * @param start - the default value to begin the folding with.
+	 * @param col - the Iterable of values to fold over
+	 * @param f - the folding function
+	 * @return - the folded value. If col is empty, returns start.
+	 */
+	public static <T, S, R> R foldLeft2(R start, Iterable<T> col, Iterable<S> col2, TriFunction<R, T, S, R> f) {
+		Iterator<T> c = col.iterator();
+		Iterator<S> c2 = col2.iterator();
+		while(c.hasNext() && c2.hasNext()) {
+			start = f.apply(start, c.next(), c2.next());
 		}
 		return start;
 	}

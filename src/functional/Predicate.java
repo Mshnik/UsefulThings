@@ -1,42 +1,40 @@
 package functional;
 
+import java.util.Objects;
+
 @FunctionalInterface
-public interface Predicate<A> extends SingleFuncShell<A> {
+public interface Predicate<A> extends java.util.function.Predicate<A>, SingleFuncShell<A> {
 	boolean apply(A a);
+	
+	default boolean test(A a) {
+		return apply(a);
+	}
 	
 	default Supplier<Boolean> partialApply(A a) {
 		return () -> apply(a);
-	}
-	
-	default <B> BiPredicate<A,B> unApply(Class<B> clazz) {
-		return (a,b) -> apply(a);
 	}
 	
 	default Consumer<A> discardReturn() {
 		return (a) -> apply(a);
 	}
 	
-	default Predicate<A> and(Predicate<A> other) {
-		return (a) -> apply(a) && other.apply(a);
-	}
-	
-	default Predicate<A> or(Predicate<A> other) {
-		return (a) -> apply(a) || other.apply(a);
-	}
-	
-	default Predicate<A> nand(Predicate<A> other) {
+	default Predicate<A> nand(Predicate<? super A> other) {
+    Objects.requireNonNull(other);
 		return (a) -> ! (apply(a) && other.apply(a));
 	}
 	
-	default Predicate<A> nor(Predicate<A> other) {
+	default Predicate<A> nor(Predicate<? super A> other) {
+    Objects.requireNonNull(other);
 		return (a) -> ! (apply(a) || other.apply(a));
 	}
 	
-	default Predicate<A> xor(Predicate<A> other) {
+	default Predicate<A> xor(Predicate<? super A> other) {
+    Objects.requireNonNull(other);
 		return (a) -> apply(a) ^ other.apply(a);
 	}
 	
-	default Predicate<A> xnor(Predicate<A> other) {
+	default Predicate<A> xnor(Predicate<? super A> other) {
+    Objects.requireNonNull(other);
 		return (a) -> ! (apply(a) ^ other.apply(a));
 	}
 }

@@ -1,11 +1,11 @@
 package functional;
 
 @FunctionalInterface
-public interface Supplier<R> extends UnitFuncShell {
+public interface Supplier<R> extends java.util.function.Supplier<R>, UnitFuncShell {
 	R apply();
 	
-	default <A> Function<A,R> unApply(Class<A> clazz) {
-		return (a) -> apply();
+	default R get() {
+		return apply();
 	}
 	
 	default Unit asUnit() {

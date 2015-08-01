@@ -1,7 +1,13 @@
 package functional;
 
-public interface BiPredicate<A, B> extends BiFuncShell<A, B> {
+import java.util.Objects;
+
+public interface BiPredicate<A, B> extends java.util.function.BiPredicate<A,B>, BiFuncShell<A, B> {
 	boolean apply(A a, B b);
+	
+	default boolean test(A a, B b) {
+		return apply(a, b);
+	}
 	
 	default Supplier<Boolean> partialApply(A a, B b) {
 		return () -> apply(a, b);
@@ -9,10 +15,6 @@ public interface BiPredicate<A, B> extends BiFuncShell<A, B> {
 	
 	default Predicate<B> partialApply(A a) {
 		return (b) -> apply(a,b);
-	}
-	
-	default <C> TriPredicate<A,B,C> unApply(Class<C> clazz) {
-		return (a,b,c) -> apply(a,b);
 	}
 	
 	default BiConsumer<A,B> discardReturn() {
@@ -23,27 +25,23 @@ public interface BiPredicate<A, B> extends BiFuncShell<A, B> {
 		return (b,a) -> apply(a,b);
 	}
 	
-	default BiPredicate<A, B> and(BiPredicate<A, B> other) {
-		return (a, b) -> apply(a, b) && other.apply(a, b);
-	}
-	
-	default BiPredicate<A, B> or(BiPredicate<A, B> other) {
-		return (a, b) -> apply(a, b) || other.apply(a, b);
-	}
-	
-	default BiPredicate<A, B> nand(BiPredicate<A, B> other) {
+	default BiPredicate<A, B> nand(BiPredicate<? super A, ? super B> other) {
+    Objects.requireNonNull(other);
 		return (a, b) -> ! (apply(a, b) && other.apply(a, b));
 	}
 	
-	default BiPredicate<A, B> nor(BiPredicate<A, B> other) {
+	default BiPredicate<A, B> nor(BiPredicate<? super A, ? super B> other) {
+    Objects.requireNonNull(other);
 		return (a, b) -> ! (apply(a, b) || other.apply(a, b));
 	}
 	
-	default BiPredicate<A, B> xor(BiPredicate<A, B> other) {
+	default BiPredicate<A, B> xor(BiPredicate<? super A, ? super B> other) {
+		Objects.requireNonNull(other);
 		return (a, b) -> apply(a, b) ^ other.apply(a, b);
 	}
 	
-	default BiPredicate<A, B> xnor(BiPredicate<A, B> other) {
+	default BiPredicate<A, B> xnor(BiPredicate<? super A, ? super B> other) {
+		Objects.requireNonNull(other);
 		return (a, b) -> ! (apply(a, b) ^ other.apply(a, b));
 	}
 }

@@ -3,6 +3,8 @@ package common.math;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import common.Util;
+
 import functional.FunctionalUtil;
 
 public class Vector implements Iterable<Double> {
@@ -22,6 +24,11 @@ public class Vector implements Iterable<Double> {
 	public Vector(){
 		this.vec = new Double[]{};
 		magnitude = -1;
+	}
+	
+	
+	public Vector(double[] components){
+		this(Util.boxArr(components));
 	}
 	
 	public Vector(Double... components){
@@ -52,7 +59,11 @@ public class Vector implements Iterable<Double> {
 	}
 	
 	public Vector invert(){
-		return new Vector(FunctionalUtil.map(vec, (d) -> (-d)).toArray(new Double[vec.length]));
+		Vector v = new Vector(vec);
+		for(int i = 0; i < v.dimension(); i++){
+			v.vec[i] = -1 * v.vec[i];
+		}
+		return v;
 	}
 	
 	public Vector subtract(Vector other){
@@ -68,11 +79,7 @@ public class Vector implements Iterable<Double> {
 	}
 	
 	public double dot(Vector other){
-		double d = 0;
-		for(int i = 0; i < Math.min(dimension(), other.dimension()); i++){
-			d += vec[i] * other.vec[i];
-		}
-		return d;
+		return FunctionalUtil.foldLeft2(0.0, vec, other.vec, (a,b,c) -> a + b*c);
 	}
 	
 	public final Double[] get(){
@@ -111,13 +118,13 @@ public class Vector implements Iterable<Double> {
 	
 	@Override
 	public int hashCode(){
-		return Arrays.deepHashCode(vec);
+		return Arrays.hashCode(vec);
 	}
 	
 	@Override
 	public boolean equals(Object o){
 		if(! (o instanceof Vector)) return false;
-		return Arrays.deepEquals(vec, ((Vector) o).vec);
+		return Arrays.equals(vec, ((Vector) o).vec);
 	}
 
 	@Override

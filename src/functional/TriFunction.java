@@ -1,7 +1,7 @@
 package functional;
 
 @FunctionalInterface
-public interface TriFunction<A,B,C,R> extends FuncShell {
+public interface TriFunction<A,B,C,R> extends TriFuncShell<A,B,C> {
 	R apply(A a, B B, C c);
 	
 	default Supplier<R> partialApply(A a, B b, C c) {
@@ -22,5 +22,9 @@ public interface TriFunction<A,B,C,R> extends FuncShell {
 	
 	default TriFunction<C,A,B,R> rotate() {
 		return (c,a,b) -> apply(a,b,c);
+	}
+	
+	default TriConsumer<A,B,C> discardReturn() {
+		return (a,b,c) -> apply(a,b,c);
 	}
 }

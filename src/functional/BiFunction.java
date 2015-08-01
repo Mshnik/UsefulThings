@@ -1,7 +1,7 @@
 package functional;
 
 @FunctionalInterface
-public interface BiFunction<A,B,R> extends FuncShell {
+public interface BiFunction<A,B,R> extends BiFuncShell<A, B> {
 	R apply(A a, B b);
 	
 	default Supplier<R> partialApply(A a, B b) {
@@ -23,4 +23,8 @@ public interface BiFunction<A,B,R> extends FuncShell {
 	default <S> BiFunction<A, B, S> andThen(Function<R,S> next) {
 		return (a, b) -> next.apply(apply(a, b));
 	}	 
+	
+	default BiConsumer<A,B> discardReturn() {
+		return (a, b) -> apply(a, b);
+	}
 }

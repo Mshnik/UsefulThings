@@ -52,7 +52,7 @@ public class Vector implements Iterable<Double> {
 	}
 	
 	public Vector invert(){
-		return new Vector(FunctionalUtil.map(vec, (d) -> (-d)));
+		return new Vector(FunctionalUtil.map(vec, (d) -> (-d)).toArray(new Double[vec.length]));
 	}
 	
 	public Vector subtract(Vector other){

@@ -1,7 +1,7 @@
 package functional;
 
 @FunctionalInterface
-public interface Predicate<A> extends FuncShell {
+public interface Predicate<A> extends SingleFuncShell<A> {
 	boolean apply(A a);
 	
 	default Supplier<Boolean> partialApply(A a) {
@@ -10,6 +10,10 @@ public interface Predicate<A> extends FuncShell {
 	
 	default <B> BiPredicate<A,B> unApply(Class<B> clazz) {
 		return (a,b) -> apply(a);
+	}
+	
+	default Consumer<A> discardReturn() {
+		return (a) -> apply(a);
 	}
 	
 	default Predicate<A> and(Predicate<A> other) {

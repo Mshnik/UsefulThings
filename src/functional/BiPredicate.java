@@ -1,6 +1,6 @@
 package functional;
 
-public interface BiPredicate<A, B> extends FuncShell {
+public interface BiPredicate<A, B> extends BiFuncShell<A, B> {
 	boolean apply(A a, B b);
 	
 	default Supplier<Boolean> partialApply(A a, B b) {
@@ -13,6 +13,10 @@ public interface BiPredicate<A, B> extends FuncShell {
 	
 	default <C> TriPredicate<A,B,C> unApply(Class<C> clazz) {
 		return (a,b,c) -> apply(a,b);
+	}
+	
+	default BiConsumer<A,B> discardReturn() {
+		return (a, b) -> apply(a, b);
 	}
 	
 	default BiPredicate<B,A> rotate() {

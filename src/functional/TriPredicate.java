@@ -1,7 +1,7 @@
 package functional;
 
 @FunctionalInterface
-public interface TriPredicate<A,B,C> extends FuncShell {
+public interface TriPredicate<A,B,C> extends TriFuncShell<A,B,C> {
 	boolean apply(A a, B b, C c);
 	
 	default Supplier<Boolean> partialApply(A a, B b, C c) {
@@ -14,6 +14,10 @@ public interface TriPredicate<A,B,C> extends FuncShell {
 	
 	default BiPredicate<B, C> partialApply(A a) {
 		return (b, c) -> apply(a,b,c);
+	}
+	
+	default TriConsumer<A,B,C> discardReturn() {
+		return (a, b, c) -> apply(a, b, c);
 	}
 	
 	default TriPredicate<C,A,B> rotate() {

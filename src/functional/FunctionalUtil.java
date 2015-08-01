@@ -89,9 +89,9 @@ public class FunctionalUtil {
 	 * @param arr - an array of values.
 	 * @param f - a consumer function
 	 */
-	public static void forEach(int[] arr, IntConsumer f){
+	public static void forEach(int[] arr, Consumer<Integer> f){
 		for(int i = 0; i < arr.length; i++){
-			f.accept(arr[i]);
+			f.apply(arr[i]);
 		}
 	}
 	
@@ -99,9 +99,9 @@ public class FunctionalUtil {
 	 * @param arr - an array of values.
 	 * @param f - a consumer function
 	 */
-	public static void forEach(double[] arr, DoubleConsumer f){
+	public static void forEach(double[] arr, Consumer<Double> f){
 		for(int i = 0; i < arr.length; i++){
-			f.accept(arr[i]);
+			f.apply(arr[i]);
 		}
 	}
 	
@@ -109,9 +109,9 @@ public class FunctionalUtil {
 	 * @param arr - an array of values.
 	 * @param f - a consumer function
 	 */
-	public static void forEach(long[] arr, LongConsumer f){
+	public static void forEach(long[] arr, Consumer<Long> f){
 		for(int i = 0; i < arr.length; i++){
-			f.accept(arr[i]);
+			f.apply(arr[i]);
 		}
 	}
 	
@@ -134,57 +134,14 @@ public class FunctionalUtil {
 			f.apply(t);
 		}
 	}
-
-	/** Applies f to each element in arr, putting the results into a new array
+	
+	/** Applies f to each element in arr, putting the results into a new list
 	 * @param arr - an array of values
 	 * @param f - a consumer function
-	 * @return - an array of the mapped values: [f(arr[0]), f(arr[1]), ....]
+	 * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
 	 */
-	public static int[] map(int[] arr, IntUnaryOperator f){
-		int[] dest = Arrays.copyOf(arr, arr.length);
-		for(int i = 0; i < arr.length; i++){
-			dest[i] = f.applyAsInt(arr[i]);
-		}
-		return dest;
-	}
-
-	/** Applies f to each element in arr, putting the results into a new array
-	 * @param arr - an array of values
-	 * @param f - a consumer function
-	 * @return - an array of the mapped values: [f(arr[0]), f(arr[1]), ....]
-	 */
-	public static double[] map(double[] arr, DoubleUnaryOperator f){
-		double[] dest = Arrays.copyOf(arr, arr.length);
-		for(int i = 0; i < arr.length; i++){
-			dest[i] = f.applyAsDouble(arr[i]);
-		}
-		return dest;
-	}
-
-	/** Applies f to each element in arr, putting the results into a new array
-	 * @param arr - an array of values
-	 * @param f - a consumer function
-	 * @return - an array of the mapped values: [f(arr[0]), f(arr[1]), ....]
-	 */
-	public static long[] map(long[] arr, LongUnaryOperator f){
-		long[] dest = Arrays.copyOf(arr, arr.length);
-		for(int i = 0; i < arr.length; i++){
-			dest[i] = f.applyAsLong(arr[i]);
-		}
-		return dest;
-	}
-
-	/** Applies f to each element in arr, putting the results into a new array
-	 * @param arr - an array of values
-	 * @param f - a consumer function
-	 * @return - an array of the mapped values: [f(arr[0]), f(arr[1]), ....]
-	 */
-	public static <T> T[] map(T[] arr, UnaryOperator<T> f){
-		T[] dest = Arrays.copyOf(arr, arr.length);
-		for(int i = 0; i < arr.length; i++){
-			dest[i] = f.apply(arr[i]);
-		}
-		return dest;
+	public static <T,S> List<S> map(T[] arr, Function<T,S> f){
+		return map(Arrays.asList(arr), f);
 	}
 	
 	/** Applies f to each element in arr, putting the results into a new list
@@ -192,8 +149,8 @@ public class FunctionalUtil {
 	 * @param f - a consumer function
 	 * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
 	 */
-	public static <T> List<T> map(Iterable<T> col, UnaryOperator<T> f){
-		DeArrList<T> lst = new DeArrList<>();
+	public static <T,S> List<S> map(Iterable<T> col, Function<T,S> f){
+		DeArrList<S> lst = new DeArrList<>();
 		for(T t : col){
 			lst.add(f.apply(t));
 		}
@@ -208,13 +165,10 @@ public class FunctionalUtil {
 	 * @return - the folded value. If arr is empty, returns start.
 	 */
 	public static <T, R> R foldLeft(R start, T[] arr, BiFunction<R, T, R> f) {
-		for(T t : arr) {
-			start = f.apply(start, t);
-		}
-		return start;
+		return foldLeft(start, Arrays.asList(arr), f);
 	}
 	
-	/** Folds over the given array. Folds from left to right, with the accumulator given as the
+	/** Folds over the given collection. Folds from left to right, with the accumulator given as the
 	 * first argument and the element as the second argument.
 	 * @param start - the default value to begin the folding with.
 	 * @param col - the Iterable of values to fold over
@@ -226,6 +180,22 @@ public class FunctionalUtil {
 			start = f.apply(start, t);
 		}
 		return start;
+	}
+	
+	/** Constructs a new list with elements filtered by the given predicate */
+	public static <T> List<T> filter(T[] col, Predicate<T> f) {
+		return filter(Arrays.asList(col), f);
+	}
+	
+	/** Constructs a new list with elements filtered by the given predicate */
+	public static <T> List<T> filter(Iterable<T> col, Predicate<T> f) {
+		List<T> lst = new DeArrList<>();
+		for(T t : col) {
+			if(f.apply(t)) {
+				lst.add(t);
+			}
+		}
+		return lst;
 	}
 	
 	/** Zips lst and lst2 together. If either list is longer, the extra 

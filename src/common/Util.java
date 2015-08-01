@@ -1,5 +1,6 @@
 package common;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +36,13 @@ public class Util {
 	 * FK java for having a nonsensical interpretation of the mod operator. */
 	public static int mod(int a, int b){
 		return ((a % b) + b) % b;
+	}
+	
+	/** Returns a generic array containing objects of type T, with length length.
+	 * This is by definition unchecked. */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] createArray(Class<T> clazz, int length) {
+		return (T[])Array.newInstance(clazz, length);
 	}
 
 	/** Returns an Short array that is equivalent to the given short array */

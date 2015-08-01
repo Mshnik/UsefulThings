@@ -1,7 +1,7 @@
 package functional;
 
 @FunctionalInterface
-public interface TriConsumer<A,B,C> extends FuncShell {
+public interface TriConsumer<A,B,C> extends TriFuncShell<A,B,C> {
 	void apply(A a, B b, C c);
 	
 	default Unit partialApply(A a, B b, C c) {
@@ -18,5 +18,9 @@ public interface TriConsumer<A,B,C> extends FuncShell {
 	
 	default TriConsumer<C,A,B> rotate() {
 		return (c,a,b) -> apply(a,b,c);
+	}
+	
+	default TriConsumer<A, B, C> discardReturn() {
+		return this;
 	}
 }

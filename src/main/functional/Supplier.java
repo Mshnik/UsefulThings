@@ -11,4 +11,8 @@ public interface Supplier<R> extends java.util.function.Supplier<R>, UnitFuncShe
 	default Unit asUnit() {
 		return () -> apply();
 	}
+	
+	static <T> Supplier<T> supply(T t) {
+		return () -> t;
+	}
 }

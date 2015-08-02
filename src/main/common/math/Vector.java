@@ -92,12 +92,7 @@ public class Vector implements Iterable<Double> {
 	
 	public double magnitude(){
 		if(magnitude >= 0) return magnitude;
-		
-		double d = 0;
-		for(int i = 0; i < dimension(); i++){
-			d += vec[i] * vec[i];
-		}
-		magnitude = Math.sqrt(d);
+		magnitude = Math.sqrt(FunctionalUtil.foldLeft(0.0, vec, (a, b) -> a + b*b));
 		return magnitude;
 	}
 	

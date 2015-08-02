@@ -25,23 +25,37 @@ public interface BiPredicate<A, B> extends java.util.function.BiPredicate<A,B>, 
 		return (b,a) -> apply(a,b);
 	}
 	
-	default BiPredicate<A, B> nand(BiPredicate<? super A, ? super B> other) {
+	default BiPredicate<A,B> negate() {
+		return (a,b) -> !apply(a,b);
+	}
+	
+	default BiPredicate<A, B> and(java.util.function.BiPredicate<? super A, ? super B> other) {
     Objects.requireNonNull(other);
-		return (a, b) -> ! (apply(a, b) && other.apply(a, b));
+		return (a, b) -> apply(a, b) && other.test(a, b);
 	}
 	
-	default BiPredicate<A, B> nor(BiPredicate<? super A, ? super B> other) {
+	default BiPredicate<A, B> or(java.util.function.BiPredicate<? super A, ? super B> other) {
     Objects.requireNonNull(other);
-		return (a, b) -> ! (apply(a, b) || other.apply(a, b));
+		return (a, b) -> apply(a, b) || other.test(a, b);
 	}
 	
-	default BiPredicate<A, B> xor(BiPredicate<? super A, ? super B> other) {
-		Objects.requireNonNull(other);
-		return (a, b) -> apply(a, b) ^ other.apply(a, b);
+	default BiPredicate<A, B> nand(java.util.function.BiPredicate<? super A, ? super B> other) {
+    Objects.requireNonNull(other);
+		return (a, b) -> ! (apply(a, b) && other.test(a, b));
 	}
 	
-	default BiPredicate<A, B> xnor(BiPredicate<? super A, ? super B> other) {
+	default BiPredicate<A, B> nor(java.util.function.BiPredicate<? super A, ? super B> other) {
+    Objects.requireNonNull(other);
+		return (a, b) -> ! (apply(a, b) || other.test(a, b));
+	}
+	
+	default BiPredicate<A, B> xor(java.util.function.BiPredicate<? super A, ? super B> other) {
 		Objects.requireNonNull(other);
-		return (a, b) -> ! (apply(a, b) ^ other.apply(a, b));
+		return (a, b) -> apply(a, b) ^ other.test(a, b);
+	}
+	
+	default BiPredicate<A, B> xnor(java.util.function.BiPredicate<? super A, ? super B> other) {
+		Objects.requireNonNull(other);
+		return (a, b) -> ! (apply(a, b) ^ other.test(a, b));
 	}
 }

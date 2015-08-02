@@ -18,7 +18,7 @@ public interface TriFunction<A,B,C,R> extends TriFuncShell<A,B,C> {
 		return (b, c) -> apply(a,b,c);
 	}
 	
-	default <S> TriFunction<A, B, C, S> andThen(Function<? super R,? extends S> next) {
+	default <S> TriFunction<A, B, C, S> andThen(java.util.function.Function<? super R,? extends S> next) {
 		Objects.requireNonNull(next);
 		return (a, b, c) -> next.apply(apply(a, b, c));
 	}	 

@@ -18,23 +18,37 @@ public interface Predicate<A> extends java.util.function.Predicate<A>, SingleFun
 		return (a) -> apply(a);
 	}
 	
-	default Predicate<A> nand(Predicate<? super A> other) {
-    Objects.requireNonNull(other);
-		return (a) -> ! (apply(a) && other.apply(a));
+	default Predicate<A> negate() {
+		return (a) -> !apply(a);
 	}
 	
-	default Predicate<A> nor(Predicate<? super A> other) {
+	default Predicate<A> and(java.util.function.Predicate<? super A> other) {
     Objects.requireNonNull(other);
-		return (a) -> ! (apply(a) || other.apply(a));
+		return (a) -> apply(a) && other.test(a);
 	}
 	
-	default Predicate<A> xor(Predicate<? super A> other) {
+	default Predicate<A> or(java.util.function.Predicate<? super A> other) {
     Objects.requireNonNull(other);
-		return (a) -> apply(a) ^ other.apply(a);
+		return (a) -> apply(a) || other.test(a);
 	}
 	
-	default Predicate<A> xnor(Predicate<? super A> other) {
+	default Predicate<A> nand(java.util.function.Predicate<? super A> other) {
     Objects.requireNonNull(other);
-		return (a) -> ! (apply(a) ^ other.apply(a));
+		return (a) -> ! (apply(a) && other.test(a));
+	}
+	
+	default Predicate<A> nor(java.util.function.Predicate<? super A> other) {
+    Objects.requireNonNull(other);
+		return (a) -> ! (apply(a) || other.test(a));
+	}
+	
+	default Predicate<A> xor(java.util.function.Predicate<? super A> other) {
+    Objects.requireNonNull(other);
+		return (a) -> apply(a) ^ other.test(a);
+	}
+	
+	default Predicate<A> xnor(java.util.function.Predicate<? super A> other) {
+    Objects.requireNonNull(other);
+		return (a) -> ! (apply(a) ^ other.test(a));
 	}
 }

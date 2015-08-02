@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.junit.Test;
-
+import junit.runner.Version;
 
 public class UtilTest {
 	
 	@Test
 	public void testWrappers(){
+
+		System.out.println("JUnit version is: " + Version.id());
+		
 		short[] s = {1,2,3,4};
 		Short[] s2 = Util.boxArr(s);
 		short[] s3 = Util.unboxArr(s2);

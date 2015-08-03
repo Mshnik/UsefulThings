@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.junit.Test;
-import junit.runner.Version;
 
 public class UtilTest {
 	

@@ -150,8 +150,14 @@ abstract class AbsTrie<T, C> implements Set<T> {
 	
 	@Override
 	public boolean retainAll(Collection<?> c) {
-	// TODO Auto-generated method stub
-	return false;
+		boolean changed = false;
+		List<T> contents = toList();
+		for(T t : contents) {
+			if(! c.contains(t)) {
+				changed = remove(t) | changed;
+			}
+		}
+		return changed;
 	}
 
 	@Override

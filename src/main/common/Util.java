@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import common.dataStructures.DeArrList;
 
 public class Util {
 
@@ -43,6 +46,36 @@ public class Util {
 	@SuppressWarnings("unchecked")
 	public static <T> T[] createArray(Class<T> clazz, int length) {
 		return (T[])Array.newInstance(clazz, length);
+	}
+	
+	public static <E> ArrIterator<E> arrIterator(E[] arr){
+		return new ArrIterator<E>(arr);
+	}
+	
+	static class ArrIterator<E> implements Iterator<E> {
+		private final E[] sourceArr;
+		private int index;
+		
+		public ArrIterator(E[] source){
+			sourceArr = Arrays.copyOf(source, source.length);
+			index = 0;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return index < sourceArr.length;
+		}
+	
+		@Override
+		public E next() {
+			return sourceArr[index++];
+		}
+	}
+	
+	public static <T> List<T> toList(Iterator<T> iter) {
+		DeArrList<T> lst = new DeArrList<>();
+		iter.forEachRemaining((a) -> lst.add(a));
+		return lst;
 	}
 
 	/** Returns an Short array that is equivalent to the given short array */

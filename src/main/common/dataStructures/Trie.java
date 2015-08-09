@@ -3,6 +3,10 @@ package common.dataStructures;
 import java.util.Iterator;
 import common.StringUtil;
 
+/** A traditional Trie - stores Strings by breaking them down 
+ * into lists of characters.
+ * @author Mshnik
+ */
 public class Trie extends AbsTrie<String, Character>{
 
 	@Override

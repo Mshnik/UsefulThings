@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import common.dataStructures.util.SmartIterator;
 import common.dataStructures.util.UnmodifiableEntry;
 import common.dataStructures.util.ViewIterator;
 import common.dataStructures.util.ViewSet;
@@ -29,9 +30,11 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	private Set<Entry<K,V>> entrySet = new EntrySet();
 	private Set<Entry<V,K>> rEntrySet = new REntrySet();
 
+	protected int modCount;
+	
 	/** Constructs a new empty BiMap */
 	public BiMap(){
-
+		modCount = 0;
 	}
 
 	/** Constructs a new BiMap that is a copy of this BiMap */
@@ -83,7 +86,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	/** Returns the size ofthis BiMap. */
 	@Override
 	public int size(){
-		//Overwridden for speed - no need to create entry set
+		//Overridden for speed - no need to create entry set
 		return forwardMap.size(); 
 	}
 
@@ -105,6 +108,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 		if(old != null && ! old.equals(v)){
 			backMap.remove(old);
 		}
+		modCount++;
 		return old;
 	}
 
@@ -182,6 +186,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	public V remove(Object key){
 		V v = forwardMap.remove(key);
 		if(v != null) backMap.remove(v);
+		modCount++;
 		return v;
 	}
 
@@ -196,6 +201,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	public K removeValue(V value){
 		K k = backMap.remove(value);
 		if(k != null) forwardMap.remove(k);
+		modCount++;
 		return k;
 	}
 
@@ -204,6 +210,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 	public void clear(){
 		forwardMap.clear();
 		backMap.clear();
+		modCount++;
 	}
 
 	/** Returns the set of keys in this BiMap. This is a view of the map,
@@ -312,7 +319,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 
 		@Override
 		public Iterator<K> iterator(){
-			return new SingleIterator<K,V>(forwardMap, backMap);
+			return new SmartIterator<K>(new SingleIterator<K,V>(forwardMap, backMap), () -> modCount);
 		}
 	}
 
@@ -339,7 +346,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 
 		@Override
 		public Iterator<V> iterator(){
-			return new SingleIterator<V,K>(backMap, forwardMap);
+			return new SmartIterator<V>(new SingleIterator<V,K>(backMap, forwardMap), () -> modCount);
 		}
 	}
 	
@@ -366,7 +373,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 
 		@Override
 		public Iterator<Entry<K,V>> iterator(){
-			return new EntryIterator<K,V>(forwardMap, backMap);
+			return new SmartIterator<Entry<K,V>>(new EntryIterator<K,V>(forwardMap, backMap), () -> modCount);
 		}
 	}
 	
@@ -393,7 +400,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K,V
 
 		@Override
 		public Iterator<Entry<V,K>> iterator(){
-			return new EntryIterator<V,K>(backMap, forwardMap);
+			return new SmartIterator<Entry<V,K>>(new EntryIterator<V,K>(backMap, forwardMap), () -> modCount);
 		}
 	}
 }

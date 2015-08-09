@@ -167,7 +167,8 @@ public class ConsList<E> implements Iterable<E>{
 	}
 
 	/** Returns an Iterator over the elements in this ConsList. 
-	 * As ConsLists are immutable, the returned iterator does not support removal.
+	 * As ConsLists are immutable, the returned iterator does not support removal,
+	 * and cannot throw a ConcurrentModificationException.
 	 * The iterator returned will stop at the last real element in the list,
 	 * *before* the NIL element that terminates all lists. If this method
 	 * is called on the NIL list, the iterator will have no elements to return -

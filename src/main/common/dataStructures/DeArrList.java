@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.Iterator;
 
 import common.Util;
+import common.dataStructures.util.SmartIterator;
 
 /** A DeArrList is a Double-Ended Array List. It behaves like a mashup of
  * a Deque and an ArrayList. <br>
@@ -196,6 +197,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 			}
 		}
 		size++;
+		modCount++;
 	}
 	
 	/** Adds {@code e} to the front of this DeArrList */
@@ -348,6 +350,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 			}
 		}
 		size--;
+		modCount++;
 		return e;
 	}
 
@@ -377,6 +380,14 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 	@Override
 	public E remove() throws ArrayIndexOutOfBoundsException {
 		return removeFirst();
+	}
+	
+	/** Clears the DeArrList of all elements */
+	@Override
+	public void clear() {
+		vals = new Object[vals.length];
+		size = 0;
+		modCount++;
 	}
 	
 	/** Removes and returns the element at the front of this DeArrList
@@ -445,6 +456,11 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 
+	@Override
+	public Iterator<E> iterator() {
+		return new SmartIterator<E>(super.iterator(), () -> modCount);
+	}
+	
 	@Override
 	public Iterator<E> descendingIterator() {
 		throw new UnsupportedOperationException("Not Yet Implemented"); //TODO

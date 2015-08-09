@@ -4,6 +4,12 @@ import java.util.Iterator;
 
 import functional.Function;
 
+/** A generic Trie, able to store any T that is Iterable of C
+ * @author Mshnik
+ *
+ * @param <T> - the type of elements to store in this Trie
+ * @param <C> - the type of the pieces that each T breaks down to.
+ */
 public class ITrie<T extends Iterable<C>, C> extends AbsTrie<T,C> {
 
 	private final Function<Iterator<C>, T> fromSequenceConverter;

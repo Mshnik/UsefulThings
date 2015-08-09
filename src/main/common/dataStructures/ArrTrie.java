@@ -7,6 +7,10 @@ import java.util.List;
 
 import common.Util;
 
+/** A Trie class capable of storing lists or arrays of E
+ * @author Mshnik
+ * @param <E> - the elements within the arrays stored in this ArrTrie.
+ */
 public class ArrTrie<E> extends AbsTrie<List<E>, E> {
 
 	@Override
@@ -19,14 +23,17 @@ public class ArrTrie<E> extends AbsTrie<List<E>, E> {
 		return Collections.unmodifiableList(Util.toList(iter));
 	}
 	
+	/** @see AbsTrie.add(List<E> e) */
 	public boolean add(E[] arr) {
 		return super.add(Arrays.asList(arr));
 	}
 	
+	/** @see AbsTrie.contains(List<E> e) */
 	public boolean contains(E[] arr){
 		return super.contains(Arrays.asList(arr));
 	}
 	
+	/** @see AbsTrie.remove(List<E> e) */
 	public boolean remove(E[] arr){
 		return super.remove(Arrays.asList(arr));
 	}

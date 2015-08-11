@@ -10,6 +10,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import functional.Function;
+
 public class GraphFrame<V,E> extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -37,40 +39,177 @@ public class GraphFrame<V,E> extends JFrame {
 		drawPanel.setLayout(null);
 		drawPanel.setPreferredSize(size);
 		drawPanel.setBackground(Color.WHITE);
-		
-		drawPanel.addMouseListener(new MouseListener(){
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				GraphFrame.this.remove(sizeSlider);
-				GraphFrame.this.pack();
-			}
-			public void mousePressed(MouseEvent e) {}
-			public void mouseReleased(MouseEvent e) {}
-			public void mouseEntered(MouseEvent e) {}
-			public void mouseExited(MouseEvent e) {}
-		});
-		
 		sizeSlider = new JSlider();
 		sizeSlider.setMinimum(Circle.DEFAULT_DIAMETER/5);
 		sizeSlider.setMaximum(Circle.DEFAULT_DIAMETER*3);
-		sizeSlider.addChangeListener(new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				if(selectedCircle != null){
-					selectedCircle.diameter = ((JSlider)e.getSource()).getValue();
-					selectedCircle.fixBounds();
-					drawPanel.repaint();
-				}
-			}
-		});		
 		add(drawPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
 
 		addGraph(graph);
+		setCirclesDraggable(true);
+		setCirclesResizable(true);
+		setLinesBendable(true);
 
 		setVisible(true);
+	}
+	
+	public void setCirclesDraggable(boolean draggable) {
+		if(draggable) {
+			Function<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener(){
+				/** When clicked, store the initial point at which this is clicked. */
+				@Override
+				public void mousePressed(MouseEvent e) {
+					c.maxX = GraphFrame.this.drawPanel.getWidth();
+					c.maxY = GraphFrame.this.drawPanel.getHeight();
+					c.clickPoint = e.getPoint();
+				}
+
+				public void mouseClicked(MouseEvent e) {}
+				public void mouseReleased(MouseEvent e) {}
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}	
+			};
+
+			Function<Circle, MouseMotionListener> motionListenerProvider = (c) -> new MouseMotionListener(){
+				/** When this is dragged, perform the translation from the point
+				 * where this was clicked to the new dragged point. */
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					Point p = e.getPoint();
+					int newX = Math.min(c.maxX, Math.max(0, c.getX1() + p.x - c.clickPoint.x));
+					int newY = Math.min(c.maxY, Math.max(0, c.getY1() + p.y - c.clickPoint.y));
+					c.setX1(newX);
+					c.setY1(newY);
+				}
+
+				@Override
+				public void mouseMoved(MouseEvent e) {}
+
+			};
+			
+			for(Circle c : nodes.values()) {
+				c.moveListener = clickListenerProvider.apply(c);
+				c.addMouseListener(c.moveListener);
+				c.moveMotionListener = motionListenerProvider.apply(c);
+				c.addMouseMotionListener(c.moveMotionListener);
+			}
+		} else {
+			for(Circle c : nodes.values()) {
+				c.removeMouseListener(c.moveListener);
+				c.moveListener = null;
+				c.removeMouseMotionListener(c.moveMotionListener);
+				c.moveMotionListener = null;
+			}
+		}
+	}
+	
+	public void setCirclesResizable(boolean resizable) {
+		if(resizable) {
+			Function<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener() {
+				@SuppressWarnings("unchecked")
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					selectedCircle = (GraphFrame<V,E>.Circle)e.getSource();
+					sizeSlider.setValue(c.diameter);
+					GraphFrame.this.add(sizeSlider, BorderLayout.SOUTH);
+					GraphFrame.this.pack();
+				}
+		
+				public void mousePressed(MouseEvent e) {}
+				public void mouseReleased(MouseEvent e) {}
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}
+			};
+			for(Circle c : nodes.values()) {
+				c.resizeListener = clickListenerProvider.apply(c);
+				c.addMouseListener(c.resizeListener);
+			}
+			
+			drawPanel.addMouseListener(new MouseListener(){
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					GraphFrame.this.remove(sizeSlider);
+					GraphFrame.this.pack();
+				}
+				public void mousePressed(MouseEvent e) {}
+				public void mouseReleased(MouseEvent e) {}
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}
+			});
+			sizeSlider.addChangeListener(new ChangeListener(){
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					if(selectedCircle != null){
+						selectedCircle.diameter = ((JSlider)e.getSource()).getValue();
+						selectedCircle.fixBounds();
+						drawPanel.repaint();
+					}
+				}
+			});		
+		} else {
+			for(Circle c : nodes.values()) {
+				c.removeMouseListener(c.resizeListener);
+				c.resizeListener = null;
+			}
+		}
+	}
+	
+	public void setLinesBendable(boolean bendable) {
+		if(bendable) {
+			Function<Line, MouseListener> clickListenerProvider = (l) -> new MouseListener(){
+
+				/** When clicked, store the initial point at which this is clicked. */
+				@Override
+				public void mousePressed(MouseEvent e) {
+					l.clickPoint = e.getPoint();
+					l.maxX = GraphFrame.this.drawPanel.getWidth();
+					l.maxY = GraphFrame.this.drawPanel.getHeight();
+				}
+				public void mouseReleased(MouseEvent e) {
+					l.clickPoint = null;
+					l.cachedCenterXLoc = l.centerXLoc;
+					l.cachedCenterYLoc = l.centerYLoc;
+				}
+
+				public void mouseClicked(MouseEvent e) {}
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}
+			};
+					
+			Function<Line, MouseMotionListener> motionListenerProvider = (l) -> new MouseMotionListener(){
+				/** When this is dragged, perform the translation from the point
+				 * where this was clicked to the new dragged point. */
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					if(l.clickPoint != null) {
+						Point p = e.getPoint();
+						int newX = Math.min(l.maxX, Math.max(0, l.getXMid() + p.x - l.clickPoint.x));
+						int newY = Math.min(l.maxY, Math.max(0, l.getYMid() + p.y - l.clickPoint.y));
+						l.centerXLoc = ((float) (newX - l.getXMin())) / ((float) (l.getXMax() - l.getXMin()));
+						l.centerYLoc = ((float) (newY - l.getYMin())) / ((float) (l.getYMax() - l.getYMin()));
+						l.fixBounds();
+					}
+				}
+
+				public void mouseMoved(MouseEvent e) {}
+			};
+			
+			for(Line l : edges.values()) {
+				l.bendListener = clickListenerProvider.apply(l);
+				l.addMouseListener(l.bendListener);
+				l.bendMotionListener = motionListenerProvider.apply(l);
+				l.addMouseMotionListener(l.bendMotionListener);
+			}
+		} else {
+			for(Line l : edges.values()) {
+				l.removeMouseListener(l.bendListener);
+				l.bendListener = null;
+				l.removeMouseMotionListener(l.bendMotionListener);
+				l.bendMotionListener = null;
+			}
+		}
 	}
 	
 	/** Call during construction to add the circles and lines described
@@ -115,6 +254,14 @@ public class GraphFrame<V,E> extends JFrame {
 		new GraphFrame<V,E>(g);
 	}
 
+	/** For a circle, returns the string that should be drawn.
+	 * Can be empty (non-null) to not draw a string. 
+	 * Default implementation uses the toString of the represents object
+	 */
+	protected String getStringToDraw(Circle c){
+		return c.represents.toString();
+	}
+	
 	/** Graphics class Circle  allows the drawing of circles.
 	 * Circles use an (x1, y1, diameter) coordinate system of where they are located
 	 * on the board.
@@ -134,8 +281,7 @@ public class GraphFrame<V,E> extends JFrame {
 		/** The minimum amount of distance between Circles in pixels when drawn on the GUI */
 		public static final int BUFFER_RADUIS = DEFAULT_DIAMETER * 5;
 
-		protected V represents;
-
+		private V represents;
 		private int x1;
 		private int y1;
 		private int diameter;
@@ -148,6 +294,10 @@ public class GraphFrame<V,E> extends JFrame {
 		private Point clickPoint; //The point the user clicked within the circle before dragging began
 		private int maxX;   //Boundary for dragging on the x
 		private int maxY;   //Boundary for dragging on the y
+		
+		private MouseListener moveListener;
+		private MouseMotionListener moveMotionListener;
+		private MouseListener resizeListener;
 
 		private static final int LINE_THICKNESS = 2;
 
@@ -188,57 +338,6 @@ public class GraphFrame<V,E> extends JFrame {
 			}
 			this.filled = filled;
 			setOpaque(false);
-
-			MouseListener clickListener = new MouseListener(){
-
-				/** When clicked, store the initial point at which this is clicked. */
-				@Override
-				public void mousePressed(MouseEvent e) {
-					maxX = GraphFrame.this.drawPanel.getWidth();
-					maxY = GraphFrame.this.drawPanel.getHeight();
-					clickPoint = e.getPoint();
-				}
-
-				@SuppressWarnings("unchecked")
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					selectedCircle = (GraphFrame<V,E>.Circle)e.getSource();
-					sizeSlider.setValue(diameter);
-					GraphFrame.this.add(sizeSlider, BorderLayout.SOUTH);
-					GraphFrame.this.pack();
-				}
-
-				@Override
-				public void mouseReleased(MouseEvent e) {}
-
-				@Override
-				public void mouseEntered(MouseEvent e) {}
-
-				@Override
-				public void mouseExited(MouseEvent e) {}	
-			};
-
-			MouseMotionListener motionListener = new MouseMotionListener(){
-
-				/** When this is dragged, perform the translation from the point
-				 * where this was clicked to the new dragged point. */
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					Point p = e.getPoint();
-					int newX = Math.min(maxX, Math.max(0, getX1() + p.x - clickPoint.x));
-					int newY = Math.min(maxY, Math.max(0, getY1() + p.y - clickPoint.y));
-					setX1(newX);
-					setY1(newY);
-				}
-
-				@Override
-				public void mouseMoved(MouseEvent e) {}
-
-			};
-
-			addMouseListener(clickListener);
-			addMouseMotionListener(motionListener);
-
 		}
 
 		/** Return the x coordinate of this circle. */
@@ -291,6 +390,11 @@ public class GraphFrame<V,E> extends JFrame {
 			diameter = d;
 			fixBounds();
 		}
+		
+		/** Returns the V instance that this circle represents */
+		public V getRepresents(){
+			return represents;
+		}
 
 		/** Extra height added (either on top or bottom) to bounds to fit text */
 		private static final int TEXT_HEIGHT = 15;
@@ -338,7 +442,7 @@ public class GraphFrame<V,E> extends JFrame {
 		@Override
 		public String toString() {
 			return "("+ (getX1()-getDiameter()/2) + "," + (getY1()-getDiameter()/2) + 
-					") , d=" + getDiameter() + " " + represents.toString();
+					") , d=" + getDiameter() + " " + getStringToDraw(this);
 		}
 
 		/**Draw the Circle when the component is painted. */
@@ -357,7 +461,7 @@ public class GraphFrame<V,E> extends JFrame {
 			g2d.setColor(getColor());
 			if (filled) g2d.fill(circle2d);
 			g2d.draw(circle2d);
-			g2d.drawString(represents.toString(), PANEL_BUFFER, PANEL_BUFFER);
+			g2d.drawString(getStringToDraw(this), PANEL_BUFFER, PANEL_BUFFER);
 
 		}
 
@@ -406,6 +510,9 @@ public class GraphFrame<V,E> extends JFrame {
 		private Color color; //The color to draw this line; should stay in sync with the color policy
 
 		private Graph<V,E>.Edge represents; //The Edge this represents
+		
+		private MouseListener bendListener;
+		private MouseMotionListener bendMotionListener;
 
 		/** Constructor: a line from c1 to c2 representing r and colored according
 		 * to the color policy.
@@ -416,54 +523,7 @@ public class GraphFrame<V,E> extends JFrame {
 		public Line(Circle c1, Circle c2, Graph<V,E>.Edge r) {
 			setC1(c1);
 			setC2(c2);
-			represents = r;
-			
-			MouseListener clickListener = new MouseListener(){
-
-				/** When clicked, store the initial point at which this is clicked. */
-				@Override
-				public void mousePressed(MouseEvent e) {
-					clickPoint = e.getPoint();
-					maxX = GraphFrame.this.drawPanel.getWidth();
-					maxY = GraphFrame.this.drawPanel.getHeight();
-				}
-				public void mouseReleased(MouseEvent e) {
-					clickPoint = null;
-					cachedCenterXLoc = centerXLoc;
-					cachedCenterYLoc = centerYLoc;
-				}
-
-				public void mouseClicked(MouseEvent e) {}
-				public void mouseEntered(MouseEvent e) {}
-				public void mouseExited(MouseEvent e) {}
-			};
-			
-			addMouseListener(clickListener);
-			
-			MouseMotionListener motionListener = new MouseMotionListener(){
-
-				/** When this is dragged, perform the translation from the point
-				 * where this was clicked to the new dragged point. */
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					if(clickPoint != null) {
-						Point p = e.getPoint();
-						int newX = Math.min(maxX, Math.max(0, getXMid() + p.x - clickPoint.x));
-						int newY = Math.min(maxY, Math.max(0, getYMid() + p.y - clickPoint.y));
-						centerXLoc = ((float) (newX - getXMin())) / ((float) (getXMax() - getXMin()));
-						centerYLoc = ((float) (newY - getYMin())) / ((float) (getYMax() - getYMin()));
-						fixBounds();
-					}
-				
-				}
-
-				@Override
-				public void mouseMoved(MouseEvent e) {}
-			};
-
-			addMouseListener(clickListener);
-			addMouseMotionListener(motionListener);
-			
+			represents = r;			
 			fixBounds();
 			setOpaque(false);
 		}

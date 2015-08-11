@@ -7,30 +7,32 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import functional.Function;
 
-public class GraphFrame<V,E> extends JFrame {
+public class GraphPanel<V,E> extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	/** Default font for drawing strings */
+	public static final Font STRING_FONT = Font.decode("Arial-10");
+	
 	protected HashMap<V, Circle> nodes;
 	protected HashMap<E, Line> edges;
 	private final boolean directed;
 	
-	private GraphFrame<V,E>.Circle selectedCircle;
-
+	//private GraphPanel<V,E>.Circle selectedCircle;
+	private Function<Circle, String> stringToDrawFunc;
+	
 	private Dimension size = new Dimension(500,500);
-
 	private final JPanel drawPanel;
 	private final JSlider sizeSlider;
 	
-	protected GraphFrame(Graph<V,E> graph){
+	public GraphPanel(Graph<V,E> graph){
 		directed = graph.isDirected();
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
+		stringToDrawFunc = (c) -> c.represents.toString();
 		
 		setLayout(new BorderLayout());
 		
@@ -43,15 +45,30 @@ public class GraphFrame<V,E> extends JFrame {
 		sizeSlider.setMinimum(Circle.DEFAULT_DIAMETER/5);
 		sizeSlider.setMaximum(Circle.DEFAULT_DIAMETER*3);
 		add(drawPanel, BorderLayout.CENTER);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		pack();
 
 		addGraph(graph);
 		setCirclesDraggable(true);
-		setCirclesResizable(true);
 		setLinesBendable(true);
 
 		setVisible(true);
+	}
+	
+	/** Returns the circle associated with the given V. if v is not in this graph,
+	 * returns null.
+	 */
+	public Circle getCircle(V v) {
+		return nodes.get(v);
+	}
+	
+	/** Sets the stringToDrawFunction, used to paint strings for each circle.
+	 * Cannot be null.
+	 * @param f - the function to use
+	 * @throws IllegalArgumentException if f is null.
+	 */
+	public void setStringToDrawFunc(Function<Circle, String> f){
+		if(f == null)
+			throw new IllegalArgumentException("f cannot be null");
+		stringToDrawFunc = f;
 	}
 	
 	public void setCirclesDraggable(boolean draggable) {
@@ -60,8 +77,8 @@ public class GraphFrame<V,E> extends JFrame {
 				/** When clicked, store the initial point at which this is clicked. */
 				@Override
 				public void mousePressed(MouseEvent e) {
-					c.maxX = GraphFrame.this.drawPanel.getWidth();
-					c.maxY = GraphFrame.this.drawPanel.getHeight();
+					c.maxX = GraphPanel.this.drawPanel.getWidth();
+					c.maxY = GraphPanel.this.drawPanel.getHeight();
 					c.clickPoint = e.getPoint();
 				}
 
@@ -104,57 +121,57 @@ public class GraphFrame<V,E> extends JFrame {
 		}
 	}
 	
-	public void setCirclesResizable(boolean resizable) {
-		if(resizable) {
-			Function<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener() {
-				@SuppressWarnings("unchecked")
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					selectedCircle = (GraphFrame<V,E>.Circle)e.getSource();
-					sizeSlider.setValue(c.diameter);
-					GraphFrame.this.add(sizeSlider, BorderLayout.SOUTH);
-					GraphFrame.this.pack();
-				}
-		
-				public void mousePressed(MouseEvent e) {}
-				public void mouseReleased(MouseEvent e) {}
-				public void mouseEntered(MouseEvent e) {}
-				public void mouseExited(MouseEvent e) {}
-			};
-			for(Circle c : nodes.values()) {
-				c.resizeListener = clickListenerProvider.apply(c);
-				c.addMouseListener(c.resizeListener);
-			}
-			
-			drawPanel.addMouseListener(new MouseListener(){
-
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					GraphFrame.this.remove(sizeSlider);
-					GraphFrame.this.pack();
-				}
-				public void mousePressed(MouseEvent e) {}
-				public void mouseReleased(MouseEvent e) {}
-				public void mouseEntered(MouseEvent e) {}
-				public void mouseExited(MouseEvent e) {}
-			});
-			sizeSlider.addChangeListener(new ChangeListener(){
-				@Override
-				public void stateChanged(ChangeEvent e) {
-					if(selectedCircle != null){
-						selectedCircle.diameter = ((JSlider)e.getSource()).getValue();
-						selectedCircle.fixBounds();
-						drawPanel.repaint();
-					}
-				}
-			});		
-		} else {
-			for(Circle c : nodes.values()) {
-				c.removeMouseListener(c.resizeListener);
-				c.resizeListener = null;
-			}
-		}
-	}
+//	public void setCirclesResizable(boolean resizable) {
+//		if(resizable) {
+//			Function<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener() {
+//				@SuppressWarnings("unchecked")
+//				@Override
+//				public void mouseClicked(MouseEvent e) {
+//					selectedCircle = (GraphPanel<V,E>.Circle)e.getSource();
+//					sizeSlider.setValue(c.diameter);
+//					GraphPanel.this.add(sizeSlider, BorderLayout.SOUTH);
+//					GraphPanel.this.pack();
+//				}
+//		
+//				public void mousePressed(MouseEvent e) {}
+//				public void mouseReleased(MouseEvent e) {}
+//				public void mouseEntered(MouseEvent e) {}
+//				public void mouseExited(MouseEvent e) {}
+//			};
+//			for(Circle c : nodes.values()) {
+//				c.resizeListener = clickListenerProvider.apply(c);
+//				c.addMouseListener(c.resizeListener);
+//			}
+//			
+//			drawPanel.addMouseListener(new MouseListener(){
+//
+//				@Override
+//				public void mouseClicked(MouseEvent e) {
+//					GraphPanel.this.remove(sizeSlider);
+//					GraphPanel.this.pack();
+//				}
+//				public void mousePressed(MouseEvent e) {}
+//				public void mouseReleased(MouseEvent e) {}
+//				public void mouseEntered(MouseEvent e) {}
+//				public void mouseExited(MouseEvent e) {}
+//			});
+//			sizeSlider.addChangeListener(new ChangeListener(){
+//				@Override
+//				public void stateChanged(ChangeEvent e) {
+//					if(selectedCircle != null){
+//						selectedCircle.diameter = ((JSlider)e.getSource()).getValue();
+//						selectedCircle.fixBounds();
+//						drawPanel.repaint();
+//					}
+//				}
+//			});		
+//		} else {
+//			for(Circle c : nodes.values()) {
+//				c.removeMouseListener(c.resizeListener);
+//				c.resizeListener = null;
+//			}
+//		}
+//	}
 	
 	public void setLinesBendable(boolean bendable) {
 		if(bendable) {
@@ -164,8 +181,8 @@ public class GraphFrame<V,E> extends JFrame {
 				@Override
 				public void mousePressed(MouseEvent e) {
 					l.clickPoint = e.getPoint();
-					l.maxX = GraphFrame.this.drawPanel.getWidth();
-					l.maxY = GraphFrame.this.drawPanel.getHeight();
+					l.maxX = GraphPanel.this.drawPanel.getWidth();
+					l.maxY = GraphPanel.this.drawPanel.getHeight();
 				}
 				public void mouseReleased(MouseEvent e) {
 					l.clickPoint = null;
@@ -247,19 +264,16 @@ public class GraphFrame<V,E> extends JFrame {
 		g.addEdge("B","C",2);
 		g.addEdge("C","D",3);
 
-		new GraphFrame<String, Integer>(g);		
+		GraphPanel<String, Integer> gp = new GraphPanel<String, Integer>(g);
+		JFrame jFrame = new JFrame();
+		jFrame.getContentPane().add(gp, BorderLayout.CENTER);
+		jFrame.pack();
+		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setVisible(true);
 	}
 
 	public static <V,E> void showGraph(Graph<V,E> g){
-		new GraphFrame<V,E>(g);
-	}
-
-	/** For a circle, returns the string that should be drawn.
-	 * Can be empty (non-null) to not draw a string. 
-	 * Default implementation uses the toString of the represents object
-	 */
-	protected String getStringToDraw(Circle c){
-		return c.represents.toString();
+		new GraphPanel<V,E>(g);
 	}
 	
 	/** Graphics class Circle  allows the drawing of circles.
@@ -268,7 +282,7 @@ public class GraphFrame<V,E> extends JFrame {
 	 * Each Circle is tied to and represents a Vertex in the graph.
 	 * @author MPatashnik
 	 */
-	protected class Circle extends JPanel {
+	public class Circle extends JPanel {
 
 		private static final long serialVersionUID = 1250263410666963976L;
 
@@ -280,7 +294,7 @@ public class GraphFrame<V,E> extends JFrame {
 
 		/** The minimum amount of distance between Circles in pixels when drawn on the GUI */
 		public static final int BUFFER_RADUIS = DEFAULT_DIAMETER * 5;
-
+		
 		private V represents;
 		private int x1;
 		private int y1;
@@ -297,7 +311,7 @@ public class GraphFrame<V,E> extends JFrame {
 		
 		private MouseListener moveListener;
 		private MouseMotionListener moveMotionListener;
-		private MouseListener resizeListener;
+		//private MouseListener resizeListener;
 
 		private static final int LINE_THICKNESS = 2;
 
@@ -400,7 +414,7 @@ public class GraphFrame<V,E> extends JFrame {
 		private static final int TEXT_HEIGHT = 15;
 
 		/** Extra width added to bounds to fit text */
-		private static final int TEXT_WIDTH = 10;
+		private static final int TEXT_WIDTH = 25;
 
 		/** Fixe the boundaries so that all drawings will be within the bounds.
 		 * Call after x, y, or diameter is changed. */
@@ -442,7 +456,7 @@ public class GraphFrame<V,E> extends JFrame {
 		@Override
 		public String toString() {
 			return "("+ (getX1()-getDiameter()/2) + "," + (getY1()-getDiameter()/2) + 
-					") , d=" + getDiameter() + " " + getStringToDraw(this);
+					") , d=" + getDiameter() + " " + stringToDrawFunc.apply(this);
 		}
 
 		/**Draw the Circle when the component is painted. */
@@ -461,7 +475,8 @@ public class GraphFrame<V,E> extends JFrame {
 			g2d.setColor(getColor());
 			if (filled) g2d.fill(circle2d);
 			g2d.draw(circle2d);
-			g2d.drawString(getStringToDraw(this), PANEL_BUFFER, PANEL_BUFFER);
+			g2d.setFont(STRING_FONT);
+			g2d.drawString(stringToDrawFunc.apply(this), PANEL_BUFFER, PANEL_BUFFER);
 
 		}
 
@@ -479,7 +494,7 @@ public class GraphFrame<V,E> extends JFrame {
 	 * (x1, y1, x2, y2).
 	 * @author MPatashnik
 	 */
-	protected class Line  extends JPanel{
+	public class Line  extends JPanel{
 
 		private static final long serialVersionUID = -1688624827819736589L;
 
@@ -646,7 +661,7 @@ public class GraphFrame<V,E> extends JFrame {
 					c2.getX1() + "," + c2.getY1() + ")";
 		}
 
-		private static final double ARROW_LENGTH = GraphFrame.Circle.DEFAULT_DIAMETER / 2;
+		private static final double ARROW_LENGTH = GraphPanel.Circle.DEFAULT_DIAMETER / 2;
 		private static final double ARROW_ANGLE = Math.PI / 6.0; 
 
 		private double getAngle(double x1, double x2, double y1, double y2) {

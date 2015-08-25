@@ -1,5 +1,5 @@
 package functional;
 
 interface FuncShell {
-	
+
 }

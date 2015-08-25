@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import functional.Supplier;
 import org.junit.Test;
 
 public class DeArrListTest {
@@ -445,9 +446,9 @@ public class DeArrListTest {
 		assertEquals(null, a.pollFirst());
 		assertEquals(null, a.pollLast());
 		
-		shouldFail(a::getFirst, ArrayIndexOutOfBoundsException.class);
-		shouldFail(a::getLast, ArrayIndexOutOfBoundsException.class);
-		shouldFail(a::removeFirst, ArrayIndexOutOfBoundsException.class);
-		shouldFail(a::removeLast, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (Supplier<Integer>) a::getFirst, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (Supplier<Integer>) a::getLast, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (Supplier<Integer>) a::removeFirst, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (Supplier<Integer>) a::removeLast, ArrayIndexOutOfBoundsException.class);
 	}
 }

@@ -1,96 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3c9a8e91-2753-45ba-910a-e074245e07db" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/AbsTrie.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/AbsTrie.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/matching/Agent.java" afterPath="$PROJECT_DIR$/src/main/graph/matching/Agent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/Algorithm.java" afterPath="$PROJECT_DIR$/src/main/graph/Algorithm.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/ArrTrie.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/ArrTrie.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/BiConsumer.java" afterPath="$PROJECT_DIR$/src/main/functional/BiConsumer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/BiFuncShell.java" afterPath="$PROJECT_DIR$/src/main/functional/BiFuncShell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/BiFunction.java" afterPath="$PROJECT_DIR$/src/main/functional/BiFunction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/BiMap.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/BiMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/BiMapTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/BiMapTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/BiPredicate.java" afterPath="$PROJECT_DIR$/src/main/functional/BiPredicate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/ConsList.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/ConsList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/ConsTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/ConsTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/Copyable.java" afterPath="$PROJECT_DIR$/src/main/graph/Copyable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/Cursor.java" afterPath="$PROJECT_DIR$/src/main/grid/Cursor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/DeArrList.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/DeArrList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/DeArrListTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/DeArrListTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/Direction.java" afterPath="$PROJECT_DIR$/src/main/grid/Direction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/_2D/Direction2D.java" afterPath="$PROJECT_DIR$/src/main/grid/_2D/Direction2D.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Either.java" afterPath="$PROJECT_DIR$/src/main/common/types/Either.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/types/EitherTest.java" afterPath="$PROJECT_DIR$/src/tests/common/types/EitherTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/matching/Endowed.java" afterPath="$PROJECT_DIR$/src/main/graph/matching/Endowed.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/Flowable.java" afterPath="$PROJECT_DIR$/src/main/graph/Flowable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/FuncShell.java" afterPath="$PROJECT_DIR$/src/main/functional/FuncShell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/Function.java" afterPath="$PROJECT_DIR$/src/main/functional/Function.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/functional/FunctionalTest.java" afterPath="$PROJECT_DIR$/src/tests/functional/FunctionalTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/FunctionalUtil.java" afterPath="$PROJECT_DIR$/src/main/functional/FunctionalUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/Graph.java" afterPath="$PROJECT_DIR$/src/main/graph/Graph.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/GraphPanel.java" afterPath="$PROJECT_DIR$/src/main/graph/GraphPanel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/graph/GraphTest.java" afterPath="$PROJECT_DIR$/src/tests/graph/GraphTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/Grid.java" afterPath="$PROJECT_DIR$/src/main/grid/Grid.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/grid/GridTest.java" afterPath="$PROJECT_DIR$/src/tests/grid/GridTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/HashMap2.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/HashMap2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/IDObject.java" afterPath="$PROJECT_DIR$/src/main/common/IDObject.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/IDObjectTest.java" afterPath="$PROJECT_DIR$/src/tests/common/IDObjectTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/ITrie.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/ITrie.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/JUnitUtil.java" afterPath="$PROJECT_DIR$/src/main/common/JUnitUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Left.java" afterPath="$PROJECT_DIR$/src/main/common/types/Left.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/LinkedHashMap.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/LinkedHashMap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/LinkedHashMapTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/LinkedHashMapTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/matching/Matching.java" afterPath="$PROJECT_DIR$/src/main/graph/matching/Matching.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/matrix/Matrix.java" afterPath="$PROJECT_DIR$/src/main/grid/matrix/Matrix.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/concurrent/Monitorable.java" afterPath="$PROJECT_DIR$/src/main/concurrent/Monitorable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/NotInCollectionException.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/NotInCollectionException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/matrix/NumberTile.java" afterPath="$PROJECT_DIR$/src/main/grid/matrix/NumberTile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/io/ObjectIO.java" afterPath="$PROJECT_DIR$/src/main/io/ObjectIO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/_2D/Path.java" afterPath="$PROJECT_DIR$/src/main/grid/_2D/Path.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/Predicate.java" afterPath="$PROJECT_DIR$/src/main/functional/Predicate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Right.java" afterPath="$PROJECT_DIR$/src/main/common/types/Right.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/io/ScannerUtils.java" afterPath="$PROJECT_DIR$/src/main/io/ScannerUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/concurrent/SemaphoreGroup.java" afterPath="$PROJECT_DIR$/src/main/concurrent/SemaphoreGroup.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/SimpleEdge.java" afterPath="$PROJECT_DIR$/src/main/graph/SimpleEdge.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/SimpleVertex.java" afterPath="$PROJECT_DIR$/src/main/graph/SimpleVertex.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/SingleFuncShell.java" afterPath="$PROJECT_DIR$/src/main/functional/SingleFuncShell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/util/SmartIterator.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/util/SmartIterator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/SmartIteratorTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/SmartIteratorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/StressTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/StressTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/matching/StrictAgent.java" afterPath="$PROJECT_DIR$/src/main/graph/matching/StrictAgent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/StringUtil.java" afterPath="$PROJECT_DIR$/src/main/common/StringUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/Supplier.java" afterPath="$PROJECT_DIR$/src/main/functional/Supplier.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/io/TextIO.java" afterPath="$PROJECT_DIR$/src/main/io/TextIO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/Tile.java" afterPath="$PROJECT_DIR$/src/main/grid/Tile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/grid/_2D/Tile2D.java" afterPath="$PROJECT_DIR$/src/main/grid/_2D/Tile2D.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/concurrent/TimeRemainingWorker.java" afterPath="$PROJECT_DIR$/src/main/concurrent/TimeRemainingWorker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/TriConsumer.java" afterPath="$PROJECT_DIR$/src/main/functional/TriConsumer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/TriFuncShell.java" afterPath="$PROJECT_DIR$/src/main/functional/TriFuncShell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/TriFunction.java" afterPath="$PROJECT_DIR$/src/main/functional/TriFunction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/TriPredicate.java" afterPath="$PROJECT_DIR$/src/main/functional/TriPredicate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/Trie.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/Trie.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/TrieTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/TrieTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Tuple1.java" afterPath="$PROJECT_DIR$/src/main/common/types/Tuple1.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Tuple2.java" afterPath="$PROJECT_DIR$/src/main/common/types/Tuple2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Tuple3.java" afterPath="$PROJECT_DIR$/src/main/common/types/Tuple3.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Tuple4.java" afterPath="$PROJECT_DIR$/src/main/common/types/Tuple4.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Tuple5.java" afterPath="$PROJECT_DIR$/src/main/common/types/Tuple5.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Tuple6.java" afterPath="$PROJECT_DIR$/src/main/common/types/Tuple6.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/types/Tuple7.java" afterPath="$PROJECT_DIR$/src/main/common/types/Tuple7.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/UnionFind.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/UnionFind.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/dataStructures/UnionFindTest.java" afterPath="$PROJECT_DIR$/src/tests/common/dataStructures/UnionFindTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/functional/UnitFuncShell.java" afterPath="$PROJECT_DIR$/src/main/functional/UnitFuncShell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/util/UnmodifiableEntry.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/util/UnmodifiableEntry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/Util.java" afterPath="$PROJECT_DIR$/src/main/common/Util.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/common/UtilTest.java" afterPath="$PROJECT_DIR$/src/tests/common/UtilTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/math/Vector.java" afterPath="$PROJECT_DIR$/src/main/common/math/Vector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/math/Vector2.java" afterPath="$PROJECT_DIR$/src/main/common/math/Vector2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/math/Vector3.java" afterPath="$PROJECT_DIR$/src/main/common/math/Vector3.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/util/ViewIterator.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/util/ViewIterator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/common/dataStructures/util/ViewSet.java" afterPath="$PROJECT_DIR$/src/main/common/dataStructures/util/ViewSet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/graph/Weighted.java" afterPath="$PROJECT_DIR$/src/main/graph/Weighted.java" />
-    </list>
+    <list default="true" id="3c9a8e91-2753-45ba-910a-e074245e07db" name="Default" comment="" />
     <ignored path="UsefulThings.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -111,42 +22,39 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SmartIteratorTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/SmartIteratorTest.java">
+      <file leaf-file-name="TupleTest.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/tests/common/types/TupleTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.29549903">
+              <caret line="88" column="17" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="17" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Assert.class" pinned="false" current-in-tab="false">
+        <entry file="jar:///usr/local/Cellar/junit/junit-4.12.jar!/org/junit/Assert.class">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+              <caret line="191" column="24" selection-start-line="191" selection-start-column="24" selection-end-line="191" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StressTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/StressTest.java">
+      <file leaf-file-name="Tuple.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/common/types/Tuple.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="30" column="5" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TrieTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/TrieTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UnionFindTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/UnionFindTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="48" selection-start-line="0" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
-              <folding />
+              <caret line="123" column="13" selection-start-line="123" selection-start-column="13" selection-end-line="123" selection-end-column="13" />
+              <folding>
+                <element signature="e#2319#2320#0" expanded="true" />
+                <element signature="e#2337#2338#0" expanded="true" />
+                <element signature="e#3331#3332#0" expanded="true" />
+                <element signature="e#3359#3360#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -155,63 +63,22 @@
         <entry file="file://$PROJECT_DIR$/src/tests/common/types/EitherTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="30" selection-start-line="0" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IDObjectTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/common/IDObjectTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="34" column="5" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UtilTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/common/UtilTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="32" column="17" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FunctionalTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/functional/FunctionalTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GraphTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/tests/graph/GraphTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GridTest.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/tests/grid/GridTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7632094">
-              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-              <folding />
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="4" selection-end-column="22" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -224,7 +91,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/functional/BiFunction.java" />
         <option value="$PROJECT_DIR$/src/main/functional/BiPredicate.java" />
         <option value="$PROJECT_DIR$/src/main/functional/FuncShell.java" />
         <option value="$PROJECT_DIR$/src/main/functional/Function.java" />
@@ -275,6 +141,7 @@
         <option value="$PROJECT_DIR$/src/tests/functional/FunctionalTest.java" />
         <option value="$PROJECT_DIR$/src/tests/graph/GraphTest.java" />
         <option value="$PROJECT_DIR$/src/tests/grid/GridTest.java" />
+        <option value="$PROJECT_DIR$/src/tests/common/types/TupleTest.java" />
       </list>
     </option>
   </component>
@@ -533,176 +400,6 @@
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="io" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grid" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grid" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="matrix" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grid" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="_2D" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="graph" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="graph" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="matching" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="functional" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="concurrent" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -752,88 +449,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="math" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dataStructures" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="UsefulThings" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dataStructures" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="util" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane" />
@@ -851,7 +466,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="dynamic.classpath" value="false" />
   </component>
-  <component name="RunManager" selected="JUnit.All in UsefulThings">
+  <component name="RunManager" selected="JUnit.TupleTest">
     <configuration default="false" name="UtilTest.testWrappers" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -913,6 +528,32 @@
       <option name="MAIN_CLASS_NAME" />
       <option name="METHOD_NAME" />
       <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="TupleTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="common.types.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="UsefulThings" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="common.types" />
+      <option name="MAIN_CLASS_NAME" value="common.types.TupleTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -1142,16 +783,18 @@
       <envs />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="JUnit.UtilTest.testWrappers" />
       <item index="1" class="java.lang.String" itemvalue="JUnit.GridTest" />
       <item index="2" class="java.lang.String" itemvalue="JUnit.All in UsefulThings" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.TupleTest" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.All in UsefulThings" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.GridTest" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.UtilTest.testWrappers" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TupleTest" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.All in UsefulThings" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.GridTest" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.UtilTest.testWrappers" />
       </list>
     </recent_temporary>
   </component>
@@ -1172,7 +815,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1190,8 +833,8 @@
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21041666" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16388889" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.329602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16388889" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.329602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1213,39 +856,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/functional/BiFunction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-          <folding>
-            <element signature="e#245#246#0" expanded="true" />
-            <element signature="e#279#280#0" expanded="true" />
-            <element signature="e#325#326#0" expanded="true" />
-            <element signature="e#360#361#0" expanded="true" />
-            <element signature="e#402#403#0" expanded="true" />
-            <element signature="e#440#441#0" expanded="true" />
-            <element signature="e#486#487#0" expanded="true" />
-            <element signature="e#524#525#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/functional/BiPredicate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="34" selection-start-line="0" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/functional/FuncShell.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/functional/Function.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1564,7 +1174,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/SmartIteratorTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="0.7632094">
           <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
           <folding />
         </state>
@@ -1572,24 +1182,64 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/StressTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="0.7632094">
           <caret line="30" column="5" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/TrieTest.java">
+    <entry file="file://$PROJECT_DIR$/src/tests/common/IDObjectTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
+        <state vertical-scroll-proportion="0.7632094">
+          <caret line="34" column="5" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/grid/GridTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26418787">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/graph/GraphTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.704501">
+          <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/functional/FunctionalTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7338552">
+          <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/common/UtilTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7925636">
+          <caret line="32" column="17" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/UnionFindTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="0.6164383">
           <caret line="25" column="48" selection-start-line="0" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/common/dataStructures/TrieTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7925636">
+          <caret line="29" column="41" selection-start-line="29" selection-start-column="41" selection-end-line="29" selection-end-column="41" />
           <folding />
         </state>
       </provider>
@@ -1597,48 +1247,41 @@
     <entry file="file://$PROJECT_DIR$/src/tests/common/types/EitherTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="30" selection-start-line="0" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
-          <folding />
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="4" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/common/IDObjectTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/common/types/Tuple.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="5" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
-          <folding />
+          <caret line="123" column="13" selection-start-line="123" selection-start-column="13" selection-end-line="123" selection-end-column="13" />
+          <folding>
+            <element signature="e#2319#2320#0" expanded="true" />
+            <element signature="e#2337#2338#0" expanded="true" />
+            <element signature="e#3331#3332#0" expanded="true" />
+            <element signature="e#3359#3360#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/common/UtilTest.java">
+    <entry file="jar:///usr/local/Cellar/junit/junit-4.12.jar!/org/junit/Assert.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="17" selection-start-line="32" selection-start-column="17" selection-end-line="32" selection-end-column="17" />
+          <caret line="191" column="24" selection-start-line="191" selection-start-column="24" selection-end-line="191" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/functional/FunctionalTest.java">
+    <entry file="file://$PROJECT_DIR$/src/tests/common/types/TupleTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/graph/GraphTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/grid/GridTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7632094">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.29549903">
+          <caret line="88" column="17" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

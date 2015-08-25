@@ -22,7 +22,8 @@ public class GraphPanel<V,E> extends JPanel {
 	private final boolean directed;
 	
 	//private GraphPanel<V,E>.Circle selectedCircle;
-	private Function<Circle, String> stringToDrawFunc;
+	private Function<Circle, String> circleStringToDrawFunc;
+	private Function<Line, String> lineStringToDrawFunc;
 	
 	private Dimension size = new Dimension(500,500);
 	private final JPanel drawPanel;
@@ -32,7 +33,8 @@ public class GraphPanel<V,E> extends JPanel {
 		directed = graph.isDirected();
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
-		stringToDrawFunc = (c) -> c.represents.toString();
+		circleStringToDrawFunc = (c) -> c.represents.toString();
+		lineStringToDrawFunc = (l) -> l.represents.toString();
 		
 		setLayout(new BorderLayout());
 		
@@ -65,10 +67,21 @@ public class GraphPanel<V,E> extends JPanel {
 	 * @param f - the function to use
 	 * @throws IllegalArgumentException if f is null.
 	 */
-	public void setStringToDrawFunc(Function<Circle, String> f){
+	public void setCircleStringToDrawFunc(Function<Circle, String> f){
 		if(f == null)
 			throw new IllegalArgumentException("f cannot be null");
-		stringToDrawFunc = f;
+		circleStringToDrawFunc = f;
+	}
+	
+	/** Sets the stringToDrawFunction, used to paint strings for each circle.
+	 * Cannot be null.
+	 * @param f - the function to use
+	 * @throws IllegalArgumentException if f is null.
+	 */
+	public void setLineStringToDrawFunc(Function<Line, String> f){
+		if(f == null)
+			throw new IllegalArgumentException("f cannot be null");
+		lineStringToDrawFunc = f;
 	}
 	
 	public void setCirclesDraggable(boolean draggable) {
@@ -118,6 +131,18 @@ public class GraphPanel<V,E> extends JPanel {
 				c.removeMouseMotionListener(c.moveMotionListener);
 				c.moveMotionListener = null;
 			}
+		}
+	}
+	
+	public void addCircleMouseListener(MouseListener mouseListener) {
+		for (Circle c : nodes.values()) {
+			c.addMouseListener(mouseListener);
+		}
+	}
+	
+	public void removeCicleMouseListener(MouseListener mouseListener) {
+		for (Circle c : nodes.values()) {
+			c.removeMouseListener(mouseListener);
 		}
 	}
 	
@@ -456,7 +481,7 @@ public class GraphPanel<V,E> extends JPanel {
 		@Override
 		public String toString() {
 			return "("+ (getX1()-getDiameter()/2) + "," + (getY1()-getDiameter()/2) + 
-					") , d=" + getDiameter() + " " + stringToDrawFunc.apply(this);
+					") , d=" + getDiameter() + " " + circleStringToDrawFunc.apply(this);
 		}
 
 		/**Draw the Circle when the component is painted. */
@@ -476,7 +501,7 @@ public class GraphPanel<V,E> extends JPanel {
 			if (filled) g2d.fill(circle2d);
 			g2d.draw(circle2d);
 			g2d.setFont(STRING_FONT);
-			g2d.drawString(stringToDrawFunc.apply(this), PANEL_BUFFER, PANEL_BUFFER);
+			g2d.drawString(circleStringToDrawFunc.apply(this), PANEL_BUFFER, PANEL_BUFFER);
 
 		}
 
@@ -561,6 +586,11 @@ public class GraphPanel<V,E> extends JPanel {
 		/** Sets the second end of this line to c. */
 		protected void setC2(Circle c) {
 			c2 = c;
+		}
+		
+		/** Returns the objet this line represents */
+		public E getRepresents(){
+			return represents._2;
 		}
 
 		/** Return the x coordinate of the first end of this line. */
@@ -709,7 +739,7 @@ public class GraphPanel<V,E> extends JPanel {
 						(int)(y3 + ARROW_LENGTH * Math.sin(angle2 + Math.PI + ARROW_ANGLE)));
 				g2d.fill(arrow);
 			}
-			g2d.drawString(represents._2.toString(), getXMid(), getYMid() - 10);
+			g2d.drawString(lineStringToDrawFunc.apply(this), getXMid(), getYMid() - 10);
 		}
 
 

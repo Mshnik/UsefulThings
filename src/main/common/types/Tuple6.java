@@ -22,7 +22,7 @@ public class Tuple6<A,B,C,D,E,F> extends Tuple {
 		public final F _6;
 		
 		/** Constructs a new tuple of the values (first, second, third, fourth, fifth, sixth) */
-		public Tuple6(A first, B second, C third, D fourth, E fifth, F sixth){
+		protected Tuple6(A first, B second, C third, D fourth, E fifth, F sixth){
 			super(first, second, third, fourth, fifth, sixth);
 			_1 = first;
 			_2 = second;

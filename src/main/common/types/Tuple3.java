@@ -13,7 +13,7 @@ public class Tuple3<A,B,C> extends Tuple{
 	public final C _3;
 	
 	/** Constructs a new tuple of the values (first, second, third) */
-	public Tuple3(A first, B second, C third){
+	protected Tuple3(A first, B second, C third){
 		super(first, second, third);
 		_1 = first;
 		_2 = second;

@@ -19,7 +19,7 @@ public class Tuple5<A,B,C,D,E> extends Tuple {
 		public final E _5;
 		
 		/** Constructs a new tuple of the values (first, second, third, fourth) */
-		public Tuple5(A first, B second, C third, D fourth, E fifth){
+		protected Tuple5(A first, B second, C third, D fourth, E fifth){
 			super(first, second, third, fourth, fifth);
 			_1 = first;
 			_2 = second;

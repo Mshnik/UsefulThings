@@ -7,7 +7,7 @@ public class Tuple1<A> extends Tuple {
 	public final A _1; 
 	
 	/** Constructs a new tuple of the value (first) */
-	public Tuple1(A first){
+	protected Tuple1(A first){
 		super(first);
 		_1 = first;
 	}

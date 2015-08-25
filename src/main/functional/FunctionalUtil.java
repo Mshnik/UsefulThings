@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.*;
 
 import common.dataStructures.DeArrList;
+import common.types.Tuple;
 import common.types.Tuple2;
 
 public class FunctionalUtil {
@@ -149,7 +150,7 @@ public class FunctionalUtil {
 	}
 	
 	/** Applies f to each element in arr, putting the results into a new list
-	 * @param arr - an array of values
+	 * @param col - a collection of values
 	 * @param f - a function
 	 * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
 	 */
@@ -245,13 +246,13 @@ public class FunctionalUtil {
 		Iterator<T> i = lst.iterator();
 		Iterator<U> i2 = lst2.iterator();
 		while(i.hasNext() && i2.hasNext()){
-			zLst.add(new Tuple2<T,U>(i.next(), i2.next()));
+			zLst.add(Tuple.of(i.next(), i2.next()));
 		}
 		while(i.hasNext()){
-			zLst.add(new Tuple2<T,U>(i.next(), null));
+			zLst.add(Tuple.of(i.next(), null));
 		}
 		while(i2.hasNext()){
-			zLst.add(new Tuple2<T,U>(null, i2.next()));
+			zLst.add(Tuple.of(null, i2.next()));
 		}
 		return zLst;
 	}

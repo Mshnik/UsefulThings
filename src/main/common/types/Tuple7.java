@@ -26,7 +26,7 @@ public class Tuple7<A,B,C,D,E,F,G> extends Tuple {
 		
 		/** Constructs a new tuple of the values (first, second, third, fourth, 
 		 * fifth, sixth, seventh) */
-		public Tuple7(A first, B second, C third, D fourth, E fifth, F sixth, G seventh){
+		protected Tuple7(A first, B second, C third, D fourth, E fifth, F sixth, G seventh){
 			super(first, second, third, fourth, fifth, sixth, seventh);
 			_1 = first;
 			_2 = second;

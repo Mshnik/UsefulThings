@@ -207,7 +207,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 	}
 	
 	/** Adds {@code e} to the back of this DeArrList.
-	 * @returns true */
+	 * @return true */
 	@Override
 	public boolean offer(E e) {
 		add(e);
@@ -227,7 +227,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 	}
 
 	/** Adds {@code e} to the front of this DeArrList.
-	 * @returns true */
+	 * @return true */
 	@Override
 	public boolean offerFirst(E e) {
 		add(0,e);
@@ -235,7 +235,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 	}
 
 	/** Adds {@code e} to the back of this DeArrList.
-	 * @returns true */
+	 * @return true */
 	@Override
 	public boolean offerLast(E e) {
 		add(e);
@@ -443,7 +443,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
 		}
 	}
 
-	/** Removes the last occurrence of Object {@ o} in this DeArrList
+	/** Removes the last occurrence of Object o in this DeArrList
 	 * @return true if the DeArrList was modified as a result of this call
 	 * 		(If o was contained in this DeArrList).
 	 */

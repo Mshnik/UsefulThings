@@ -1,5 +1,6 @@
 package common.math;
 
+import common.types.Tuple;
 import common.types.Tuple2;
 
 public class Vector2 extends Vector {
@@ -25,7 +26,7 @@ public class Vector2 extends Vector {
 	}
 	
 	public Tuple2<Double, Double> toPolarCoordinates(){
-		return new Tuple2<Double, Double>(magnitude(), Math.atan2(y(), x()));
+		return Tuple.of(magnitude(), Math.atan2(y(), x()));
 	}
 	
 	public Vector2 rotate(double theta){

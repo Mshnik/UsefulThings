@@ -10,7 +10,7 @@ public class Tuple2<A,B> extends Tuple{
 	public final B _2;
 	
 	/** Constructs a new tuple of the values (first, second) */
-	public Tuple2(A first, B second){
+	protected Tuple2(A first, B second){
 		super(first, second);
 		_1 = first;
 		_2 = second;

@@ -16,7 +16,7 @@ public class Tuple4<A,B,C,D> extends Tuple {
 		public final D _4;
 		
 		/** Constructs a new tuple of the values (first, second, third, fourth) */
-		public Tuple4(A first, B second, C third, D fourth){
+		protected Tuple4(A first, B second, C third, D fourth){
 			super(first, second, third, fourth);
 			_1 = first;
 			_2 = second;

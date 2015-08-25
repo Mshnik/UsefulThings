@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import common.types.Tuple;
 import common.types.Tuple2;
 
 /** A HashMap from the given two key values to a value type
@@ -36,26 +37,26 @@ public class HashMap2<K1, K2, V> extends HashMap<Tuple2<K1, K2>, V>{
 	
 	/** Returns the v associated with the given keys, null if none */
 	public V get(K1 k1, K2 k2){
-		return get(new Tuple2<K1,K2>(k1,k2));
+		return get(Tuple.of(k1,k2));
 	}
 	
 	/** Puts the given v to be associated with keys k1, k2.
 	 * Adds a new empty hashmap associated with k1 if k1 is new key */
 	public V put(K1 k1, K2 k2, V v){
-		return put(new Tuple2<K1,K2>(k1, k2), v);
+		return put(Tuple.of(k1, k2), v);
 	}
 	
 	/** Puts the given v to be associated with keys k1, k2 if the pair isn't present
 	 * Adds a new empty hashmap associated with k1 if k1 is new key */
 	public V putIfAbsent(K1 k1, K2 k2, V v){
-		return putIfAbsent(new Tuple2<K1,K2>(k1, k2), v);
+		return putIfAbsent(Tuple.of(k1, k2), v);
 	}
 	
 	/** Returns true iff this map contains the given combination of 
 	 * keys for a single key
 	 */
 	public boolean containsKeyPair(K1 k1, K2 k2){
-		return containsKey(new Tuple2<K1,K2>(k1,k2));
+		return containsKey(Tuple.of(k1, k2));
 	}
 	
 	/** Returns true iff this map contains the given single key in any of
@@ -70,7 +71,7 @@ public class HashMap2<K1, K2, V> extends HashMap<Tuple2<K1, K2>, V>{
 	
 	/** Removes the mapping for the specified keys */
 	public V removePair(K1 k1, K2 k2){
-		return remove(new Tuple2<K1,K2>(k1,k2));
+		return remove(Tuple.of(k1,k2));
 	}
 
 	/** Removes all values associated with the given keyhalf.

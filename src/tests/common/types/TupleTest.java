@@ -16,6 +16,8 @@ public class TupleTest {
   private Tuple7<String, String, String, String, String, String, String> t7;
   private Tuple8<String, String, String, String, String, String, String, String> t8;
 
+  private Tuple[] tupleArr;
+
   @Before
   public void setup() {
     t1 = Tuple.of("A");
@@ -26,6 +28,8 @@ public class TupleTest {
     t6 = Tuple.of("A", "B", "C", "D", "E", "F");
     t7 = Tuple.of("A", "B", "C", "D", "E", "F", "G");
     t8 = Tuple.of("A", "B", "C", "D", "E", "F", "G", "H");
+
+    tupleArr = new Tuple[]{t1, t2, t3, t4, t5, t6, t7, t8};
   }
 
   @Test
@@ -97,10 +101,30 @@ public class TupleTest {
         {"A","B","C","D","E","F","G","H"}
     };
 
-    Tuple[] tupleArr = {t1, t2, t3, t4, t5, t6, t7, t8};
-
     for (int i = 0; i < arrs.length; i++) {
+      assertArrayEquals(tupleArr[i].vals, tupleArr[i].toArray());
+      assertEquals(tupleArr[i].vals.length, tupleArr[i].size());
       assertArrayEquals(arrs[i], tupleArr[i].toArray());
+    }
+  }
+
+  @Test
+  public void testEqualsAndHashcode() {
+    for(Tuple t : tupleArr) {
+      assertTrue(t.equals(t));
+      assertFalse(t.equals(null));
+      assertTrue(t.equals(t.clone()));
+      assertEquals(t.hashCode(), t.clone().hashCode());
+    }
+
+    for(Tuple t1 : tupleArr) {
+      for(Tuple t2 : tupleArr) {
+        if(t1 == t2) {
+          continue;
+        }
+        assertFalse(t1.equals(t2));
+        assertFalse(t2.equals(t1));
+      }
     }
   }
 }

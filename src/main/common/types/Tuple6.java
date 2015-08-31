@@ -47,4 +47,15 @@ public class Tuple6<A, B, C, D, E, F> extends Tuple {
     _5 = fifth;
     _6 = sixth;
   }
+
+  public Tuple6<A, B, C, D, E, F> clone() {
+    return new Tuple6<>(_1, _2, _3, _4, _5, _6);
+  }
+
+  /**
+   * Returns a new Tuple6 that consists of appending the given E to this Tuple6
+   */
+  public <G> Tuple7<A, B, C, D, E, F, G> and(G g) {
+    return Tuple.of(_1, _2, _3, _4, _5, _6, g);
+  }
 }

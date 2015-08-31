@@ -9,6 +9,7 @@ import org.junit.Test;
 public class StressTest {
 
   private static final int BIG_VAL = 200000;
+  private static final float TOLERANCE = 1.1f;
 
   @Test
   public void testArrayListsPrepend() {
@@ -33,7 +34,7 @@ public class StressTest {
     long arr2Time = System.currentTimeMillis() - startTime;
     System.out.println("My Implementation Prepend " + arr2Time + "ms");
 
-    assertTrue(arr2Time < arr1Time);
+    assertTrue(arr2Time < arr1Time * TOLERANCE);
   }
 
   @Test
@@ -61,7 +62,7 @@ public class StressTest {
     long arr2Time = System.currentTimeMillis() - startTime;
     System.out.println("My Implementation Add " + arr2Time + "ms");
 
-    assertTrue(arr2Time < arr1Time);
+    assertTrue(arr2Time < arr1Time * TOLERANCE);
   }
 
   @Test
@@ -90,7 +91,7 @@ public class StressTest {
     long arr2Time = System.currentTimeMillis() - startTime;
     System.out.println("My Implementation Remove " + arr2Time + "ms");
 
-    assertTrue(arr2Time < arr1Time);
+    assertTrue(arr2Time < arr1Time * TOLERANCE);
   }
 
 }

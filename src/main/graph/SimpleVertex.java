@@ -21,6 +21,7 @@ public class SimpleVertex extends IDObject implements Cloneable {
    * The name of this SimpleVertex is set to the empty string.
    */
   SimpleVertex() {
+    super();
     name = "";
   }
 

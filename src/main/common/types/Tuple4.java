@@ -35,4 +35,15 @@ public class Tuple4<A, B, C, D> extends Tuple {
     _3 = third;
     _4 = fourth;
   }
+
+  public Tuple4<A, B, C, D> clone() {
+    return new Tuple4<>(_1, _2, _3, _4);
+  }
+
+  /**
+   * Returns a new Tuple5 that consists of appending the given E to this Tuple5
+   */
+  public <E> Tuple5<A, B, C, D, E> and(E e) {
+    return Tuple.of(_1, _2, _3, _4, e);
+  }
 }

@@ -12,7 +12,7 @@ import java.util.Arrays;
  *
  * @author Mshnik
  */
-public abstract class Tuple {
+public abstract class Tuple implements Cloneable {
 
   /**
    * Returns a new tuple of the given objects
@@ -87,6 +87,21 @@ public abstract class Tuple {
   }
 
   /**
+   * Copy constructor for tuples. Should create a shallow copy of this tuple - the objects
+   * stored within the tuple are not copied.
+   */
+  public abstract Tuple clone();
+
+  /**
+   * Creates a new tuple that adds the value X to the end of this tuple, creating a tuple of
+   * length one greater than this. The new Tuple is a shallow copy; the values are not copied.
+   * @param x - the value to append
+   * @param <X> - the type of the value to append.
+   * @return - a new tuple, storing the values of this, followed by x.
+   */
+  public abstract <X> Tuple and(X x);
+
+  /**
    * A basic toString for all tuples. Returns a comma separated list
    * of the values stored in this tuple, with parenthesis around it
    */
@@ -104,7 +119,8 @@ public abstract class Tuple {
    * and store the same values
    */
   public boolean equals(Object o) {
-    if (!(o instanceof Tuple)) return false;
+    if (this == o) return true;
+    if (o == null || !(o instanceof Tuple)) return false;
     Tuple t = (Tuple) o;
     return vals.length == t.vals.length && Arrays.deepEquals(vals, t.vals);
   }

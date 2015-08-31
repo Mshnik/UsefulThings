@@ -33,7 +33,7 @@ public class Algorithm {
    * Returns the sum of the weights for the given path in the given graph.
    *
    * @return - 0 if path == null or path.size() < 2, the sum of the edge weights otherwise
-   * @throws an NotInCollectionException if the path makes an illegal jump -
+   * @throws NotInCollectionException if the path makes an illegal jump -
    * there is no such edge to travel
    */
   public static <V, E extends Weighted> int sumPathWeight(Graph<V, E> g, LinkedList<V> path)
@@ -49,7 +49,7 @@ public class Algorithm {
       V v2 = two.next();
       E e = g.getConnection(v1, v2);
       if (e == null)
-        throw new NotInCollectionException("Can't get cost of " + v1 + " to " + v2, e);
+        throw new NotInCollectionException("Can't get cost of " + v1 + " to " + v2 + " edge is null");
       s += e.getWeight();
     }
 
@@ -66,10 +66,9 @@ public class Algorithm {
   public static <V, E extends Copyable<E>> Graph<V, E> makeDirectedGraph(Graph<V, E> g) {
     if (g.isDirected()) return g.clone();
 
-    Graph<V, E> g2 = new Graph<V, E>(true);
-    for (V v : g.vertexSet()) {
-      g2.addVertex(v);
-    }
+    Graph<V, E> g2 = new Graph<>(true);
+    g.vertexSet().forEach(g2::addVertex);
+
     for (E e : g.edgeSet()) {
       if (g.isSelfEdge(e)) {
         g2.addEdge(g.sourceOf(e), g.sinkOf(e), e);
@@ -91,7 +90,7 @@ public class Algorithm {
    * returns null if start or goal isn't in g, or there is no such path.
    */
   public static <V, E extends Weighted> LinkedList<V> dijkstra(Graph<V, E> g, V start, V goal)
-      throws RuntimeException, NotInCollectionException {
+      throws NotInCollectionException, RuntimeException {
     if (!g.containsVertex(start) || !g.containsVertex(goal))
       throw new NotInCollectionException("Can't tun dijkstra's algorithm", start, goal);
     for (E e : g.edgeSet()) {
@@ -100,13 +99,7 @@ public class Algorithm {
     }
 
     final HashMap<V, Integer> distance = new HashMap<>();
-    Comparator<V> distanceComparator = new Comparator<V>() {
-      @Override
-      public int compare(V o1, V o2) {
-        return distance.get(o1) - distance.get(o2);
-      }
-    };
-
+    Comparator<V> distanceComparator = (o1, o2) -> distance.get(o1) - distance.get(o2);
     final HashMap<V, V> previous = new HashMap<>();
 
     //Initalize step
@@ -116,7 +109,7 @@ public class Algorithm {
     }
 
     distance.put(start, 0);
-    HashSet<V> frontier = new HashSet<V>();
+    HashSet<V> frontier = new HashSet<>();
 
     frontier.add(start);
 
@@ -149,7 +142,7 @@ public class Algorithm {
     }
 
     //Assemble path
-    LinkedList<V> path = new LinkedList<V>();
+    LinkedList<V> path = new LinkedList<>();
     V v = goal;
     do {
       path.push(v);
@@ -172,7 +165,7 @@ public class Algorithm {
     //Check for self loops
     for (E e : g.edgeSet()) {
       if (g.isSelfEdge(e)) {
-        List<E> lst = new ArrayList<E>();
+        List<E> lst = new ArrayList<>();
         lst.add(e);
         return lst;
       }
@@ -181,19 +174,19 @@ public class Algorithm {
     //No self loops at this point
     if (g.isDirected()) {  //Use DFS method to detect and find
 
-      HashSet<V> visited = new HashSet<V>();
-      HashMap<V, E> prev = new HashMap<V, E>();
+      HashSet<V> visited = new HashSet<>();
+      HashMap<V, E> prev = new HashMap<>();
 
-      ArrayList<V> toTry = new ArrayList<V>(g.vertexSet());
+      ArrayList<V> toTry = new ArrayList<>(g.vertexSet());
       while (!toTry.isEmpty()) {
-        LinkedList<V> queue = new LinkedList<V>();
+        LinkedList<V> queue = new LinkedList<>();
         queue.add(Util.randomElement(toTry));
 
         while (!queue.isEmpty()) {
           V current = queue.poll();
           //Base case - we've already been here. Assemble and return
           if (visited.contains(current)) {
-            LinkedList<E> cycle = new LinkedList<E>();
+            LinkedList<E> cycle = new LinkedList<>();
 
             //Start one earlier to prevent off by one edge err
             current = g.getOther(prev.get(current), current);
@@ -226,7 +219,7 @@ public class Algorithm {
       //No cycle found
       return null;
     } else {            //Use Union-Find to detect, helper to find
-      UnionFind<V> uf = new UnionFind<V>(g.vertexSet());
+      UnionFind<V> uf = new UnionFind<>(g.vertexSet());
 
       for (E e : g.edgeSet()) {
         V v1 = g.sourceOf(e);
@@ -234,7 +227,7 @@ public class Algorithm {
 
         //Base case - v1 and v2 are already connected
         if (uf.find(v1).equals(uf.find(v2))) {
-          return getCycleHelper(g, v1, v1, new ConsList<E>());
+          return getCycleHelper(g, v1, v1, new ConsList<>());
         }
 
         uf.union(v1, v2);
@@ -253,7 +246,7 @@ public class Algorithm {
   private static <V, E> List<E> getCycleHelper(Graph<V, E> g, V start, V current, ConsList<E> path) {
     //Base case - cycle found. Reverse path and return
     if (start == current && path.size() != 0) {
-      List<E> lst = new ArrayList<E>();
+      List<E> lst = new ArrayList<>();
       for (E e : path.reverse()) lst.add(e);
       return lst;
     }
@@ -278,13 +271,9 @@ public class Algorithm {
 
     final Graph<V, E> g2 = g.clone(); //create modifiable copy
 
-    Comparator<V> minDegreeComparator = new Comparator<V>() {
-      public int compare(V o1, V o2) {
-        return g2.inDegreeOf(o1) - g2.inDegreeOf(o2);
-      }
-    };
+    Comparator<V> minDegreeComparator = (o1, o2) -> g2.inDegreeOf(o1) - g2.inDegreeOf(o2);
 
-    ArrayList<V> arrLst = new ArrayList<V>();
+    ArrayList<V> arrLst = new ArrayList<>();
     arrLst.addAll(g2.vertexSet());
 
     while (g2.vertexSize() > 0) {
@@ -304,12 +293,12 @@ public class Algorithm {
    * Returns true if the given graph is Bipartite
    */
   public static <V, E> boolean isBipartite(Graph<V, E> g) {
-    HashSet<V> sideA = new HashSet<V>();
-    HashSet<V> sideB = new HashSet<V>();
+    HashSet<V> sideA = new HashSet<>();
+    HashSet<V> sideB = new HashSet<>();
 
-    HashSet<V> allVertices = new HashSet<V>(g.vertexSet());
+    HashSet<V> allVertices = new HashSet<>(g.vertexSet());
 
-    LinkedList<V> queue = new LinkedList<V>();
+    LinkedList<V> queue = new LinkedList<>();
 
     while (!allVertices.isEmpty()) {
 
@@ -378,9 +367,9 @@ public class Algorithm {
       this.source = source;
       this.sink = sink;
 
-      label = new HashMap<V, Integer>();
-      excess = new HashMap<V, Integer>();
-      flow = new HashMap<E, Integer>();
+      label = new HashMap<>();
+      excess = new HashMap<>();
+      flow = new HashMap<>();
 
       for (V v : g.vertexSet()) {
         label.put(v, 0);
@@ -407,7 +396,7 @@ public class Algorithm {
       }
 
       //Main loop. Continue while an operation occurred
-      boolean opOccured = false;
+      boolean opOccured;
       do {
         opOccured = false;
         for (V v : g.vertexSet()) {
@@ -417,11 +406,11 @@ public class Algorithm {
           for (E e : g.edgeSetOfSink(v)) {
             opOccured = push(v, e, false) | opOccured;
           }
-          if (!opOccured) opOccured = relabel(v) | opOccured;
+          if (!opOccured) opOccured = relabel(v);
         }
       } while (opOccured);
 
-      flowObj = new Flow<E>(excess.get(sink), flow);
+      flowObj = new Flow<>(excess.get(sink), flow);
 
     }
 
@@ -485,7 +474,7 @@ public class Algorithm {
       throw new IllegalArgumentException("Can only compute maxflow on directed graphs");
     }
 
-    return new MaxFlow<V, E>(g, source, sink).computeMaxFlow();
+    return new MaxFlow<>(g, source, sink).computeMaxFlow();
   }
 
   /**
@@ -497,7 +486,7 @@ public class Algorithm {
    * @return - a Matching of agents and items.
    */
   public static <A extends StrictAgent<I>, I> Matching<A, I> serialDictator(Set<A> agents, Set<I> items) {
-    List<A> ordering = new ArrayList<A>(agents);
+    List<A> ordering = new ArrayList<>(agents);
     Collections.shuffle(ordering);
     return serialDictator(ordering, items);
   }
@@ -514,11 +503,11 @@ public class Algorithm {
   public static <A extends StrictAgent<I>, I> Matching<A, I> serialDictator(List<A> agents, Set<I> items)
       throws IllegalArgumentException {
     //Make sure agent doesn't appear twice in ordering
-    HashSet<A> agentsSet = new HashSet<A>(agents);
+    HashSet<A> agentsSet = new HashSet<>(agents);
     if (agents.size() != agentsSet.size())
       throw new IllegalArgumentException("Can't use ordering " + agents + " over agents " + agentsSet);
 
-    Matching<A, I> matching = new Matching<A, I>();
+    Matching<A, I> matching = new Matching<>();
     matching.addAllA(agents);
     matching.addAllB(items);
     for (A agent : agents) {
@@ -547,11 +536,11 @@ public class Algorithm {
    */
   public static <A extends StrictAgent<I> & Endowed<I>, I> Matching<A, I> ttc(Set<A> agents)
       throws RuntimeException {
-    Matching<A, I> matching = new Matching<A, I>();
+    Matching<A, I> matching = new Matching<>();
     HashMap<I, A> reverseInitialEndowment = new HashMap<>();
 
     matching.addAllA(agents);
-    Graph<A, Object> g = new Graph<A, Object>();
+    Graph<A, Object> g = new Graph<>();
     for (A agent : agents) {
       g.addVertex(agent);
       matching.addB(agent.getInitialEndowment());
@@ -618,10 +607,10 @@ public class Algorithm {
   /** */
   public static <A extends StrictAgent<B>, B extends StrictAgent<A>> Matching<A, B> stableMarriage(Set<A> proposers, Set<B> proposees) {
 
-    Matching<A, B> matching = new Matching<A, B>(proposers, proposees);
+    Matching<A, B> matching = new Matching<>(proposers, proposees);
 
-    HashMap<A, Integer> lowestProposal = new HashMap<A, Integer>();
-    HashMap<A, Boolean> doneProposing = new HashMap<A, Boolean>();
+    HashMap<A, Integer> lowestProposal = new HashMap<>();
+    HashMap<A, Boolean> doneProposing = new HashMap<>();
     for (A a : proposers) {
       lowestProposal.put(a, -1); //Hasn't proposed to anyone yet
       doneProposing.put(a, false); //Not done yet

@@ -61,4 +61,12 @@ public class Tuple8<A, B, C, D, E, F, G, H> extends Tuple {
     _7 = seventh;
     _8 = eighth;
   }
+
+  public Tuple8<A, B, C, D, E, F, G, H> clone() {
+    return new Tuple8<>(_1, _2, _3, _4, _5, _6, _7, _8);
+  }
+
+  public <X> Tuple and(X x) throws UnsupportedOperationException {
+    throw new UnsupportedOperationException("Can't make tuples greater than size eight");
+  }
 }

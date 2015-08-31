@@ -1,6 +1,6 @@
 package functional;
 
-    import java.util.Objects;
+import java.util.Objects;
 
 @FunctionalInterface
 public interface BiFunction<A, B, R> extends java.util.function.BiFunction<A, B, R>, BiFuncShell<A, B> {

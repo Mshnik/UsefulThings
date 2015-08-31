@@ -41,4 +41,13 @@ public class Tuple5<A, B, C, D, E> extends Tuple {
     _4 = fourth;
     _5 = fifth;
   }
+
+  public Tuple5<A, B, C, D, E> clone() {
+    return new Tuple5<>(_1, _2, _3, _4, _5);
+  }
+
+  @Override
+  public <F> Tuple and(F f) {
+    return new Tuple6<>(_1, _2, _3, _4, _5, f);
+  }
 }

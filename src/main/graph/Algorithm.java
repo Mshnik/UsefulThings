@@ -32,7 +32,7 @@ public class Algorithm {
   /**
    * Returns the sum of the weights for the given path in the given graph.
    *
-   * @return - 0 if path == null or path.size() < 2, the sum of the edge weights otherwise
+   * @return - 0 if path == null or path.size() &lt; 2, the sum of the edge weights otherwise
    * @throws NotInCollectionException if the path makes an illegal jump -
    * there is no such edge to travel
    */

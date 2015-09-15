@@ -14,7 +14,7 @@ import common.dataStructures.util.SmartIterator;
 /**
  * AbsTrie implements all of the Trie logic, leaving the type definitions
  * of the elements to the subclass.
- * <p/>
+ * <p>
  * A Trie is a compact tree-based data structure that stores elements that can be
  * broken down in to a list of pieces. For example, strings can be stored in a Trie
  * because they can be broken down into a list of characters. Most of the time complexities

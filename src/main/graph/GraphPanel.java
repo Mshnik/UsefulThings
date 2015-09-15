@@ -354,7 +354,7 @@ public class GraphPanel<V,E> extends JPanel {
 
 		/** Constructor: an instance at (x, y) of diameter d and colored black
 		 * that represents r and is not filled.
-		 * @param r - the Object this circle represents
+		 * @param v - the Object this circle represents
 		 * @param x - x coordinate of center
 		 * @param y - y coordinate of center
 		 * @param d - the diameter of the circle

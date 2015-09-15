@@ -26,21 +26,21 @@ public class ArrTrie<E> extends AbsTrie<List<E>, E> {
   }
 
   /**
-   * @see AbsTrie.add(List<E> e)
+   * See: {@link common.dataStructures.AbsTrie#add(Object listOfE)}
    */
   public boolean add(E[] arr) {
     return super.add(Arrays.asList(arr));
   }
 
   /**
-   * @see AbsTrie.contains(List<E> e)
+   * See: {@link common.dataStructures.AbsTrie#contains(Object listOfE)}
    */
   public boolean contains(E[] arr) {
     return super.contains(Arrays.asList(arr));
   }
 
   /**
-   * @see AbsTrie.remove(List<E> e)
+   * See: {@link common.dataStructures.AbsTrie#remove(Object listOfE)}
    */
   public boolean remove(E[] arr) {
     return super.remove(Arrays.asList(arr));

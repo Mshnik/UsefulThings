@@ -167,7 +167,7 @@ public class FunctionalUtil {
   /**
    * Applies f to each element in col
    *
-   * @param arr - an array of values.
+   * @param col - an iterable of values.
    * @param f   - a consumer function
    */
   public static <T> void forEach(Iterable<T> col, Consumer<T> f) {

@@ -62,7 +62,7 @@ public class SimpleEdge extends IDObject implements Flowable, Weighted, Cloneabl
   /**
    * Sets the capacity of this edge to c. Must be a non-negative number
    *
-   * @throws IllegalArgumentException if c < 0
+   * @throws IllegalArgumentException if c &lt; 0
    */
   public void setCapacity(int c) throws IllegalArgumentException {
     if (c < 0) throw new IllegalArgumentException("Can't set capacity to negative int");

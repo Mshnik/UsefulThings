@@ -188,7 +188,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
   /**
    * Adds the given element at the given index to this DeArrList.
    *
-   * @throws ArrayIndexOutOfBoundsException if index < 0 or index > size().
+   * @throws ArrayIndexOutOfBoundsException if index &lt; 0 or index &gt; size().
    */
   @Override
   public void add(int index, E element) throws ArrayIndexOutOfBoundsException {
@@ -285,7 +285,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
   /**
    * Returns the element at index {@code index} in this DeArrList.
    *
-   * @throws ArrayIndexOutOfBoundsException if index < 0 or index >= size().
+   * @throws ArrayIndexOutOfBoundsException if index &lt; 0 or index &gt;= size().
    */
   @Override
   public E get(int index) throws ArrayIndexOutOfBoundsException {
@@ -366,7 +366,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
    * Sets the value of index {@code index} to be {@code element}.
    *
    * @return the old value at that index, that was just overwritten by the set operation.
-   * @throws ArrayIndexOutOfBoundsException if index < 0 or index >= size().
+   * @throws ArrayIndexOutOfBoundsException if index &lt; 0 or index &gt;= size().
    */
   @Override
   public E set(int index, E element) throws ArrayIndexOutOfBoundsException {
@@ -383,7 +383,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
    * Shifts elements to close the gap.
    *
    * @return the element that was removed by this operation.
-   * @throws ArrayIndexOutOfBoundsException if index < 0 or index >= size().
+   * @throws ArrayIndexOutOfBoundsException if index &lt; 0 or index &gt;= size().
    */
   @Override
   public E remove(int index) throws ArrayIndexOutOfBoundsException {

@@ -234,7 +234,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
   }
 
   /**
-   * Returns a map representation of this grid: location of a tile -> tile
+   * Returns a map representation of this grid: location of a tile -&gt; tile
    */
   public Map<List<Integer>, T> toMap() {
     HashMap<List<Integer>, T> m = new HashMap<>();
@@ -443,7 +443,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
   /**
    * Two grids are equal if they represent the same elements
    *
-   * @see {@code Arrays.deepEquals(vals, o.vals)}
+   * See: {@link java.util.Arrays#deepEquals(Object[] a1, Object[] a2)}
    */
   public boolean equals(Object o) {
     if (!(o instanceof Grid<?>)) return false;
@@ -454,7 +454,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
   /**
    * Hashes a grid based of of its elements
    *
-   * @see {@code Arrays.deepHashCode(vals)}
+   * See: {@link java.util.Arrays#deepHashCode(Object[])}
    */
   public int hashCode() {
     return Arrays.deepHashCode(vals);

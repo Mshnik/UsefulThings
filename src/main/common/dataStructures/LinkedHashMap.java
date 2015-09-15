@@ -172,7 +172,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
    * Does this by starting at the end of the map and iterating in
    * until the desired index is reached.
    *
-   * @throws IllegalArgumentException - if index < 0 || index >= size()
+   * @throws IllegalArgumentException - if index &lt; 0 || index &gt;= size()
    */
   public Entry<K, V> get(int index) throws IllegalArgumentException {
     if (index < 0 || index >= size())

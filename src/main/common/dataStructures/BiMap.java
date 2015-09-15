@@ -68,6 +68,8 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K, 
 
   /**
    * Returns a new BiMap with the keys and values flipped.
+   * @return a new BiMap consisting of the same pairs, where the keys and values 
+   * 	have been flipped
    */
   public BiMap<V, K> flip() {
     BiMap<V, K> b = new BiMap<V, K>();
@@ -77,18 +79,22 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K, 
   }
 
   /**
-   * Returns a single-sided map facing <K,V>.
+   * Returns a single-sided map facing &lt;K,V&gt;.
    * The returned map is independent of this BiMap. It can be modified,
    * but the modifications will not be reflected in this map
+   * @return a new map, consisting of the same key,value pairs as this BiMap.
+   * 	The returned map is not a bimap.
    */
   public Map<K, V> toMap() {
     return new HashMap<>(forwardMap);
   }
 
   /**
-   * Returns a single-sided map facing <V,K>.
+   * Returns a single-sided map facing &lt;V,K&gt;. (the keys and values are flipped)
    * The returned map is independent of this BiMap. It can be modified,
    * but the modifications will not be reflected in this map
+   * @return a new map, consisting of the same value,key pairs as this BiMap.
+   * 	The returned map is not a bimap.
    */
   public Map<V, K> toFlippedMap() {
     return new HashMap<>(backMap);
@@ -177,7 +183,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K, 
   }
 
   /**
-   * Returns the value associated with the given key, or the default if none
+   * @return the value associated with the given key, or the default if none
    */
   @Override
   public V getOrDefault(Object key, V defaultV) {
@@ -186,28 +192,28 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K, 
   }
 
   /**
-   * @see get(Object key)
+   * See: {@link common.dataStructures.BiMap#get(Object key)}
    */
   public V getValue(K key) {
     return get(key);
   }
 
   /**
-   * @see getOrDefault(Object key)
+   * See: {@link common.dataStructures.BiMap#getOrDefault(Object key, Object value)}
    */
   public V getValueOrDefault(K key, V defaultV) {
     return getOrDefault(key, defaultV);
   }
 
   /**
-   * Returns the key associated with the given value, or null if none
+   * @return the key associated with the given value, or null if none
    */
   public K getKey(V value) {
     return backMap.get(value);
   }
 
   /**
-   * Returns the key associated with the given value, or the default if none
+   * @return the key associated with the given value, or the default if none
    */
   public K getKeyOrDefault(V value, K defaultK) {
     K k = getKey(value);
@@ -274,7 +280,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K, 
   }
 
   /**
-   * Returns the set of entries<Key, Value> in this BiMap.
+   * Returns the set of entries &lt;Key, Value&gt; in this BiMap.
    * This is a read-only view of the map. Changes in the returned
    * set will not be reflected by the BiMap
    */
@@ -284,7 +290,7 @@ public class BiMap<K, V> extends AbstractMap<K, V> implements Cloneable, Map<K, 
   }
 
   /**
-   * Returns the set of entries<Value, Key> in this BiMap
+   * Returns the set of entries &lt;Value, Key&gt; in this BiMap
    * This is a read-only view of the map. Changes in the returned
    * set will not be reflected by the BiMap
    */

@@ -290,31 +290,6 @@ public class FunctionalUtil {
     return lst;
   }
 
-  /**
-   * Zips lst and lst2 together. If either list is longer, the extra
-   * elements are in tuples with null values.
-   *
-   * @param lst  - the first list to zip
-   * @param lst2 - the second list to zip
-   * @return - a zipped list of tuples. Some tuples may have a null value
-   * but no tuple will have both null values.
-   */
-  public static <T, U> List<Tuple2<T, U>> zip(List<T> lst, List<U> lst2) {
-    DeArrList<Tuple2<T, U>> zLst = new DeArrList<>();
-    Iterator<T> i = lst.iterator();
-    Iterator<U> i2 = lst2.iterator();
-    while (i.hasNext() && i2.hasNext()) {
-      zLst.add(Tuple.of(i.next(), i2.next()));
-    }
-    while (i.hasNext()) {
-      zLst.add(Tuple.of(i.next(), null));
-    }
-    while (i2.hasNext()) {
-      zLst.add(Tuple.of(null, i2.next()));
-    }
-    return zLst;
-  }
-
   private FunctionalUtil() {
   }
 }

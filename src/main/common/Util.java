@@ -79,9 +79,9 @@ public class Util {
     }
   }
 
-  public static <T> List<T> toList(Iterator<T> iter) {
+  public static <T> List<T> toList(Iterable<T> iter) {
     DeArrList<T> lst = new DeArrList<>();
-    iter.forEachRemaining((a) -> lst.add(a));
+    iter.iterator().forEachRemaining(lst::add);
     return lst;
   }
 

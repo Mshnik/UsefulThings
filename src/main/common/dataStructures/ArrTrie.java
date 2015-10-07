@@ -21,26 +21,26 @@ public class ArrTrie<E> extends AbsTrie<List<E>, E> {
   }
 
   @Override
-  protected List<E> fromSequence(Iterator<E> iter) {
+  protected List<E> fromSequence(Iterable<E> iter) {
     return Collections.unmodifiableList(Util.toList(iter));
   }
 
   /**
-   * @see AbsTrie.add(List<E> e)
+   * @see AbsTrie::add(List<E> e)
    */
   public boolean add(E[] arr) {
     return super.add(Arrays.asList(arr));
   }
 
   /**
-   * @see AbsTrie.contains(List<E> e)
+   * @see AbsTrie::contains(List<E> e)
    */
   public boolean contains(E[] arr) {
     return super.contains(Arrays.asList(arr));
   }
 
   /**
-   * @see AbsTrie.remove(List<E> e)
+   * @see AbsTrie::remove(List<E> e)
    */
   public boolean remove(E[] arr) {
     return super.remove(Arrays.asList(arr));

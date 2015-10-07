@@ -88,10 +88,10 @@ abstract class AbsTrie<T, C> implements Set<T> {
    * This function should be the inverse of toSequence.
    * Specifically, {@code t.equals(fromSequence(toSequence(t)))} for every
    *
-   * @param iter - an iterator representing the sequence of c's to convert
+   * @param iter - an iterable representing the sequence of c's to convert
    * @return - an instance of T representing the whole sequence of c's
    */
-  protected abstract T fromSequence(Iterator<C> iter);
+  protected abstract T fromSequence(Iterable<C> iter);
 
   /**
    * Compares two instance of C for ordering.
@@ -329,14 +329,13 @@ abstract class AbsTrie<T, C> implements Set<T> {
         prefix = prefix.cons(c);
       }
       if (isTerminatingNode) {
-        builderList.add(fromSequence(prefix.reverse().iterator()));
+        builderList.add(fromSequence(prefix.reverse()));
       }
 
       List<Entry<C, TrieNode>> lst = new DeArrList<>(children.entrySet());
       try {
         Collections.sort(lst, (c1, c2) -> compareC(c1.getKey(), c2.getKey()));
-      } catch (UnsupportedOperationException e) {
-      }
+      } catch (UnsupportedOperationException e) {}
 
       for (Entry<C, TrieNode> entry : lst) {
         builderList = entry.getValue().buildList(builderList, prefix);

@@ -13,9 +13,9 @@ import functional.Function;
  */
 public class ITrie<T extends Iterable<C>, C> extends AbsTrie<T, C> {
 
-  private final Function<Iterator<C>, T> fromSequenceConverter;
+  private final Function<Iterable<C>, T> fromSequenceConverter;
 
-  public ITrie(Function<Iterator<C>, T> fromSequenceConverter) {
+  public ITrie(Function<Iterable<C>, T> fromSequenceConverter) {
     this.fromSequenceConverter = fromSequenceConverter;
   }
 
@@ -25,7 +25,7 @@ public class ITrie<T extends Iterable<C>, C> extends AbsTrie<T, C> {
   }
 
   @Override
-  protected T fromSequence(Iterator<C> iter) {
+  protected T fromSequence(Iterable<C> iter) {
     return fromSequenceConverter.apply(iter);
   }
 

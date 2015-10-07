@@ -18,11 +18,9 @@ public class Trie extends AbsTrie<String, Character> {
   }
 
   @Override
-  protected String fromSequence(Iterator<Character> iter) {
+  protected String fromSequence(Iterable<Character> iter) {
     StringBuilder s = new StringBuilder();
-    while (iter.hasNext()) {
-      s.append(iter.next());
-    }
+    iter.iterator().forEachRemaining(s::append);
     return s.toString();
   }
 

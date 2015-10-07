@@ -163,7 +163,7 @@ public class ConsList<E> implements Iterable<E> {
   }
 
   /**
-   * Returns the size of this list. @see ConsList<E>.size
+   * Returns the size of this list. See {@link common.dataStructures.ConsList#size}
    */
   public int size() {
     return size;
@@ -245,7 +245,7 @@ public class ConsList<E> implements Iterable<E> {
   /**
    * Returns the {@code index}th element in this list.
    *
-   * @throws IllegalArgumentException - if index < 0 or index >= size - thus throws
+   * @throws IllegalArgumentException - if index &lt; 0 or index &gt;= size - thus throws
    * exception if this is called with any index value on the nil list
    */
   public E get(int index) {

@@ -3,11 +3,11 @@ package concurrent;
 
 /**
  * Monitors the progress of the inputed Monitorable and periodically sends time remaining updates to the Monitorable
- * <p/>
+ * <p>
  * Every (update) seconds, the worker finds the amount of time that has passed since the
  * last check and stores that as the new x coordinate, and finds the new progress value
  * and stores that as the new y coordinate.
- * <p/>
+ * <p>
  * Then, using the new x and y values along with the most recent old x and y values,
  * the worker calculates the time remaining to completion using a linear regression,
  * then sends an update
@@ -50,9 +50,9 @@ public class TimeRemainingWorker extends Thread {
    *
    * @param toWatch        - the Monitorable object to watch for progress and to send updates on completion time
    * @param updateInterval - the update interval which the TimeRemainingWorker will wait before
-   *                       calculating and sending updates (in seconds). updateInterval > 0.
-   * @param completedValue - A value to be interpreted as completion when received from toWatch. completedValue > 0
-   * @throws IllegalArgumentException - If updateInterval <= 0 or completedValue <= 0
+   *                       calculating and sending updates (in seconds). updateInterval &gt; 0.
+   * @param completedValue - A value to be interpreted as completion when received from toWatch. completedValue &gt; 0
+   * @throws IllegalArgumentException - If updateInterval &lt;= 0 or completedValue &lt;= 0
    */
   public TimeRemainingWorker(Monitorable toWatch, int updateInterval, double completedValue) throws IllegalArgumentException {
     watch = toWatch;
@@ -67,7 +67,7 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * Returns true if the TimeRemainingWorker is currently monitoring progress, false otherwise
+   * @return true if the TimeRemainingWorker is currently monitoring progress, false otherwise
    */
   public boolean getRunning() {
     return running;
@@ -82,16 +82,17 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * Returns the updateInterval in seconds
+   * @return the updateInterval in seconds
    */
   public int getUpdateInterval() {
     return updateInterval;
   }
 
   /**
-   * Sets the updateInterval to n seconds. n > 0.
+   * Sets the updateInterval to n seconds. n &lt; 0.
    * New update interval will be used on next time calculation (may not take affect until
    * up to another old update interval seconds)
+   * @param n - the new updateInterval to set
    */
   public void setUpdateInterval(int n) throws IllegalArgumentException {
     if (n > 0)
@@ -101,21 +102,21 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * Returns the startTime, the system time this timeRemaining worker started working
+   * @return the startTime, the system time this timeRemaining worker started working
    */
   public long getStartTime() {
     return startTime;
   }
 
   /**
-   * Returns the finishTime, the system time when this timeRemaining worker finished working, (maybe canceled though)
+   * @return the finishTime, the system time when this timeRemaining worker finished working, (maybe canceled though)
    */
   public long getFinishTime() {
     return finishTime;
   }
 
   /**
-   * Returns the time remaining (in seconds) for this task. Returns -1 if the task has not yet
+   * @return the time remaining (in seconds) for this task. Returns -1 if the task has not yet
    * started running
    */
   public int getTimeRemaining() {
@@ -123,28 +124,28 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * Gets completedValue, the value for this task that is interpreted as task completion. Default value 100.
+   * @return completedValue, the value for this task that is interpreted as task completion. Default value 100.
    */
   public double getCompletedValue() {
     return completedValue;
   }
 
   /**
-   * Returns the current completion according to the Monitorable's completion
+   * @return the current completion according to the Monitorable's completion
    */
   public double getCurrentCompletion() {
     return watch.getCompletionValue();
   }
 
   /**
-   * Returns the current percent completion of the Monitorable's task. Returns -1 if the task has not yet started
+   * @return the current percent completion of the Monitorable's task. Returns -1 if the task has not yet started
    */
   public double getPercentComplete() {
     return percentComplete;
   }
 
   /**
-   * Returns the Monitorable that this TimeRemainingWorker is watching
+   * @return the Monitorable that this TimeRemainingWorker is watching
    */
   public Monitorable getMonitorable() {
     return watch;

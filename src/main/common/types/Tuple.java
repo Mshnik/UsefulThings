@@ -11,7 +11,7 @@ import java.util.List;
  * Tuples as implemented here are immutable.
  * Stores all tupled values in an Object array for basic method implementations
  * Contains default implementations of toString(), equals(..), and hashCode().
- * <p/>
+ * <p>
  * Construction of all tuples should use the static {@code of} methods declared in class Tuple.
  *
  * @author Mshnik

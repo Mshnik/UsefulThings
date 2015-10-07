@@ -1,4 +1,5 @@
 *.class
+doc/**
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -13,6 +14,6 @@ hs_err_pid*
 /bin
 
 .DS_Store
-src/.DS_Store
+**/.DS_Store
 /target/
 .settings/

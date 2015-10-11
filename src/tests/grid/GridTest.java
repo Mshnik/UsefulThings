@@ -103,7 +103,7 @@ public class GridTest {
     assertTrue(g.contains(t2));
     assertEquals(2, g.size());
 
-    shouldFail(g::add, new IntTile(new Integer[]{11, 5}, 2), ArrayIndexOutOfBoundsException.class);
+    shouldFail(g::add, ArrayIndexOutOfBoundsException.class, new IntTile(new Integer[]{11, 5}, 2));
     checkInvariants(g);
     assertEquals(2, g.size());
   }
@@ -210,7 +210,7 @@ public class GridTest {
     g.add(t3);
     assertEquals(t3, g.getFrom(t2, loc2));
 
-    shouldFail((Consumer<Integer[]>) g::get, new Integer[]{-1, 0}, ArrayIndexOutOfBoundsException.class);
+    shouldFail((Consumer<Integer[]>) g::get,  ArrayIndexOutOfBoundsException.class, new Integer[]{-1, 0});
 
     assertEquals(null, g.getSafe(new Integer[]{-1, 0}));
   }

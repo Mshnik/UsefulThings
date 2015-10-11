@@ -1,10 +1,12 @@
 package common.dataStructures;
 
 import static common.JUnitUtil.*;
+import static functional.FunctionalUtil.migrate;
 import static org.junit.Assert.*;
 
 import java.util.List;
 
+import functional.BiConsumer;
 import functional.Supplier;
 import org.junit.Test;
 
@@ -162,8 +164,8 @@ public class DeArrListTest {
 		assertEquals("(10,1,12,4,2,3,45,5,6,99)",a.toString());
 		assertEquals(10, a.size());
 		
-		shouldFail(a::add, 12, 3, ArrayIndexOutOfBoundsException.class);
-		shouldFail(a::add, -1, 3, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (BiConsumer<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, 12, 3);
+		shouldFail( (BiConsumer<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, -1, 3);
 		
 		//Test reArraying working correctly
 		DeArrList<Integer> a2 = new DeArrList<Integer>(4);
@@ -269,8 +271,8 @@ public class DeArrListTest {
 		assertEquals(5,a.size());
 		assertEquals("(11,2,31,4,51)",a.toString());
 		
-		shouldFail(a::set, -1, 2, ArrayIndexOutOfBoundsException.class);
-		shouldFail(a::set, 6, 2, ArrayIndexOutOfBoundsException.class);
+		shouldFail(a::set, ArrayIndexOutOfBoundsException.class, -1, 2);
+		shouldFail(a::set, ArrayIndexOutOfBoundsException.class, 6, 2);
 	}
 
 	@Test

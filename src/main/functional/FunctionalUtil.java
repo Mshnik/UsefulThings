@@ -12,108 +12,157 @@ import common.types.Tuple2;
 public class FunctionalUtil {
 
   /**
-   * Returns a generic version of the given intConsumer
+   * Returns a UsefulThings version of the given intConsumer
    */
-  public static Consumer<Integer> asGeneric(IntConsumer intConsumer) {
-    return (i) -> intConsumer.accept(i);
+  public static Consumer<Integer> migrate(IntConsumer intConsumer) {
+    return intConsumer::accept;
   }
 
   /**
-   * Returns a generic version of the given intFunction
+   * Returns a UsefulThings version of the given intFunction
    */
-  public static UnaryOperator<Integer> asGeneric(IntUnaryOperator intFunction) {
-    return (i) -> intFunction.applyAsInt(i);
+  public static Function<Integer, Integer> migrate(IntUnaryOperator intFunction) {
+    return intFunction::applyAsInt;
   }
 
   /**
-   * Returns a generic version of the given intFunction
+   * Returns a UsefulThings version of the given intFunction
    */
-  public static <R> Function<Integer, R> asGeneric(IntFunction<R> intFunction) {
-    return (i) -> intFunction.apply(i);
+  public static <R> Function<Integer, R> migrate(IntFunction<R> intFunction) {
+    return intFunction::apply;
   }
 
   /**
-   * Returns a generic version of the given intPredicate
+   * Returns a UsefulThings version of the given intPredicate
    */
-  public static Predicate<Integer> asGeneric(IntPredicate intPredicate) {
-    return (i) -> intPredicate.test(i);
+  public static Predicate<Integer> migrate(IntPredicate intPredicate) {
+    return intPredicate::test;
   }
 
   /**
-   * Returns a generic version of the given intSupplier
+   * Returns a UsefulThings version of the given intSupplier
    */
-  public static Supplier<Integer> asGeneric(IntSupplier intSupplier) {
-    return () -> intSupplier.getAsInt();
+  public static Supplier<Integer> migrate(IntSupplier intSupplier) {
+    return intSupplier::getAsInt;
   }
 
   /**
-   * Returns a generic version of the given longConsumer
+   * Returns a UsefulThings version of the given longConsumer
    */
-  public static Consumer<Long> asGeneric(LongConsumer longConsumer) {
-    return (l) -> longConsumer.accept(l);
+  public static Consumer<Long> migrate(LongConsumer longConsumer) {
+    return longConsumer::accept;
   }
 
   /**
-   * Returns a generic version of the given longFunction
+   * Returns a UsefulThings version of the given longFunction
    */
-  public static UnaryOperator<Long> asGeneric(LongUnaryOperator longFunction) {
-    return (l) -> longFunction.applyAsLong(l);
+  public static Function<Long, Long> migrate(LongUnaryOperator longFunction) {
+    return longFunction::applyAsLong;
   }
 
   /**
-   * Returns a generic version of the given longFunction
+   * Returns a UsefulThings version of the given longFunction
    */
-  public static <R> Function<Long, R> asGeneric(LongFunction<R> longFunction) {
-    return (l) -> longFunction.apply(l);
+  public static <R> Function<Long, R> migrate(LongFunction<R> longFunction) {
+    return longFunction::apply;
   }
 
   /**
-   * Returns a generic version of the given longPredicate
+   * Returns a UsefulThings version of the given longPredicate
    */
-  public static Predicate<Long> asGeneric(LongPredicate longPredicate) {
-    return (l) -> longPredicate.test(l);
+  public static Predicate<Long> migrate(LongPredicate longPredicate) {
+    return longPredicate::test;
   }
 
   /**
-   * Returns a generic version of the given doubleSupplier
+   * Returns a UsefulThings version of the given doubleSupplier
    */
-  public static Supplier<Long> asGeneric(LongSupplier longSupplier) {
-    return () -> longSupplier.getAsLong();
+  public static Supplier<Long> migrate(LongSupplier longSupplier) {
+    return longSupplier::getAsLong;
   }
 
   /**
-   * Returns a generic version of the given doubleConsumer
+   * Returns a UsefulThings version of the given doubleConsumer
    */
-  public static Consumer<Double> asGeneric(DoubleConsumer doubleConsumer) {
-    return (d) -> doubleConsumer.accept(d);
+  public static Consumer<Double> migrate(DoubleConsumer doubleConsumer) {
+    return doubleConsumer::accept;
   }
 
   /**
-   * Returns a generic version of the given doubleFunction
+   * Returns a UsefulThings version of the given doubleFunction
    */
-  public static UnaryOperator<Double> asGeneric(DoubleUnaryOperator doubleFunction) {
-    return (d) -> doubleFunction.applyAsDouble(d);
+  public static Function<Double, Double> migrate(DoubleUnaryOperator doubleFunction) {
+    return doubleFunction::applyAsDouble;
   }
 
   /**
-   * Returns a generic version of the given doubleFunction
+   * Returns a UsefulThings version of the given doubleFunction
    */
-  public static <R> Function<Double, R> asGeneric(DoubleFunction<R> doubleFunction) {
-    return (d) -> doubleFunction.apply(d);
+  public static <R> Function<Double, R> migrate(DoubleFunction<R> doubleFunction) {
+    return doubleFunction::apply;
   }
 
   /**
-   * Returns a generic version of the given doublePredicate
+   * Returns a UsefulThings version of the given doublePredicate
    */
-  public static Predicate<Double> asGeneric(DoublePredicate doublePredicate) {
-    return (d) -> doublePredicate.test(d);
+  public static Predicate<Double> migrate(DoublePredicate doublePredicate) {
+    return doublePredicate::test;
   }
 
   /**
-   * Returns a generic version of the given doubleSupplier
+   * Returns a UsefulThings version of the given doubleSupplier
    */
-  public static Supplier<Double> asGeneric(DoubleSupplier doubleSupplier) {
-    return () -> doubleSupplier.getAsDouble();
+  public static Supplier<Double> migrate(DoubleSupplier doubleSupplier) {
+    return doubleSupplier::getAsDouble;
+  }
+
+  /**
+   * Returns a UsefulThings version of the given Consumer
+   */
+  public static <A> Consumer<A> migrate(java.util.function.Consumer<A> consumer) {
+    return consumer::accept;
+  }
+
+  /**
+   * Returns a UsefulThings version of the given Supplier
+   */
+  public static <A> Supplier<A> migrate(java.util.function.Supplier<A> supplier) {
+    return supplier::get;
+  }
+
+  /**
+   * Returns a UsefulThings version of the given Predicate
+   */
+  public static <A> Predicate<A> migrate(java.util.function.Predicate<A> predicate) {
+    return predicate::test;
+  }
+
+  /**
+   * Returns a UsefulThings version of the given Function
+   */
+  public static <A,R> Function<A,R> migrate(java.util.function.Function<A,R> function) {
+    return function::apply;
+  }
+
+  /**
+   * Returns a UsefulThings version of the given BiConsumer
+   */
+  public static <A,B> BiConsumer<A,B> migrate(java.util.function.BiConsumer<A,B> biConsumer) {
+    return biConsumer::accept;
+  }
+
+  /**
+   * Returns a UsefulThings version of the given BiPredicate
+   */
+  public static <A,B> BiPredicate<A,B> migrate(java.util.function.BiPredicate<A,B> biPredicate) {
+    return biPredicate::test;
+  }
+
+  /**
+   * Returns a UsefulThings version of the given BiFunction
+   */
+  public static <A,B,R> BiFunction<A,B,R> migrate(java.util.function.BiFunction<A,B,R> biFunction) {
+    return biFunction::apply;
   }
 
   /**

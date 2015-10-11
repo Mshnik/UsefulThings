@@ -1,6 +1,7 @@
 package graph;
 
 import static common.JUnitUtil.*;
+import static functional.FunctionalUtil.migrate;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 import common.dataStructures.NotInCollectionException;
 
+import functional.TriConsumer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -181,8 +183,8 @@ public class GraphTest {
     changed = gU.addEdge("B", "A", 12);
     assertFalse(changed);
 
-    shouldFail(g::addEdge, "A", "F", 5, NotInCollectionException.class);
-    shouldFail(g::addEdge, "F", "B", 6, NotInCollectionException.class);
+    shouldFail(g::addEdge, NotInCollectionException.class, "A", "F", 5);
+    shouldFail(g::addEdge, NotInCollectionException.class, "F", "B", 6);
   }
 
   @Test
@@ -197,10 +199,10 @@ public class GraphTest {
     assertEquals(new Integer(2), gU.getConnection("C", "A"));
     assertEquals(new Integer(3), gU.getConnection("C", "C"));
 
-    shouldFail(g::getConnection, "A", "F", NotInCollectionException.class);
-    shouldFail(gU::getConnection, "A", "F", NotInCollectionException.class);
-    shouldFail(g::getConnection, "F", "A", NotInCollectionException.class);
-    shouldFail(gU::getConnection, "F", "A", NotInCollectionException.class);
+    shouldFail(g::getConnection, NotInCollectionException.class, "A", "F");
+    shouldFail(gU::getConnection, NotInCollectionException.class, "A", "F");
+    shouldFail(g::getConnection, NotInCollectionException.class, "F", "A");
+    shouldFail(gU::getConnection, NotInCollectionException.class, "F", "A");
 
     assertTrue(g.isConnected("A", "B"));
     assertFalse(g.isConnected("B", "A"));
@@ -214,10 +216,10 @@ public class GraphTest {
     assertFalse(gU.isConnected("A", "A"));
     assertTrue(gU.isConnected("C", "C"));
 
-    shouldFail(g::isConnected, "A", "F", NotInCollectionException.class);
-    shouldFail(gU::isConnected, "A", "F", NotInCollectionException.class);
-    shouldFail(g::isConnected, "F", "A", NotInCollectionException.class);
-    shouldFail(gU::isConnected, "F", "A", NotInCollectionException.class);
+    shouldFail(g::isConnected, NotInCollectionException.class, "A", "F");
+    shouldFail(gU::isConnected, NotInCollectionException.class, "A", "F");
+    shouldFail(g::isConnected, NotInCollectionException.class, "F", "A");
+    shouldFail(gU::isConnected, NotInCollectionException.class, "F", "A");
 
     assertEquals("B", g.getOther(1, "A"));
     assertEquals("A", g.getOther(1, "B"));
@@ -231,8 +233,8 @@ public class GraphTest {
     assertEquals("C", gU.getOther(3, "C"));
     assertEquals(null, gU.getOther(1, "C"));
 
-    shouldFail(g::getOther, 15, "A", NotInCollectionException.class);
-    shouldFail(gU::getOther, 15, "A", NotInCollectionException.class);
+    shouldFail(g::getOther, NotInCollectionException.class, 15, "A");
+    shouldFail(gU::getOther, NotInCollectionException.class, 15, "A");
   }
 
   @Test
@@ -272,12 +274,12 @@ public class GraphTest {
     assertEquals(iSet, gU.edgeSetOfSink("C"));
     assertEquals(iSet, gU.edgeSetOfSource("C"));
 
-    shouldFail(g::edgeSetOf, "F", NotInCollectionException.class);
-    shouldFail(g::edgeSetOfSink, "F", NotInCollectionException.class);
-    shouldFail(g::edgeSetOfSource, "F", NotInCollectionException.class);
-    shouldFail(gU::edgeSetOf, "F", NotInCollectionException.class);
-    shouldFail(gU::edgeSetOfSink, "F", NotInCollectionException.class);
-    shouldFail(gU::edgeSetOfSource, "F", NotInCollectionException.class);
+    shouldFail(g::edgeSetOf,  NotInCollectionException.class, "F");
+    shouldFail(g::edgeSetOfSink, NotInCollectionException.class, "F");
+    shouldFail(g::edgeSetOfSource, NotInCollectionException.class, "F");
+    shouldFail(gU::edgeSetOf, NotInCollectionException.class, "F");
+    shouldFail(gU::edgeSetOfSink, NotInCollectionException.class, "F");
+    shouldFail(gU::edgeSetOfSource, NotInCollectionException.class, "F");
 
     assertTrue(g.isEndpointOf(1, "A"));
     assertTrue(g.isEndpointOf(1, "B"));
@@ -290,7 +292,7 @@ public class GraphTest {
     assertTrue(g.isEndpointOf(3, "C"));
     assertFalse(g.isEndpointOf(2, "ZZ"));
 
-    shouldFail(g::isEndpointOf, 12, "A", NotInCollectionException.class);
+    shouldFail(g::isEndpointOf, NotInCollectionException.class, 12, "A");
 
     assertTrue(gU.isEndpointOf(1, "A"));
     assertTrue(gU.isEndpointOf(1, "B"));
@@ -303,19 +305,19 @@ public class GraphTest {
     assertTrue(gU.isEndpointOf(3, "C"));
     assertFalse(gU.isEndpointOf(2, "ZZ"));
 
-    shouldFail(gU::isEndpointOf, 12, "A", NotInCollectionException.class);
+    shouldFail(gU::isEndpointOf, NotInCollectionException.class, 12, "A");
 
     assertEquals("A", g.getSharedEndpoint(1, 2));
     assertEquals("C", g.getSharedEndpoint(2, 3));
     assertEquals(null, g.getSharedEndpoint(1, 3));
 
-    shouldFail(g::getSharedEndpoint, 12, 2, NotInCollectionException.class);
+    shouldFail(g::getSharedEndpoint, NotInCollectionException.class, 12, 2);
 
     assertEquals("A", gU.getSharedEndpoint(1, 2));
     assertEquals("C", gU.getSharedEndpoint(2, 3));
     assertEquals(null, gU.getSharedEndpoint(1, 3));
 
-    shouldFail(gU::getSharedEndpoint, 12, 2, NotInCollectionException.class);
+    shouldFail(gU::getSharedEndpoint, NotInCollectionException.class, 12, 2);
   }
 
   @Test
@@ -464,10 +466,10 @@ public class GraphTest {
 
     assertTrue(unmodifiableG == unmodifiableG.unmodifiableGraph());
 
-    shouldFail(unmodifiableG::addVertex, "ASDF", UnsupportedOperationException.class);
-    shouldFail(unmodifiableG::addEdge, "C", "C", 10, UnsupportedOperationException.class);
-    shouldFail(unmodifiableG::removeVertex, "B", UnsupportedOperationException.class);
-    shouldFail(unmodifiableG::removeEdge, 1, UnsupportedOperationException.class);
+    shouldFail(unmodifiableG::addVertex, UnsupportedOperationException.class, "ASDF");
+    shouldFail(unmodifiableG::addEdge, UnsupportedOperationException.class, "C", "C", 10);
+    shouldFail(unmodifiableG::removeVertex, UnsupportedOperationException.class, "B");
+    shouldFail(unmodifiableG::removeEdge, UnsupportedOperationException.class, 1);
     shouldFail(unmodifiableG::clear, UnsupportedOperationException.class);
 
     //Test adding a vertex is reflected in view
@@ -629,12 +631,12 @@ public class GraphTest {
     g.addVertex("B");
     g.addVertex("C");
 
-    shouldFail(Algorithm::dijkstra, g, "X", "A", NotInCollectionException.class);
-    shouldFail(Algorithm::dijkstra, g, "A", "X", NotInCollectionException.class);
+    shouldFail(Algorithm::dijkstra, NotInCollectionException.class, g, "X", "A");
+    shouldFail(Algorithm::dijkstra, NotInCollectionException.class, g, "A", "X");
 
     g.addEdge("A", "B", new SuperEdge("ab", -1));
 
-    shouldFail(Algorithm::dijkstra, g, "A", "B", Exception.class);
+    shouldFail(Algorithm::dijkstra, Exception.class, g, "A", "B");
 
     g.removeEdge(g.getConnection("A", "B"));
 

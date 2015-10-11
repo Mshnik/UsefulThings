@@ -129,7 +129,7 @@ public class LinkedHashMapTest {
     m.put("B", 8);
     assertEquals("{D=5, E=4, A=1, B=8, C=2, F=6}", m.toString());
 
-    shouldFail(m::putAt, "E", 5, 2, RuntimeException.class);
+    shouldFail(m::putAt, RuntimeException.class, "E", 5, 2);
   }
 
   private static class E extends Tuple2<String, Integer> implements Entry<String, Integer> {

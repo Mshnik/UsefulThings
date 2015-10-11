@@ -154,7 +154,7 @@ public class BiMapTest {
     assertEquals(b.keySet().size(), keys.size());
     assertEquals(b.keySet(), keys);
 
-    shouldFail(b.keySet()::add, "F", UnsupportedOperationException.class);
+    shouldFail(b.keySet()::add, UnsupportedOperationException.class, "F");
 
     b.keySet().clear();
     keys.clear();
@@ -212,7 +212,7 @@ public class BiMapTest {
     assertEquals(b.values().size(), vals.size());
     assertEquals(b.values(), vals);
 
-    shouldFail(b.values()::add, 7, UnsupportedOperationException.class);
+    shouldFail(b.values()::add, UnsupportedOperationException.class, 7);
 
     b.values().clear();
     vals.clear();
@@ -308,7 +308,7 @@ public class BiMapTest {
         entriesIterator.remove(); //Make sure double removal doesn't hurt
       }
 
-      shouldFail(e::setValue, 999, UnsupportedOperationException.class);
+      shouldFail(e::setValue, UnsupportedOperationException.class, 999);
     }
 
     assertEquals(b.size(), b.keySet().size());
@@ -332,7 +332,7 @@ public class BiMapTest {
         rentriesIterator.remove(); //Make sure double removal doesn't hurt
       }
 
-      shouldFail(e::setValue, "VAL", UnsupportedOperationException.class);
+      shouldFail(e::setValue, UnsupportedOperationException.class, "VAL");
     }
 
     b2.remove("A");

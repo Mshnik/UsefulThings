@@ -18,5 +18,8 @@ hs_err_pid*
 /target/
 .settings/
 
-#IntelliJ startup stuff
+#IntelliJ startup stuff, ignored directories
 .idea/**
+out/**
+target/**
+

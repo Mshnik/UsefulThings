@@ -53,14 +53,14 @@ public class JUnitUtil {
     return f.partialApply(message, expected, actual);
   }
 
-  /** Runs each of the unit functions given, and returns the percentage (of 100) of them that do not
+  /** Runs each of the unit functions given, and returns the count of them that do not
    * throw assertion errors. (That pass, in other words).
    * @param assertsToTest - an array of the Units to call.
    * @return
    */
   public static int testAll(Unit... assertsToTest) {
     if (assertsToTest == null || assertsToTest.length == 0) {
-      return 100;
+      return 0;
     }
 
     int passedCount = 0;
@@ -70,7 +70,7 @@ public class JUnitUtil {
         passedCount++;
       } catch(AssertionError e){}
     }
-    return 100 * passedCount / assertsToTest.length;
+    return passedCount;
   }
 
   /**
@@ -206,4 +206,23 @@ public class JUnitUtil {
                                                                T arg1, R arg2, S arg3) {
     shouldFail(request.partialApply(arg1, arg2, arg3).asUnit(), expectedException);
   }
+
+  /**
+   * Tests that the given request fails on the given inputs
+   * Throws an assertion exception if it does not fail
+   */
+  public static <T, R, S, U> void shouldFail(QuadConsumer<T, R, S, U> request, T arg1, R arg2, S arg3, U arg4) {
+    shouldFail(request.partialApply(arg1, arg2, arg3, arg4).asUnit());
+  }
+
+  /**
+   * Tests that the given request fails on the given inputs with the given class of exception.
+   * Throws an assertion exception if it does not fail, or fails with a different
+   * class of exception
+   */
+  public static <T, R, S, U, E extends Throwable> void shouldFail(QuadConsumer<T, R, S, U> request, Class<E> expectedException,
+                                                               T arg1, R arg2, S arg3, U arg4) {
+    shouldFail(request.partialApply(arg1, arg2, arg3, arg4).asUnit(), expectedException);
+  }
+
 }

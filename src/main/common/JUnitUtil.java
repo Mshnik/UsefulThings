@@ -97,10 +97,10 @@ public class JUnitUtil {
     }
 
     if (got) {
-      fail(request + " did not fail");
+      fail("method call did not result in exception");
     }
     if (!expectedException.isAssignableFrom(ex.getClass())) {
-      fail(request + " failed, but with exception " + ex + ". Expected " + expectedException);
+      fail("method call failed, but with exception " + ex + ". Expected " + expectedException);
     }
   }
 

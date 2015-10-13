@@ -7,4 +7,8 @@ public interface Unit extends UnitFuncShell {
 	default Unit asUnit() {
 		return this;
 	}
+
+	default Supplier<Unit> asResult() {
+    return () -> this;
+  }
 }

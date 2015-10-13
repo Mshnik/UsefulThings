@@ -14,6 +14,10 @@ public interface Predicate<A> extends java.util.function.Predicate<A>, SingleFun
     return () -> apply(a);
   }
 
+  default Supplier<Boolean> lazyApply(Supplier<A> aSupplier) {
+    return () -> apply(aSupplier.apply());
+  }
+
   default Consumer<A> discardReturn() {
     return (a) -> apply(a);
   }

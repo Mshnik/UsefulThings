@@ -11,7 +11,11 @@ public interface Consumer<A> extends java.util.function.Consumer<A>, SingleFuncS
 	default Unit partialApply(A a) {
 		return () -> apply(a);
 	}
-	
+
+  default Unit lazyApply(Supplier<A> aSupplier) {
+    return () -> apply(aSupplier.apply());
+  }
+
 	default Consumer<A> discardReturn() {
 		return this;
 	}

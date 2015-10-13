@@ -9,12 +9,28 @@ public interface BiPredicate<A, B> extends java.util.function.BiPredicate<A, B>,
     return apply(a, b);
   }
 
-  default Supplier<Boolean> partialApply(A a, B b) {
-    return () -> apply(a, b);
-  }
-
   default Predicate<B> partialApply(A a) {
     return (b) -> apply(a, b);
+  }
+
+  default Predicate<B> lazyApply(Supplier<A> aSupplier) {
+    return (b) -> apply(aSupplier.apply(), b);
+  }
+
+  default Supplier<Boolean> partialApply(A a, B b) {
+    return partialApply(a).partialApply(b);
+  }
+
+  default Supplier<Boolean> partialLazyApply(A a, Supplier<B> bSupplier) {
+    return partialApply(a).lazyApply(bSupplier);
+  }
+
+  default Supplier<Boolean> partialLazyApply(Supplier<A> aSupplier, B b) {
+    return lazyApply(aSupplier).partialApply(b);
+  }
+
+  default Supplier<Boolean> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
+    return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
   default BiConsumer<A, B> discardReturn() {

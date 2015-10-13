@@ -3,6 +3,7 @@ package common;
 import functional.*;
 import functional.BiConsumer;
 import functional.Consumer;
+import functional.Supplier;
 import org.junit.Assert;
 
 import java.util.function.*;
@@ -14,49 +15,145 @@ public class JUnitUtil {
 
   private JUnitUtil() {}
 
+  /** Returns a Unit that causes an assertion failure */
   public static Unit failFunc() {
     return Assert::fail;
   }
 
+  /** Returns a Unit that causes an assertion failure with the given message */
   public static Unit failFunc(String message) {
     Consumer<String> f = Assert::fail;
     return f.partialApply(message);
   }
 
+  /** Returns a Unit that asserts that the given condition is true */
   public static Unit assertTrueFunc(boolean condition) {
     Consumer<Boolean> f = Assert::assertTrue;
     return f.partialApply(condition);
   }
 
+  /** Returns a Unit that asserts that the given condition is true with the given message */
   public static Unit assertTrueFunc(String message, boolean condition) {
     BiConsumer<String, Boolean> f = Assert::assertTrue;
     return f.partialApply(message, condition);
   }
 
+  /** Returns a Unit that asserts that the given condition is false */
   public static Unit assertFalseFunc(boolean condition) {
     Consumer<Boolean> f = Assert::assertFalse;
     return f.partialApply(condition);
   }
 
+  /** Returns a Unit that asserts that the given condition is false with the given message */
   public static Unit assertFalseFunc(String message, boolean condition) {
     BiConsumer<String, Boolean> f = Assert::assertFalse;
     return f.partialApply(message, condition);
   }
 
+  /** Returns a Unit that asserts that the two objects are equal */
   public static Unit assertEqualsFunc(Object expected, Object actual) {
     BiConsumer<Object, Object> f = Assert::assertEquals;
     return f.partialApply(expected, actual);
   }
 
+  /** Returns a Unit that asserts that the two objects are equal with the given message */
   public static Unit assertEqualsFunc(String message, Object expected, Object actual) {
     TriConsumer<String, Object, Object> f = Assert::assertEquals;
     return f.partialApply(message, expected, actual);
   }
 
+  /** Call the given supplier, and assert that it is true */
+  public static void callAndAssetTrue(Supplier<Boolean> conditionSupplier) {
+    assertTrue(conditionSupplier.apply());
+  }
+
+  /** Call the given supplier, and assert that it is true with the given message */
+  public static void callAndAssetTrue(String message, Supplier<Boolean> conditionSupplier) {
+    assertTrue(message, conditionSupplier.apply());
+  }
+
+  /** Call the given supplier, and assert that it is false */
+  public static void callAndAssetFalse(Supplier<Boolean> conditionSupplier) {
+    assertFalse(conditionSupplier.apply());
+  }
+
+  /** Call the given supplier, and assert that it is false with the given message */
+  public static void callAndAssetFalse(String message, Supplier<Boolean> conditionSupplier) {
+    assertFalse(message, conditionSupplier.apply());
+  }
+
+  /** Call the given supplier, and assert that the two objects are equal */
+  public static void callAndAssertEquals(Object expected, Supplier<Object> actualSupplier) {
+    assertEquals(expected, actualSupplier.apply());
+  }
+
+  /** Call the given suppliers, and assert that the two objects are equal */
+  public static void callAndAssertEquals(Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
+    assertEquals(expectedSupplier.apply(), actualSupplier.apply());
+  }
+
+  /** Call the given supplier, and assert that the two objects are equal with the given message */
+  public static void callAndAssertEquals(String message, Object expected, Supplier<Object> actualSupplier) {
+    assertEquals(message, expected, actualSupplier.apply());
+  }
+
+  /** Call the given suppliers, and assert that the two objects are equal with the given message*/
+  public static void callAndAssertEquals(String message, Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
+    assertEquals(message, expectedSupplier.apply(), actualSupplier.apply());
+  }
+
+  /** Returns a Unit that asserts that the condition from the given supplier is true */
+  public static Unit callAndAssertTrueFunc(Supplier<Boolean> conditionSupplier) {
+    Consumer<Boolean> f = Assert::assertTrue;
+    return f.lazyApply(conditionSupplier);
+  }
+
+  /** Returns a Unit that asserts that the given condition is true with the given message */
+  public static Unit callAndAssertTrueFunc(String message, Supplier<Boolean> conditionSupplier) {
+    BiConsumer<String, Boolean> f = Assert::assertTrue;
+    return f.partialLazyApply(message, conditionSupplier);
+  }
+
+  /** Returns a Unit that asserts that the given condition is false */
+  public static Unit callAndAssertFalseFunc(Supplier<Boolean> conditionSupplier) {
+    Consumer<Boolean> f = Assert::assertFalse;
+    return f.lazyApply(conditionSupplier);
+  }
+
+  /** Returns a Unit that asserts that the given condition is false with the given message */
+  public static Unit callAndAssertFalseFunc(String message, Supplier<Boolean> conditionSupplier) {
+    BiConsumer<String, Boolean> f = Assert::assertFalse;
+    return f.partialLazyApply(message, conditionSupplier);
+  }
+
+  /** Returns a Unit that asserts that the two objects are equal */
+  public static Unit callAndAssertEqualsFunc(Object expected, Supplier<Object> actualSupplier) {
+    BiConsumer<Object, Object> f = Assert::assertEquals;
+    return f.partialLazyApply(expected, actualSupplier);
+  }
+
+  /** Returns a Unit that asserts that the two objects are equal */
+  public static Unit callAndAssertEqualsFunc(Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
+    BiConsumer<Object, Object> f = Assert::assertEquals;
+    return f.lazyApply(expectedSupplier, actualSupplier);
+  }
+
+  /** Returns a Unit that asserts that the two objects are equal with the given message */
+  public static Unit callAndAssertEqualsFunc(String message, Object expected, Supplier<Object> actualSupplier) {
+    TriConsumer<String, Object, Object> f = Assert::assertEquals;
+    return f.partialLazyApply(message, expected, actualSupplier);
+  }
+
+  /** Returns a Unit that asserts that the two objects are equal with the given message */
+  public static Unit callAndAssertEqualsFunc(String message, Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
+    TriConsumer<String, Object, Object> f = Assert::assertEquals;
+    return f.partialLazyApply(message, expectedSupplier, actualSupplier);
+  }
+
   /** Runs each of the unit functions given, and returns the count of them that do not
    * throw assertion errors. (That pass, in other words).
-   * @param assertsToTest - an array of the Units to call.
-   * @return
+   * @param assertsToTest - an array of the Units to call
+   * @return the count of asserts that pass
    */
   public static int testAll(Unit... assertsToTest) {
     if (assertsToTest == null || assertsToTest.length == 0) {
@@ -206,23 +303,4 @@ public class JUnitUtil {
                                                                T arg1, R arg2, S arg3) {
     shouldFail(request.partialApply(arg1, arg2, arg3).asUnit(), expectedException);
   }
-
-  /**
-   * Tests that the given request fails on the given inputs
-   * Throws an assertion exception if it does not fail
-   */
-  public static <T, R, S, U> void shouldFail(QuadConsumer<T, R, S, U> request, T arg1, R arg2, S arg3, U arg4) {
-    shouldFail(request.partialApply(arg1, arg2, arg3, arg4).asUnit());
-  }
-
-  /**
-   * Tests that the given request fails on the given inputs with the given class of exception.
-   * Throws an assertion exception if it does not fail, or fails with a different
-   * class of exception
-   */
-  public static <T, R, S, U, E extends Throwable> void shouldFail(QuadConsumer<T, R, S, U> request, Class<E> expectedException,
-                                                               T arg1, R arg2, S arg3, U arg4) {
-    shouldFail(request.partialApply(arg1, arg2, arg3, arg4).asUnit(), expectedException);
-  }
-
 }

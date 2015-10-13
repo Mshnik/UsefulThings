@@ -10,6 +10,10 @@ public interface Function<A, R> extends java.util.function.Function<A, R>, Singl
     return () -> apply(a);
   }
 
+  default Supplier<R> lazyApply(Supplier<A> aSupplier) {
+    return () -> apply(aSupplier.apply());
+  }
+
   default Consumer<A> discardReturn() {
     return (a) -> apply(a);
   }

@@ -8,6 +8,13 @@ public interface Unit extends UnitFuncShell {
 		return this;
 	}
 
+	default Supplier<Object> supplyNothing() {
+		return () -> {
+			apply();
+			return null;
+		};
+	}
+
 	default Supplier<Unit> asResult() {
     return () -> this;
   }

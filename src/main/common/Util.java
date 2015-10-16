@@ -227,7 +227,7 @@ public class Util {
    * Returns all permutations of the given array
    */
   public static <T> ArrayList<T[]> permute(T[] arr) {
-    return permute(Arrays.copyOf(arr, arr.length), new ArrayList<T[]>(), 0);
+    return permute(Arrays.copyOf(arr, arr.length), new ArrayList<>(), 0);
   }
 
   /**

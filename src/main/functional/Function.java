@@ -27,4 +27,12 @@ public interface Function<A, R> extends java.util.function.Function<A, R>, Singl
     Objects.requireNonNull(after);
     return (a) -> after.apply(apply(a));
   }
+
+  default Function<A, R> butFirst(Unit before) {
+    return (a) -> {
+      before.apply();
+      return apply(a);
+    };
+  }
 }
+

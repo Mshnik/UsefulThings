@@ -26,6 +26,13 @@ public interface Predicate<A> extends java.util.function.Predicate<A>, SingleFun
     return (a) -> !apply(a);
   }
 
+  default Predicate<A> butFirst(Unit before) {
+    return (a) -> {
+      before.apply();
+      return apply(a);
+    };
+  }
+
   default Predicate<A> and(java.util.function.Predicate<? super A> other) {
     Objects.requireNonNull(other);
     return (a) -> apply(a) && other.test(a);

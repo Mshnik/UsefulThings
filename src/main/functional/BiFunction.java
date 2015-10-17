@@ -42,4 +42,11 @@ public interface BiFunction<A, B, R> extends java.util.function.BiFunction<A, B,
     Objects.requireNonNull(after);
     return (a, b) -> after.apply(apply(a, b));
   }
+
+  default BiFunction<A, B, R> butFirst(Unit before) {
+    return (a, b) -> {
+      before.apply();
+      return apply(a, b);
+    };
+  }
 }

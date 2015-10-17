@@ -41,6 +41,13 @@ public interface BiPredicate<A, B> extends java.util.function.BiPredicate<A, B>,
     return (b, a) -> apply(a, b);
   }
 
+  default BiPredicate<A, B> butFirst(Unit before) {
+    return (a, b) -> {
+      before.apply();
+      return apply(a, b);
+    };
+  }
+
   default BiPredicate<A, B> negate() {
     return (a, b) -> !apply(a, b);
   }

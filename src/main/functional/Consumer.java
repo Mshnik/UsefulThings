@@ -19,4 +19,11 @@ public interface Consumer<A> extends java.util.function.Consumer<A>, SingleFuncS
 	default Consumer<A> discardReturn() {
 		return this;
 	}
+
+	default Consumer<A> butFirst(Unit before) {
+		return (a) -> {
+			before.apply();
+			apply(a);
+		};
+	}
 }

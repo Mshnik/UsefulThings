@@ -78,6 +78,13 @@ public interface TriPredicate<A, B, C> extends TriFuncShell<A, B, C> {
     return (a, b, c) -> !apply(a, b, c);
   }
 
+  default TriPredicate<A, B, C> butFirst(Unit before) {
+    return (a, b, c) -> {
+      before.apply();
+      return apply(a, b, c);
+    };
+  }
+
   default TriPredicate<A, B, C> and(TriPredicate<A, B, C> other) {
     Objects.requireNonNull(other);
     return (a, b, c) -> apply(a, b, c) && other.apply(a, b, c);

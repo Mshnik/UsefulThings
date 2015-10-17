@@ -81,4 +81,11 @@ public interface TriConsumer<A, B, C> extends TriFuncShell<A, B, C> {
       after.apply(a, b, c);
     };
   }
+
+  default TriConsumer<A, B, C> butFirst(Unit before) {
+    return (a, b, c) -> {
+      before.apply();
+      apply(a, b, c);
+    };
+  }
 }

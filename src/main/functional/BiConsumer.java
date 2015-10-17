@@ -39,4 +39,11 @@ public interface BiConsumer<A, B> extends java.util.function.BiConsumer<A, B>, B
   default BiConsumer<A, B> discardReturn() {
     return this;
   }
+
+  default BiConsumer<A, B> butFirst(Unit before) {
+    return (a, b) -> {
+      before.apply();
+      apply(a, b);
+    };
+  }
 }

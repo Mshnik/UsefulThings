@@ -12,6 +12,13 @@ public interface Supplier<R> extends java.util.function.Supplier<R>, UnitFuncShe
     return () -> apply();
   }
 
+  default Supplier<R> butFirst(Unit before) {
+    return () -> {
+      before.apply();
+      return apply();
+    };
+  }
+
   static <T> Supplier<T> supply(T t) {
     return () -> t;
   }

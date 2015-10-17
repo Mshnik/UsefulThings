@@ -74,4 +74,11 @@ public interface TriFunction<A, B, C, R> extends TriFuncShell<A, B, C> {
   default TriConsumer<A, B, C> discardReturn() {
     return (a, b, c) -> apply(a, b, c);
   }
+
+  default TriFunction<A, B, C, R> butFirst(Unit before) {
+    return (a, b, c) -> {
+      before.apply();
+      return apply(a, b, c);
+    };
+  }
 }

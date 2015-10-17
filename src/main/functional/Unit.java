@@ -15,6 +15,20 @@ public interface Unit extends UnitFuncShell {
 		};
 	}
 
+  default Unit butFirst(Unit before) {
+    return () -> {
+      before.apply();
+      apply();
+    };
+  }
+
+	default Unit andThen(Unit next) {
+    return () -> {
+      apply();
+      next.apply();
+    };
+  }
+
 	default Supplier<Unit> asResult() {
     return () -> this;
   }

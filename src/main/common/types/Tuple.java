@@ -18,6 +18,14 @@ import java.util.List;
  */
 public abstract class Tuple implements Cloneable {
 
+  /** The size of the largest available tuple */
+  private static final int MAX_TUPLE_SIZE = 8;
+
+  /** Returns a new empty tuple */
+  public static Tuple0 of() {
+    return new Tuple0();
+  };
+
   /**
    * Returns a new tuple of the given objects
    */

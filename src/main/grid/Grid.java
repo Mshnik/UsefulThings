@@ -10,10 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.function.BinaryOperator;
 
 import common.Util;
 import common.dataStructures.ConsList;
+import functional.BiFunction;
 
 /**
  * A collection for arbitrarily deep nested arrays
@@ -49,13 +49,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
    * @param bounds - the bounds of this grid. This also determines the dimensionality of the grid
    */
   public Grid(Integer... bounds) {
-    dimension = bounds.length;
-    this.bounds = new int[dimension];
-    for (int i = 0; i < dimension; i++) {
-      this.bounds[i] = bounds[i];
-    }
-    vals = recCreateArrays(0);
-    size = 0;
+    this(Util.unboxArr(bounds));
   }
 
   /**
@@ -79,7 +73,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
    *                 The first argument to combine will be a tile from grid1, and the second will be a tile from grid2.
    * @return - A grid with array size equal to the max of the two grids on each dimension, and each element combined
    */
-  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, BinaryOperator<T> combinor)
+  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, BiFunction<T,T,T> combinor)
       throws IllegalDimensionException {
     if (grid1.dimension != grid2.dimension)
       throw new IllegalDimensionException(grid2.dimension, grid1);
@@ -338,7 +332,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
   @Override
   public boolean retainAll(Collection<?> c) {
     boolean b = false;
-    for (Tile t : toArray(new Tile[0])) {
+    for (Tile t : toArray(new Tile[size()])) {
       if (!c.contains(t)) {
         b = remove(t) || b;
       }
@@ -348,7 +342,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
 
   @Override
   public void clear() {
-    for (Tile t : toArray(new Tile[0])) {
+    for (Tile t : toArray(new Tile[size()])) {
       remove(t);
     }
   }
@@ -409,7 +403,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
    * Returns all coordinate groups that are in bounds for this grid
    */
   public ArrayList<Integer[]> buildCoordinates() {
-    return recBuild(new ConsList<Integer>(), new ArrayList<Integer[]>(), 0, bounds);
+    return recBuild(new ConsList<>(), new ArrayList<>(), 0, bounds);
   }
 
   /**
@@ -489,7 +483,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
     if (bounds.length != this.bounds.length)
       throw new IllegalDimensionException(bounds.length, this);
 
-    Grid<T> g = new Grid<T>(bounds);
+    Grid<T> g = new Grid<>(bounds);
     for (T t : this) {
       try {
         g.add(t);
@@ -500,7 +494,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
   }
 
   /**
-   * @see clone(Integer... bounds)
+   * See {@link grid.Grid#clone(Integer... bounds)}
    */
   public Grid<T> resize(Integer... bounds) {
     return clone(bounds);

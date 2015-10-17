@@ -1,5 +1,7 @@
 package common.types;
 
+import functional.BiFunction;
+
 import java.util.Objects;
 
 /**
@@ -8,7 +10,6 @@ import java.util.Objects;
  * an instance of Left, with a value of type A, or an instance of Right,
  * with a value of type B.
  * The types can be the same, but in that case there isn't much use to using Either.
- * Values stored in either cannot be null.
  *
  * @param <A> The first type to sum
  * @param <B> The second type to sum
@@ -25,6 +26,22 @@ public abstract class Either<A, B> {
    */
   Either(boolean isLeft) {
     this.isLeft = isLeft;
+  }
+
+  /** Constructs a new Either, selecting from the two arguments with the given criteria */
+  public static <A,B> Either<A,B> selectFrom(A a, B b, BiFunction<A,B,Boolean> selectA) {
+    if (selectA.apply(a,b)) {
+      return new Left<>(a);
+    } else {
+      return new Right<>(b);
+    }
+  }
+
+  /** Constructs a new Either, selecting the non-null argument. If both or neither are non-null,
+   * creates a Left (from the first argument).
+   */
+  public static <A,B> Either<A,B> selectNonNull(A a, B b) {
+    return selectFrom(a,b, (x,y) -> x != null);
   }
 
   /**

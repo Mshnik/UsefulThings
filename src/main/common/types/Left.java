@@ -17,7 +17,6 @@ public class Left<A, B> extends Either<A, B> {
    */
   public Left(A a) throws IllegalArgumentException {
     super(true);
-    if (a == null) throw new IllegalArgumentException("Can't Wrap null");
     val = a;
   }
 
@@ -29,11 +28,11 @@ public class Left<A, B> extends Either<A, B> {
   }
 
   /**
-   * Returns the type A
+   * Returns the type A. Returns null if this was wrapping null.
    */
   @SuppressWarnings("unchecked")
   public Class<A> getType() {
-    return (Class<A>) val.getClass();
+    return val == null ? null : (Class<A>) val.getClass();
   }
 
   /**

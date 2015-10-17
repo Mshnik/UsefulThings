@@ -1,5 +1,8 @@
-package concurrent;
+package common;
 
+import common.types.Either;
+import common.types.Left;
+import common.types.Right;
 import functional.Supplier;
 
 /** MethodRunner allows a method call to be made along with a timeout time.
@@ -15,6 +18,8 @@ public class MethodRunner<T> {
 
   private final Supplier<T> methodCall;
   private T result;
+  private Throwable throwable;
+  private boolean halted;
   private boolean done;
   private final long millisToWait;
 
@@ -41,10 +46,16 @@ public class MethodRunner<T> {
    * then returns the result. If the call was interrupted, null will be returned.
    * This method can be invoked multiple times to make the same method call multiple times,
    * but the result of the first call will be forgotten upon making the second call.
+   *
+   * @return the result if it was computed, the throwable if an exception or error occurred, or null if
+   *    the call was terminated due to timeout or if the worker thread was somehow interrupted.
    */
-  public T runAndGet() {
+  public Either<Throwable,T> runAndGet() {
     done = false;
+    halted = false;
     result = null;
+    throwable = null;
+
     long startTime = System.currentTimeMillis();
     TimeoutWorker r = new TimeoutWorker();
     r.start();
@@ -52,39 +63,58 @@ public class MethodRunner<T> {
       try {
         Thread.sleep(MILLIS_SLEEP_BETWEEN_UPDATES);
       } catch (InterruptedException e) {
-          return null; //Give up on result
+        return null; //Give up on result
       }
     }
 
     if(!done) {
       r.stop();
+      halted = true;
+      done = true;
+      return null;
     }
-    done = true;
-    return result;
+
+    return Either.selectNonNull(throwable, result);
   }
 
   /** If his method call has not been run, calls runAndGet() to compute and return it.
    * If it has, returns the result that was computed.
    * Thus multiple calls to get() will compute the result once and then return it for each call.
+   *
+   * @return the result if it was computed, the throwable if an exception or error occurred, or null if
+   *    the call was terminated due to timeout
    */
-  public T get() {
-    if (done) {
-      return result;
-    } else {
+  public Either<Throwable,T> get() {
+    if (!done) {
       return runAndGet();
+    } else if (halted) {
+      return null;
+    } else {
+      return Either.selectNonNull(throwable, result);
     }
   }
 
   /** A helper class for MethodRunner - simply executes the method call and sets done to
-   * true upon termination
+   * true upon termination.
    * @author Mshnik
    */
   private class TimeoutWorker extends Thread {
 
+    /**
+     * Executes the method call for this MethodRunner.
+     * If the method call runs to completion without exception or error,
+     * stores the result in result. If an exception occurs, stores the throwable in throwable.
+     * Either way, if this terminates, sets done to true.
+     */
     @Override
     public void run() {
-      result = methodCall.apply();
-      done = true;
+      try {
+        result = methodCall.apply();
+      } catch(Throwable t) {
+        throwable = t;
+      } finally {
+        done = true;
+      }
     }
 
     @Override

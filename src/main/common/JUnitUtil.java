@@ -6,6 +6,8 @@ import functional.Consumer;
 import functional.Supplier;
 import org.junit.Assert;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.function.*;
 
 import static org.junit.Assert.*;
@@ -14,6 +16,57 @@ import static functional.FunctionalUtil.*;
 public class JUnitUtil {
 
   private JUnitUtil() {}
+
+
+  private static float ERR_TERM = 0.00001f;
+
+  public static void assertEquals(Object expected, Object actual) {
+    assertEquals((String)null, expected, actual);
+  }
+
+
+  /** A single assertEquals function that handles all of the different cases of
+   * JUnit assertEquals
+   */
+  public static void assertEquals(String message, Object expected, Object actual) {
+    if(expected == null && actual == null) {
+      //Awesome! Nulls match.
+      return;
+    } else if(expected == null || actual == null) {
+      fail(message);
+    } else if (expected instanceof Double && actual instanceof Double) {
+      Assert.assertEquals(message, ERR_TERM, (Double)expected, (Double)actual);
+    } else if (expected instanceof Float && actual instanceof Float) {
+      Assert.assertEquals(message, ERR_TERM, (Float)expected, (Float)actual);
+    } else if (expected instanceof Object[] && actual instanceof Object[]) {
+      Assert.assertArrayEquals(message, (Object[]) expected, (Object[]) actual);
+    } else if (expected instanceof int[] && actual instanceof int[]) {
+      Assert.assertArrayEquals(message, (int[]) expected, (int[]) actual);
+    } else if (expected instanceof boolean[] && actual instanceof boolean[]) {
+      Assert.assertArrayEquals(message, (boolean[]) expected, (boolean[]) actual);
+    } else if (expected instanceof short[] && actual instanceof short[]) {
+      Assert.assertArrayEquals(message, (short[]) expected, (short[]) actual);
+    } else if (expected instanceof long[] && actual instanceof long[]) {
+      Assert.assertArrayEquals(message, (long[]) expected, (long[]) actual);
+    } else if (expected instanceof byte[] && actual instanceof byte[]) {
+      Assert.assertArrayEquals(message, (byte[]) expected, (byte[]) actual);
+    } else if (expected instanceof char[] && actual instanceof char[]) {
+      Assert.assertArrayEquals(message, (char[]) expected, (char[]) actual);
+    } else if (expected instanceof float[] && actual instanceof float[]) {
+      Assert.assertArrayEquals(message, (float[]) expected, (float[]) actual, ERR_TERM);
+    } else if (expected instanceof double[] && actual instanceof double[]) {
+      Assert.assertArrayEquals(message, (double[]) expected, (double[]) actual, ERR_TERM);
+    } else if (expected instanceof Iterator<?> && actual instanceof Iterator<?>) {
+      Iterator<?> i1 = (Iterator<?>)expected;
+      Iterator<?> i2 = (Iterator<?>)actual;
+      while(i1.hasNext() && i2.hasNext()) {
+        assertEquals(message, i1.next(), i2.next());
+      }
+      assertTrue(! i1.hasNext() && ! i2.hasNext());
+    } else {
+      Assert.assertEquals(message, expected, actual);
+    }
+  }
 
   /** Returns a Unit that causes an assertion failure */
   public static Unit failFunc() {
@@ -185,11 +238,11 @@ public class JUnitUtil {
    */
   public static <E extends Throwable> void shouldFail(Unit request, Class<E> expectedException) {
     boolean got = false;
-    Exception ex = null;
+    Throwable ex = null;
     try {
       request.apply();
       got = true;
-    } catch (Exception e) {
+    } catch (Throwable e) {
       ex = e;
     }
 

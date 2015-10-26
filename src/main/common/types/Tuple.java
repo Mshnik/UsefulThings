@@ -1,10 +1,10 @@
 package common.types;
 
+import common.Util;
 import common.dataStructures.DeArrList;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * An abstract parent of all tuples, a simple Product Type implementation.
@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Mshnik
  */
-public abstract class Tuple implements Cloneable {
+public abstract class Tuple implements Cloneable, Iterable<Object>, Serializable {
 
   /** The size of the largest available tuple */
   private static final int MAX_TUPLE_SIZE = 8;
@@ -159,6 +159,32 @@ public abstract class Tuple implements Cloneable {
    */
   public Object[] toArray() {
     return Arrays.copyOf(vals, vals.length);
+  }
+
+  /** Return a list the represents this tuple. The returned list is an immutable copy */
+  public List<Object> toList() {
+    return Collections.unmodifiableList(Arrays.asList(vals));
+  }
+
+  /** Returns an Iterator over the objects in this Tuple. */
+  public Iterator<Object> iterator() {
+    return Util.arrIterator(toArray());
+  }
+
+  /** Return true iff this tuple contains the given value */
+  public boolean contains(Object o) {
+    for(Object ob : vals) {
+      if(Objects.equals(o, ob)) return true;
+    }
+    return false;
+  }
+
+  /** Return true iff this tuple contains all of the values in the given collection */
+  public boolean containsAll(Collection<?> col) {
+    for(Object o : col) {
+      if(! contains(o)) return false;
+    }
+    return true;
   }
 
   /**

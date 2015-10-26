@@ -5,6 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 public class TupleTest {
 
   private Tuple1<String> t1;
@@ -80,7 +83,7 @@ public class TupleTest {
   }
 
   @Test
-  public void testToStringAndToArray() {
+  public void testToStringAndToCollections() {
     assertEquals("(A)", t1.toString());
     assertEquals("(A,B)", t2.toString());
     assertEquals("(A,B,C)", t3.toString());
@@ -105,6 +108,14 @@ public class TupleTest {
       assertArrayEquals(tupleArr[i].vals, tupleArr[i].toArray());
       assertEquals(tupleArr[i].vals.length, tupleArr[i].size());
       assertArrayEquals(arrs[i], tupleArr[i].toArray());
+      assertEquals(Arrays.asList(arrs[i]), tupleArr[i].toList());
+
+      Iterator<String> i1 = Arrays.asList(arrs[i]).iterator();
+      for(Object o : tupleArr[i]) {
+        assertTrue(i1.hasNext());
+        assertEquals(o, i1.next());
+      }
+      assertFalse(i1.hasNext());
     }
   }
 

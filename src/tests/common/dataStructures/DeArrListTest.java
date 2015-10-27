@@ -309,7 +309,23 @@ public class DeArrListTest {
 			assertEquals("(0,1,2,3)",a.toString());
 		}
 	}
-	
+
+  @Test
+  public void testEnsureCapacity() {
+    DeArrList<String> a = new DeArrList<>();
+    int x = a.getArrLength();
+    assertFalse(a.ensureCapacity(x - 1));
+    assertEquals(x, a.getArrLength());
+
+    assertTrue(a.ensureCapacity(x + 1));
+    assertEquals(x + 1, a.getArrLength());
+
+    a.add("Hello");
+    assertTrue(a.ensureCapacity(a.getArrLength() + 1));
+    assertEquals(1, a.size());
+    assertTrue(a.contains("Hello"));
+  }
+
 	@Test
 	public void testRemove(){
 		DeArrList<String> a = new DeArrList<>();

@@ -164,25 +164,45 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
   }
 
   /**
-   * Moves vals to a new array of double the length, starting at length / 4.
+   * Checks if the current size is equivalent to the length of vals (resize necessary).
+   * If so, resizes to an array of double the current length of vals.
    * This is purely an internal operation and doesn't affect the list this represents
    * from the outside. It is used when the internal array must be increased in size.
    */
-  private boolean reArray() {
+  private boolean reArrayIfNecessary() {
     if (size() >= vals.length) {
-      Object[] oArr = new Object[vals.length * 2];
-      if (start < end) {
-        System.arraycopy(vals, start, oArr, vals.length / 2, end - start);
-      } else {
-        System.arraycopy(vals, start, oArr, vals.length / 2, vals.length - start);
-        System.arraycopy(vals, 0, oArr, vals.length / 2 + (vals.length - start), end);
-      }
-      start = vals.length / 2;
-      end = vals.length * 3 / 2;
+      return reArray(vals.length * 2);
+    }
+    return false;
+  }
+
+  /**
+   * Moves vals to a new array of length newSize, starting 1/4 of the way through
+   * This is purely an internal operation and doesn't affect the list this represents
+   * from the outside. It is used when the internal array must be increased in size.
+   * Does nothing (and returns false) if newSize <= vals.length.
+   * @return true if a reArray operation occurred this way, false otherwise.
+   */
+  private boolean reArray(int newSize) {
+    if (newSize <= vals.length) {
+      return false;
+    }
+    Object[] oArr = new Object[newSize];
+    if (size() == 0) {
       vals = oArr;
       return true;
     }
-    return false;
+
+    if (start < end) {
+      System.arraycopy(vals, start, oArr, vals.length / 2, end - start);
+    } else {
+      System.arraycopy(vals, start, oArr, vals.length / 2, vals.length - start);
+      System.arraycopy(vals, 0, oArr, vals.length / 2 + (vals.length - start), end);
+    }
+    start = vals.length / 2;
+    end = vals.length * 3 / 2;
+    vals = oArr;
+    return true;
   }
 
   /**
@@ -194,7 +214,7 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
   public void add(int index, E element) throws ArrayIndexOutOfBoundsException {
     if (index < 0 || index > size())
       throw new ArrayIndexOutOfBoundsException();
-    reArray();
+    reArrayIfNecessary();
 
     int realIndex = Util.mod(start + index, vals.length);
 
@@ -258,6 +278,14 @@ public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>
   @Override
   public void addLast(E e) {
     add(e);
+  }
+
+  /**
+   * Increases the siez of the arraylist to hold at least the given number of values.
+   * Return true iff the list was re-arrayed this way
+   */
+  public boolean ensureCapacity(int capacity) {
+    return reArray(capacity);
   }
 
   /**

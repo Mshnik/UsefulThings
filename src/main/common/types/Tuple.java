@@ -194,7 +194,7 @@ public abstract class Tuple implements Cloneable, Iterable<Object>, Serializable
    * @param lst  - the first list to zip
    * @param lst2 - the second list to zip
    * @return - a zipped list of tuples. Some tuples may have a null value
-   * but no tuple will have both null values.
+   * if the two input lists are of unequal size, but no tuple will have both null values.
    */
   public static <T, U> List<Tuple2<T, U>> zip(List<T> lst, List<U> lst2) {
     DeArrList<Tuple2<T, U>> zLst = new DeArrList<>();

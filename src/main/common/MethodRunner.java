@@ -16,6 +16,7 @@ import functional.*;
  * @param <T> - the return type of the method call
  * @author Mshnik
  */
+
 public class MethodRunner<T> {
 
   private final Supplier<T> methodCall;

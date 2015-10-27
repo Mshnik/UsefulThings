@@ -28,9 +28,27 @@ public abstract class Either<A, B> {
     this.isLeft = isLeft;
   }
 
-  /** Constructs a new Either, selecting from the two arguments with the given criteria */
+  /** Constructs a new Either, selecting from the two arguments with the given criteria
+   * @param a - the first argument to select from
+   * @param b - the second argument to select from
+   * @param selectA - a function that will be applied to a and b. Should return true if a is to be selected, false for b
+   * @param <A> - the type of the first argument
+   * @param <B> - the type of the second argument
+   * @return - either a Left(a) if selectA(a,b) returns true, or a Right(b) if selectA(a,b) returns false.
+   */
   public static <A,B> Either<A,B> selectFrom(A a, B b, BiFunction<A,B,Boolean> selectA) {
     if (selectA.apply(a,b)) {
+      return new Left<>(a);
+    } else {
+      return new Right<>(b);
+    }
+  }
+
+  /** Constructs a new Either, selecting from the two arguments,
+   * selects the first if the condition is true, the second if the condition is false
+   */
+  public static <A,B> Either<A,B> selectFirstIf(A a, B b, boolean selectA) {
+    if (selectA) {
       return new Left<>(a);
     } else {
       return new Right<>(b);

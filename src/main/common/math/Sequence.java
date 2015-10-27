@@ -3,6 +3,8 @@ package common.math;
 import common.dataStructures.DeArrList;
 import functional.Function;
 
+import java.util.List;
+
 public abstract class Sequence {
 
   public final Double initial;
@@ -17,15 +19,31 @@ public abstract class Sequence {
 
   public abstract double func(int index);
 
-  public Double compute(int index) {
+  public Double compute(int index) throws IllegalArgumentException {
+    if(index < 0) {
+      throw new IllegalArgumentException("Can't find sequence term of a negative index " + index);
+    }
     if (index < computed.size() && computed.get(index) != null) {
       return computed.get(index);
     }
 
-    computed.ensureCapacity(index + 1);
     Double val = func(index);
-    computed.set(index, val);
+    int i = index - computed.size();
+    while (i > 0) {
+      computed.add(null);
+      i--;
+    }
+
+    if (index == computed.size()) {
+      computed.add(val);
+    } else {
+      computed.set(index, val);
+    }
     return val;
+  }
+
+  public List<Double> getComputed() {
+    return new DeArrList<>(computed);
   }
 
   public Sequence add(final Sequence seq) {

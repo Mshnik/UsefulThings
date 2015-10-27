@@ -6,8 +6,8 @@ public class EmpiricalSequence extends Sequence {
 
   private Function<Integer, Double> f;
 
-  public EmpiricalSequence(double initial, Function<Integer, Double> func) {
-    super(initial);
+  public EmpiricalSequence(Function<Integer, Double> func) {
+    super(func.apply(0));
     f = func;
   }
 

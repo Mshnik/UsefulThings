@@ -23,7 +23,7 @@ public class Sum extends Sequence {
     if(index < 0) {
       throw new IllegalArgumentException("Can't find sequence term of a negative index " + index);
     }
-    
+
     if (index < computed.size() && computed.get(index) != null) {
       return computed.get(index);
     }

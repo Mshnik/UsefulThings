@@ -56,18 +56,22 @@ public class BloomFilter<T> {
     return size;
   }
 
-  public boolean contains(T t){
-    for(Function<? super T, Integer> func : hashFunctions) {
-      if( ! flags[func.apply(t) % flags.length]) {
-        return false;
+  public boolean contains(Object o){
+    try {
+      for (Function<? super T, Integer> func : hashFunctions) {
+        if (!flags[func.apply((T)o) % flags.length]) {
+          return false;
+        }
       }
+      return true;
+    } catch (ClassCastException e){
+      return false;
     }
-    return true;
   }
 
-  public boolean containsAll(Collection<? extends T> col) {
-    for(T t : col) {
-      if(! contains(t)) {
+  public boolean containsAll(Collection<?> col) {
+    for(Object o : col) {
+      if(! contains(o)) {
         return false;
       }
     }

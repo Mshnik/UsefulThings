@@ -1,5 +1,7 @@
 package common.dataStructures;
 
+import functional.Function;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,6 +10,8 @@ public class BloomFilteredCollection<T> implements Collection<T> {
 
   private BloomFilter<T> filter;
   private Collection<T> underlyingCollection;
+
+  private int filterResizeCount;
 
   public BloomFilteredCollection() {
     this(new HashSet<>());
@@ -54,10 +58,28 @@ public class BloomFilteredCollection<T> implements Collection<T> {
     return underlyingCollection.toArray(a);
   }
 
+  private void increaseFilterSize() {
+    BloomFilter<T> newFilter = new BloomFilter<>(filter.flagsSize() * 2, false);
+    for(Function<T, Integer> f : filter.getHashFunctions()) {
+      newFilter.addHashFunction(f);
+    }
+    filter = newFilter;
+    filterResizeCount++;
+  }
+
   @Override
   public boolean add(T t) {
-    filter.add(t);
-    return underlyingCollection.add(t);
+    if (size() < filter.flagsSize() / filter.getHashFunctionCount()) {
+      filter.add(t);
+      return underlyingCollection.add(t);
+    } else {
+      boolean ok = underlyingCollection.add(t);
+      increaseFilterSize();
+      for(T t2 : this) {
+        filter.add(t2);
+      }
+      return ok;
+    }
   }
 
   @Override

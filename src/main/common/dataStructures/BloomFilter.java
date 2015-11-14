@@ -2,14 +2,11 @@ package common.dataStructures;
 
 import functional.Function;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 public class BloomFilter<T> {
 
-  private static int DEFAULT_FLAGS_SIZE = 1024;
+  public static int DEFAULT_FLAGS_SIZE = 1024;
   private boolean flags[];
   private ArrayList<Function<T, Integer>> hashFunctions;
   private int size;
@@ -39,6 +36,14 @@ public class BloomFilter<T> {
     return true;
   }
 
+  public int getHashFunctionCount() {
+    return hashFunctions.size();
+  }
+
+  public List<Function<T, Integer>> getHashFunctions() {
+    return new DeArrList<>(hashFunctions);
+  }
+
   public void add(T t) {
     for(Function<? super T, Integer> func : hashFunctions) {
       flags[func.apply(t) % flags.length] = true;
@@ -54,6 +59,10 @@ public class BloomFilter<T> {
 
   public int size() {
     return size;
+  }
+
+  public int flagsSize() {
+    return flags.length;
   }
 
   public boolean contains(Object o){

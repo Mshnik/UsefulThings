@@ -19,7 +19,7 @@ public class Sum extends Sequence {
     return sFunc.apply(index);
   }
 
-  public Double compute(int index) throws IllegalArgumentException {
+  public double compute(int index) throws IllegalArgumentException {
     if(index < 0) {
       throw new IllegalArgumentException("Can't find sequence term of a negative index " + index);
     }
@@ -28,7 +28,7 @@ public class Sum extends Sequence {
       return computed.get(index);
     }
 
-    Double val = func(index) + compute(index - 1);
+    double val = func(index) + compute(index - 1);
     if (index == computed.size()) {
       computed.add(val);
     } else {

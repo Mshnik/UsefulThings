@@ -19,7 +19,7 @@ public abstract class Sequence {
 
   public abstract double func(int index);
 
-  public Double compute(int index) throws IllegalArgumentException {
+  public double compute(int index) throws IllegalArgumentException {
     if(index < 0) {
       throw new IllegalArgumentException("Can't find sequence term of a negative index " + index);
     }
@@ -40,6 +40,14 @@ public abstract class Sequence {
       computed.set(index, val);
     }
     return val;
+  }
+
+  public double[] compute(int startIndex, int endIndex) {
+    double[] arr = new double[endIndex - startIndex];
+    for(int i = startIndex; i < endIndex; i++) {
+      arr[i - startIndex] = compute(i);
+    }
+    return arr;
   }
 
   public List<Double> getComputed() {

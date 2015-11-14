@@ -1,5 +1,6 @@
 package common.math;
 
+import functional.Function;
 import org.junit.Test;
 
 import static common.JUnitUtil.*;
@@ -11,12 +12,13 @@ public class SequenceAndSumTest {
     Sequence s = new EmpiricalSequence((i) -> i * 2.0);
 
     for(int i = 0; i < 10; i++) {
-      assertEquals(i * 2, s.compute(i).intValue());
+      assertEquals(i * 2, (int)s.compute(i));
     }
 
-    assertEquals(50, s.compute(25).intValue());
+    assertEquals(50, (int)s.compute(25));
 
-    shouldFail(s::compute, IllegalArgumentException.class, -5);
+    Function<Integer, Double> f = s::compute;
+    shouldFail(f, IllegalArgumentException.class, -5);
   }
 
   @Test
@@ -25,12 +27,13 @@ public class SequenceAndSumTest {
 
     int x = 1;
     for(int i = 0; i < 10; i++) {
-      assertEquals(x, s.compute(i).intValue());
+      assertEquals(x, (int)s.compute(i));
       x *= 2;
     }
 
-    assertEquals((int)Math.pow(2.0, 25.0), s.compute(25).intValue());
-    shouldFail(s::compute, IllegalArgumentException.class, -5);
+    assertEquals((int)Math.pow(2.0, 25.0), (int)s.compute(25));
+    Function<Integer, Double> f = s::compute;
+    shouldFail(f, IllegalArgumentException.class, -5);
   }
 
   @Test
@@ -39,10 +42,11 @@ public class SequenceAndSumTest {
     int x = 0;
     for(int i = 0; i < 10; i++) {
       x += i;
-      assertEquals(x, s.compute(i).intValue());
+      assertEquals(x, (int)s.compute(i));
     }
 
-    shouldFail(s::compute, IllegalArgumentException.class, -5);
+    Function<Integer, Double> f = s::compute;
+    shouldFail(f, IllegalArgumentException.class, -5);
   }
 
   @Test
@@ -52,9 +56,10 @@ public class SequenceAndSumTest {
     Sequence s3 = s.add(s2);
 
     for(int i = 0; i < 10; i++) {
-      assertEquals(5 * i, s3.compute(i).intValue());
+      assertEquals(5 * i, (int)s3.compute(i));
     }
 
-    shouldFail(s3::compute, IllegalArgumentException.class, -5);
+    Function<Integer, Double> f = s::compute;
+    shouldFail(f, IllegalArgumentException.class, -5);
   }
 }

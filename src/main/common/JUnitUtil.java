@@ -17,8 +17,26 @@ public class JUnitUtil {
 
   private JUnitUtil() {}
 
-
+  /** Error term for comparing floats and doubles. If the diff is less than this, they are considered equal */
   private static float ERR_TERM = 0.00001f;
+
+  public static void assertTrue(String message, boolean condition) {
+    if(!condition) {
+      fail(message);
+    }
+  }
+
+  public static void assertTrue(boolean condition) {
+    assertTrue(null, condition);
+  }
+
+  public static void assertFalse(String message, boolean condition) {
+    assertTrue(message, !condition);
+  }
+
+  public static void assertFalse(boolean condition) {
+    assertFalse(null, condition);
+  }
 
   public static void assertEquals(Object expected, Object actual) {
     assertEquals((String)null, expected, actual);

@@ -1,5 +1,6 @@
 package graph;
 
+import functional.BiFunction;
 import graph.matching.*;
 
 import java.util.ArrayList;
@@ -87,9 +88,30 @@ public class Algorithm {
    * @param start - a vertex in g, the start of the path
    * @param goal  - a vertex in g, the end of the path
    * @return - the path as a list, where return[0] is start and return[last] is goal.
-   * returns null if start or goal isn't in g, or there is no such path.
+   *              returns null if start or goal isn't in g, or there is no such path.
+   * @throws NotInCollectionException if start or goal aren't contained in the graph
+   * @throws  RuntimeException if any edges have negative weights.
    */
-  public static <V, E extends Weighted> LinkedList<V> dijkstra(Graph<V, E> g, V start, V goal)
+  public static <V, E extends Weighted> LinkedList<V> shortestPath(Graph<V, E> g, V start, V goal)
+      throws NotInCollectionException, RuntimeException {
+    return shortestPath(g, start, goal, (a,b) -> 0);
+  }
+
+  /**
+   * Attempts to find the shortest path in g from start to goal
+   *
+   * @param start - a vertex in g, the start of the path
+   * @param goal  - a vertex in g, the end of the path
+   * @param heuristic - a guess of the shortest path length from the first arg to the second.
+   *                      for simple shortest path, ie Dijkstra, just pass in (v1,v2) -> 0, (thus essentially unused)
+   *                      Can't ever return a value more than the true shortest path length, or results may be incorrect.
+   * @return - the path as a list, where return[0] is start and return[last] is goal.
+   *              returns null if start or goal isn't in g, or there is no such path.
+   * @throws NotInCollectionException if start or goal aren't contained in the graph
+   * @throws  RuntimeException if any edges have negative weights, or the heuristic returned a distance shorter than the
+   *            true path length for any path.
+   */
+  public static <V, E extends Weighted> LinkedList<V> shortestPath(Graph<V, E> g, V start, V goal, BiFunction<V, V, Integer> heuristic)
       throws NotInCollectionException, RuntimeException {
     if (!g.containsVertex(start) || !g.containsVertex(goal))
       throw new NotInCollectionException("Can't tun dijkstra's algorithm", start, goal);
@@ -99,7 +121,9 @@ public class Algorithm {
     }
 
     final HashMap<V, Integer> distance = new HashMap<>();
-    Comparator<V> distanceComparator = (o1, o2) -> distance.get(o1) - distance.get(o2);
+    Comparator<V> distanceComparator = (o1, o2) ->
+       (distance.get(o1) + heuristic.apply(start, o1)) - (distance.get(o2) + heuristic.apply(start, o2));
+
     final HashMap<V, V> previous = new HashMap<>();
 
     //Initalize step
@@ -118,6 +142,12 @@ public class Algorithm {
       //Find next node (closest) and remove from frontier
       V next = Collections.min(frontier, distanceComparator);
       frontier.remove(next);
+
+      if(distance.get(next) < heuristic.apply(start, next)) {
+        throw new RuntimeException("Heuristic returned bad value for " + next + " - true path length was "
+            + distance.get(next) + " but got " + heuristic.apply(start, next));
+      }
+
       //Found the goal - break out of loop
       if (next.equals(goal))
         break;

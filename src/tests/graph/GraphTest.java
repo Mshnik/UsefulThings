@@ -2,7 +2,6 @@ package graph;
 
 import static common.JUnitUtil.*;
 import static functional.FunctionalUtil.migrate;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +11,9 @@ import java.util.Objects;
 
 import common.dataStructures.NotInCollectionException;
 
+import functional.BiFunction;
 import functional.TriConsumer;
+import functional.Unit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -625,51 +626,63 @@ public class GraphTest {
 
   @Test
   public void testDijkstra() {
-    Graph<String, SuperEdge> g = new Graph<>();
-    LinkedList<String> path = new LinkedList<String>();
-    g.addVertex("A");
-    g.addVertex("B");
-    g.addVertex("C");
+    Graph<Character, SuperEdge> g = new Graph<>();
+    LinkedList<Character> path = new LinkedList<>();
+    g.addVertex('A');
+    g.addVertex('B');
+    g.addVertex('C');
 
-    shouldFail(Algorithm::dijkstra, NotInCollectionException.class, g, "X", "A");
-    shouldFail(Algorithm::dijkstra, NotInCollectionException.class, g, "A", "X");
+    shouldFail(Algorithm::shortestPath, NotInCollectionException.class, g, 'X', 'A');
+    shouldFail(Algorithm::shortestPath, NotInCollectionException.class, g, 'A', 'X');
 
-    g.addEdge("A", "B", new SuperEdge("ab", -1));
+    g.addEdge('A', 'B', new SuperEdge("ab", -1));
 
-    shouldFail(Algorithm::dijkstra, Exception.class, g, "A", "B");
+    shouldFail(Algorithm::shortestPath, Exception.class, g, 'A', 'B');
 
-    g.removeEdge(g.getConnection("A", "B"));
+    g.removeEdge(g.getConnection('A', 'B'));
 
-    g.addEdge("A", "B", new SuperEdge("ab", 3));
+    g.addEdge('A', 'B', new SuperEdge("ab", 10));
     path.clear();
 
-    path.add("A");
+    BiFunction<Character, Character, Integer> heuristic = (v1, v2) -> Math.abs(v2 - v1);
+    path.add('A');
 
-    assertEquals(path, Algorithm.dijkstra(g, "A", "A"));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'A'));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'A', heuristic));
 
-    path.add("B");
 
-    assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
-    assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
-    assertEquals(null, Algorithm.dijkstra(g, "A", "C"));
+    path.add('B');
 
-    g.addEdge("A", "C", new SuperEdge("ac", 1));
-    assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
-    assertEquals(null, Algorithm.dijkstra(g, "B", "A"));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'B'));
+    assertEquals(null, Algorithm.shortestPath(g, 'B', 'A'));
+    assertEquals(null, Algorithm.shortestPath(g, 'A', 'C'));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'B', heuristic));
+    assertEquals(null, Algorithm.shortestPath(g, 'B', 'A', heuristic));
+    assertEquals(null, Algorithm.shortestPath(g, 'A', 'C', heuristic));
+
+    g.addEdge('A', 'C', new SuperEdge("ac", 4));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'B'));
+    assertEquals(null, Algorithm.shortestPath(g, 'B', 'A'));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'B', heuristic));
+    assertEquals(null, Algorithm.shortestPath(g, 'B', 'A', heuristic));
 
     path.clear();
-    path.add("A");
-    path.add("C");
-    assertEquals(path, Algorithm.dijkstra(g, "A", "C"));
+    path.add('A');
+    path.add('C');
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'C'));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'C', heuristic));
 
-    g.addEdge("C", "B", new SuperEdge("cb", 1));
-    path.add("B");
-    assertEquals(path, Algorithm.dijkstra(g, "A", "B"));
+    g.addEdge('C', 'B', new SuperEdge("cb", 4));
+    path.add('B');
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'B'));
+    assertEquals(path, Algorithm.shortestPath(g, 'A', 'B', heuristic));
 
-    g.addEdge("B", "A", new SuperEdge("ba", 5));
+
+    g.addEdge('B', 'A', new SuperEdge("ba", 5));
     path.removeFirst();
-    path.add("A");
-    assertEquals(path, Algorithm.dijkstra(g, "C", "A"));
+    path.add('A');
+    assertEquals(path, Algorithm.shortestPath(g, 'C', 'A'));
+    assertEquals(path, Algorithm.shortestPath(g, 'C', 'A', heuristic));
   }
 
   @Test

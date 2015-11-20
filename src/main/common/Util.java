@@ -11,6 +11,8 @@ import common.dataStructures.DeArrList;
 
 public class Util {
 
+  private Util() {}
+
   /**
    * Returns a random element from the given iterable.
    * Useful for getting random element from non-indexed collections, like

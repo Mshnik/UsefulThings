@@ -51,6 +51,7 @@ public class ThreadMaster<R> {
       } finally {
         synchronized (workersDoneCondition) {
           results.put(id, result);
+          workersFinished.incrementAndGet();
           workersDoneCondition.notify();
         }
       }
@@ -93,6 +94,10 @@ public class ThreadMaster<R> {
    *    the call was terminated due to timeout or if the worker thread was somehow interrupted.
    */
 
+  public int getNextSlaveID() {
+    return nextSlaveID.get();
+  }
+
   public int spawnWorker(Supplier<R> task) {
     ThreadSlave t = new ThreadSlave(task);
     workersStarted.incrementAndGet();
@@ -107,6 +112,24 @@ public class ThreadMaster<R> {
   public void waitForWorkers() throws InterruptedException {
     synchronized (workersDoneCondition) {
       while(workersStarted.get() > workersFinished.get()) {
+        workersDoneCondition.wait();
+      }
+    }
+  }
+
+  public void waitForWorkers(int... ids) throws InterruptedException {
+    synchronized (workersDoneCondition) {
+      while(true) {
+        boolean missing = false;
+        for(int id : ids) {
+          if(! results.containsKey(id)){
+            missing = true;
+            break;
+          }
+        }
+        if (! missing) {
+          break;
+        }
         workersDoneCondition.wait();
       }
     }

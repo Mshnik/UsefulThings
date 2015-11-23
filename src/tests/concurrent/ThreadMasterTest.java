@@ -1,7 +1,11 @@
 package concurrent;
 
+import common.types.Either;
 import functional.Function;
 import org.junit.Test;
+
+import java.util.HashMap;
+
 import static common.JUnitUtil.*;
 
 public class ThreadMasterTest {
@@ -59,6 +63,15 @@ public class ThreadMasterTest {
     }
     t.waitForWorkers();
     assertEquals(15, t.reduceResults(0, (a,b) -> a+b.asRight()));
+  }
+
+  @Test
+  public void testReset() throws InterruptedException {
+    ThreadMaster<Integer> t = new ThreadMaster<>();
+    t.spawnWorker(() -> 4);
+    t.waitForWorkers();
+    t.reset();
+    assertEquals(new HashMap<Integer, Either<Throwable, Integer>>(), t.getResults());
   }
 
 }

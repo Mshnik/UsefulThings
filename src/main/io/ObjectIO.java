@@ -12,6 +12,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ObjectIO {
 
+  private ObjectIO(){}
+
   private static final String EXTENSION = ".ser";  //The default extension for serialized objects
 
   /**
@@ -57,13 +59,13 @@ public class ObjectIO {
   }
 
   @SuppressWarnings("rawtypes")
-  /** Prompts the user to select a serialized object from memory to load.
+  /** Prompts the user to select a serialized object from memory to read.
    * @param objectClass - The class of the object that the user is expected to return
    * @param objectFileToLoad - The file containing the object to be loaded
    * @return - The selected object, loaded from memory
    * @throws RuntimeException - If the user selects the wrong class of object, or if null somehow results
    */
-  public static Object load(Class objectClass, File objectFileToLoad) throws RuntimeException, IOException {
+  public static Object read(Class objectClass, File objectFileToLoad) throws RuntimeException, IOException {
     Object g = null;
     FileInputStream fileIn = null;
     ObjectInputStream in = null;
@@ -90,13 +92,13 @@ public class ObjectIO {
         + " required " + objectClass);
   }
 
-  /** Prompts the user to select a serialized object from memory to load.
+  /** Prompts the user to select a serialized object from memory to read.
    * @param objectClass - The class of the object that the user is expected to return
    * @param directory - The location the user is prompted to select from, though they can navigate to other locations.
    * @return - The selected object, loaded from memory
    * @throws RuntimeException - If the user selects the wrong class of object.
    */
-  public static Object chooseAndLoad(Class objectClass, String directory) throws RuntimeException, IOException {
+  public static Object chooseAndRead(Class objectClass, String directory) throws RuntimeException, IOException {
     JFileChooser chooser = new JFileChooser(directory);
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     FileNameExtensionFilter filter = new FileNameExtensionFilter(objectClass.getSimpleName() + " Objects", EXTENSION);
@@ -108,7 +110,7 @@ public class ObjectIO {
     ObjectInputStream in = null;
 
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      return load(objectClass, chooser.getSelectedFile());
+      return read(objectClass, chooser.getSelectedFile());
     } else {
       return null;
     }

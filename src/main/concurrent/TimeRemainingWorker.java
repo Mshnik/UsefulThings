@@ -80,10 +80,13 @@ public class TimeRemainingWorker extends Thread {
 
   /**
    * Interrupts this TimeRemainingWorker and causes its thread to die. Task is marked as incomplete
+   * Does nothing if this hasn't started running yet
    */
   public void cancel() {
-    running = false;
-    interrupt();
+    if(running) {
+      running = false;
+      interrupt();
+    }
   }
 
   /**

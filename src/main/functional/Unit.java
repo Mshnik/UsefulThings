@@ -8,7 +8,7 @@ public interface Unit extends UnitFuncShell {
 		return this;
 	}
 
-	default Supplier<Object> supplyNothing() {
+	default Supplier<Void> supplyNothing() {
 		return () -> {
 			apply();
 			return null;

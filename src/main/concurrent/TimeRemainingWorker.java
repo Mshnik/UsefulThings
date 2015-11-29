@@ -1,13 +1,16 @@
 package concurrent;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
- * Monitors the progress of the inputed Monitorable and periodically sends time remaining updates to the Monitorable
- * <p>
+ * Monitors the progress of the inputed TimeRemainingTask and periodically sends time remaining updates to the TimeRemainingTask
+ * <p/>
  * Every (update) seconds, the worker finds the amount of time that has passed since the
  * last check and stores that as the new x coordinate, and finds the new progress value
  * and stores that as the new y coordinate.
- * <p>
+ * <p/>
  * Then, using the new x and y values along with the most recent old x and y values,
  * the worker calculates the time remaining to completion using a linear regression,
  * then sends an update
@@ -16,10 +19,11 @@ package concurrent;
  */
 public class TimeRemainingWorker extends Thread {
 
-  public static final int DEFAULT_UPDATE_INTERVAL = 1;  //Time to wait, in seconds, before update.
+  public static final int DEFAULT_UPDATE_INTERVAL = 1000;  //Time to wait, in seconds, before update.
   public static final double DEFAULT_COMPLETED_VALUE = 100;  //A default y value to be interpreted as "done".
 
-  private Monitorable watch;          //The object (a Thread or extension of a thread) to watch for progress
+  private TimeRemainingTask task;          //The object (a Thread or extension of a thread) to task for progress
+  private ArrayList<TimeRemainingWatcher> watchers;  //The watchers to update with the progress of the task
 
   private long startTime = -1;         //The system time when this worker was started, in milliseconds. -1 until it is started
   private long finishTime = -1;              //The system time when this worker finishes.
@@ -36,26 +40,27 @@ public class TimeRemainingWorker extends Thread {
   private double percentComplete = -1;      //Percent completion for this task. -1 until task has started.
 
   /**
-   * Constructor - stores the value of the start time of this worker and the Monitorable to watch.
+   * Constructor - stores the value of the start time of this worker and the TimeRemainingTask to task.
    * updateInterval is set to the DEFAULT_UPDATE_INTERVAL, and completedValue is set to the DEFUALT_COMPLETED_VALUE
    *
-   * @param toWatch - the Monitorable object to watch for progress and to send updates on completion time
+   * @param toWatch - the TimeRemainingTask object to task for progress and to send updates on completion time
    */
-  public TimeRemainingWorker(Monitorable toWatch) {
-    this(toWatch, DEFAULT_UPDATE_INTERVAL, DEFAULT_COMPLETED_VALUE);
+  public TimeRemainingWorker(TimeRemainingTask toWatch, TimeRemainingWatcher... watchers) {
+    this(toWatch, DEFAULT_UPDATE_INTERVAL, DEFAULT_COMPLETED_VALUE, watchers);
   }
 
   /**
-   * Constructor - stores the value of the start time of this worker and the Monitorable to watch.
+   * Constructor - stores the value of the start time of this worker and the TimeRemainingTask to task.
    *
-   * @param toWatch        - the Monitorable object to watch for progress and to send updates on completion time
+   * @param toWatch        - the TimeRemainingTask object to task for progress and to send updates on completion time
    * @param updateInterval - the update interval which the TimeRemainingWorker will wait before
-   *                       calculating and sending updates (in seconds). updateInterval &gt; 0.
-   * @param completedValue - A value to be interpreted as completion when received from toWatch. completedValue &gt; 0
-   * @throws IllegalArgumentException - If updateInterval &lt;= 0 or completedValue &lt;= 0
+   *                       calculating and sending updates (in seconds). updateInterval > 0.
+   * @param completedValue - A value to be interpreted as completion when received from toWatch. completedValue > 0
+   * @throws IllegalArgumentException - If updateInterval <= 0 or completedValue <= 0
    */
-  public TimeRemainingWorker(Monitorable toWatch, int updateInterval, double completedValue) throws IllegalArgumentException {
-    watch = toWatch;
+  public TimeRemainingWorker(TimeRemainingTask toWatch, int updateInterval, double completedValue, TimeRemainingWatcher... watchers) throws IllegalArgumentException {
+    task = toWatch;
+    this.watchers = new ArrayList<>(Arrays.asList(watchers));
 
     if (updateInterval <= 0 || completedValue <= 0)
       throw new IllegalArgumentException();
@@ -67,7 +72,7 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * @return true if the TimeRemainingWorker is currently monitoring progress, false otherwise
+   * Returns true if the TimeRemainingWorker is currently monitoring progress, false otherwise
    */
   public boolean getRunning() {
     return running;
@@ -82,17 +87,16 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * @return the updateInterval in seconds
+   * Returns the updateInterval in seconds
    */
   public int getUpdateInterval() {
     return updateInterval;
   }
 
   /**
-   * Sets the updateInterval to n seconds. n &lt; 0.
+   * Sets the updateInterval to n seconds. n > 0.
    * New update interval will be used on next time calculation (may not take affect until
    * up to another old update interval seconds)
-   * @param n - the new updateInterval to set
    */
   public void setUpdateInterval(int n) throws IllegalArgumentException {
     if (n > 0)
@@ -102,21 +106,21 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * @return the startTime, the system time this timeRemaining worker started working
+   * Returns the startTime, the system time this timeRemaining worker started working
    */
   public long getStartTime() {
     return startTime;
   }
 
   /**
-   * @return the finishTime, the system time when this timeRemaining worker finished working, (maybe canceled though)
+   * Returns the finishTime, the system time when this timeRemaining worker finished working, (maybe canceled though)
    */
   public long getFinishTime() {
     return finishTime;
   }
 
   /**
-   * @return the time remaining (in seconds) for this task. Returns -1 if the task has not yet
+   * Returns the time remaining (in seconds) for this task. Returns -1 if the task has not yet
    * started running
    */
   public int getTimeRemaining() {
@@ -124,38 +128,47 @@ public class TimeRemainingWorker extends Thread {
   }
 
   /**
-   * @return completedValue, the value for this task that is interpreted as task completion. Default value 100.
+   * Gets completedValue, the value for this task that is interpreted as task completion. Default value 100.
    */
   public double getCompletedValue() {
     return completedValue;
   }
 
   /**
-   * @return the current completion according to the Monitorable's completion
+   * Returns the current completion according to the TimeRemainingTask's completion
    */
   public double getCurrentCompletion() {
-    return watch.getCompletionValue();
+    return task.getCompletionValue();
   }
 
   /**
-   * @return the current percent completion of the Monitorable's task. Returns -1 if the task has not yet started
+   * Returns the current percent completion of the TimeRemainingTask's task. Returns -1 if the task has not yet started
    */
   public double getPercentComplete() {
     return percentComplete;
   }
 
   /**
-   * @return the Monitorable that this TimeRemainingWorker is watching
+   * Returns the TimeRemainingTask that this TimeRemainingWorker is watching
    */
-  public Monitorable getMonitorable() {
-    return watch;
+  public TimeRemainingTask getTask() {
+    return task;
+  }
+
+  public boolean addWatcher(TimeRemainingWatcher w) {
+    if(watchers.contains(w)) return false;
+    else return watchers.add(w);
+  }
+
+  public boolean removeWatcher(TimeRemainingWatcher w) {
+    return watchers.remove(w);
   }
 
   @Override
   /** Sets running to true, then:
-   * While running is true, waits updateInterval seconds. Then, finds the new completion value from the Monitorable.
+   * While running is true, waits updateInterval seconds. Then, finds the new completion value from the TimeRemainingTask.
    * Uses this value along with the previous completionValue to find a new linear line to the completedValue.
-   * Uses the x coordinate of this intersect to determine the amount of time remaining, and notifies the Monitorable of this amount.
+   * Uses the x coordinate of this intersect to determine the amount of time remaining, and notifies the TimeRemainingTask of this amount.
    * Terminates if interrupted at any time
    */
   public final void run() {
@@ -164,7 +177,7 @@ public class TimeRemainingWorker extends Thread {
     while (running) {          //While the process is running
 
       try {
-        sleep(updateInterval * 1000);            //Sleep for update seconds before calculating
+        sleep(updateInterval);            //Sleep for update milliseconds before calculating
       } catch (InterruptedException e) {
         break;  //stop doing computation if interrupted
       }
@@ -175,12 +188,14 @@ public class TimeRemainingWorker extends Thread {
 
 
       y[0] = y[1];                    //Push old y value down
-      y[1] = watch.getCompletionValue();          //Calculate new y value, the new completion amount
+      y[1] = task.getCompletionValue();          //Calculate new y value, the new completion amount
 
       timeRemaining = timeRemaining();    //Calculate and store the time remaining
       percentComplete = getCurrentCompletion() / getCompletedValue();
 
-      watch.update();//Tell the Monitorable that the time and percentages has updated.
+      for (TimeRemainingWatcher t : watchers) {
+        t.update(getPercentComplete()); //Tell the watchers that the time and percentages has updated.
+      }
     }
     finishTime = System.currentTimeMillis();
   }

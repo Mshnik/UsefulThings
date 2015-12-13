@@ -1,6 +1,6 @@
 package common.dataStructures;
 
-import functional.Function;
+import functional.impl.Function1;
 
 import java.util.*;
 
@@ -8,7 +8,7 @@ public class BloomFilter<T> {
 
   public static int DEFAULT_FLAGS_SIZE = 1024;
   private boolean flags[];
-  private ArrayList<Function<T, Integer>> hashFunctions;
+  private ArrayList<Function1<T, Integer>> hashFunction1s;
   private int size;
 
   public BloomFilter() {
@@ -17,7 +17,7 @@ public class BloomFilter<T> {
 
   public BloomFilter(int flagsLength, boolean useDefaultHashFunctions) {
     this.flags = new boolean[flagsLength];
-    this.hashFunctions = new ArrayList<>();
+    this.hashFunction1s = new ArrayList<>();
     this.size = 0;
 
     if(useDefaultHashFunctions) {
@@ -28,24 +28,24 @@ public class BloomFilter<T> {
     }
   }
 
-  public boolean addHashFunction(Function<T, Integer> f) {
+  public boolean addHashFunction(Function1<T, Integer> f) {
     if(size != 0) {
       return false;
     }
-    hashFunctions.add(f);
+    hashFunction1s.add(f);
     return true;
   }
 
   public int getHashFunctionCount() {
-    return hashFunctions.size();
+    return hashFunction1s.size();
   }
 
-  public List<Function<T, Integer>> getHashFunctions() {
-    return new DeArrList<>(hashFunctions);
+  public List<Function1<T, Integer>> getHashFunction1s() {
+    return new DeArrList<>(hashFunction1s);
   }
 
   public void add(T t) {
-    for(Function<? super T, Integer> func : hashFunctions) {
+    for(Function1<? super T, Integer> func : hashFunction1s) {
       flags[func.apply(t) % flags.length] = true;
     }
     size++;
@@ -67,7 +67,7 @@ public class BloomFilter<T> {
 
   public boolean contains(Object o){
     try {
-      for (Function<? super T, Integer> func : hashFunctions) {
+      for (Function1<? super T, Integer> func : hashFunction1s) {
         if (!flags[func.apply((T)o) % flags.length]) {
           return false;
         }

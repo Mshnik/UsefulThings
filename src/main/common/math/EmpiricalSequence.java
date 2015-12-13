@@ -1,12 +1,12 @@
 package common.math;
 
-import functional.Function;
+import functional.impl.Function1;
 
 public class EmpiricalSequence extends Sequence {
 
-  private Function<Integer, Double> f;
+  private Function1<Integer, Double> f;
 
-  public EmpiricalSequence(Function<Integer, Double> func) {
+  public EmpiricalSequence(Function1<Integer, Double> func) {
     super(func.apply(0));
     f = func;
   }

@@ -1,7 +1,10 @@
 package common;
 
 import common.types.Either;
-import functional.*;
+import functional.impl.Function2;
+import functional.impl.Function1;
+import functional.impl.Supplier;
+import functional.impl.Function3;
 
 /** MethodRunner allows a method call to be made along with a timeout time.
  * The method call is made in a newly created thread while the calling thread waits for it to
@@ -66,7 +69,7 @@ public class MethodRunner<T> {
    * @param arg - the argument to give to the method call
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A> MethodRunner(Function<A, T> methodCall, A arg) throws IllegalArgumentException {
+  public <A> MethodRunner(Function1<A, T> methodCall, A arg) throws IllegalArgumentException {
     this(methodCall.partialApply(arg));
   }
 
@@ -76,7 +79,7 @@ public class MethodRunner<T> {
    * @param millisToWait - the number of milliseconds to wait for methodCall to return
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A> MethodRunner(Function<A, T> methodCall, A arg, long millisToWait) throws IllegalArgumentException {
+  public <A> MethodRunner(Function1<A, T> methodCall, A arg, long millisToWait) throws IllegalArgumentException {
     this(methodCall.partialApply(arg), millisToWait);
   }
 
@@ -86,7 +89,7 @@ public class MethodRunner<T> {
    * @param arg2 - the second argument to give to the method call
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B> MethodRunner(BiFunction<A, B, T> methodCall, A arg, B arg2) throws IllegalArgumentException {
+  public <A,B> MethodRunner(Function2<A, B, T> methodCall, A arg, B arg2) throws IllegalArgumentException {
     this(methodCall.partialApply(arg, arg2));
   }
 
@@ -97,7 +100,7 @@ public class MethodRunner<T> {
    * @param millisToWait - the number of milliseconds to wait for methodCall to return
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B> MethodRunner(BiFunction<A, B, T> methodCall, A arg, B arg2, long millisToWait) throws IllegalArgumentException {
+  public <A,B> MethodRunner(Function2<A, B, T> methodCall, A arg, B arg2, long millisToWait) throws IllegalArgumentException {
     this(methodCall.partialApply(arg, arg2), millisToWait);
   }
 
@@ -108,7 +111,7 @@ public class MethodRunner<T> {
    * @param arg3 - the third argument to give to the method call
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B,C> MethodRunner(TriFunction<A, B, C, T> methodCall, A arg, B arg2, C arg3) throws IllegalArgumentException {
+  public <A,B,C> MethodRunner(Function3<A, B, C, T> methodCall, A arg, B arg2, C arg3) throws IllegalArgumentException {
     this(methodCall.partialApply(arg, arg2, arg3));
   }
 
@@ -120,7 +123,7 @@ public class MethodRunner<T> {
    * @param millisToWait - the number of milliseconds to wait for methodCall to return
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B,C> MethodRunner(TriFunction<A, B, C, T> methodCall, A arg, B arg2, C arg3, long millisToWait) throws IllegalArgumentException {
+  public <A,B,C> MethodRunner(Function3<A, B, C, T> methodCall, A arg, B arg2, C arg3, long millisToWait) throws IllegalArgumentException {
     this(methodCall.partialApply(arg, arg2, arg3), millisToWait);
   }
 

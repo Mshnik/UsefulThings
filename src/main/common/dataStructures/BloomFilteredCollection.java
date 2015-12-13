@@ -1,6 +1,6 @@
 package common.dataStructures;
 
-import functional.Function;
+import functional.impl.Function1;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -60,7 +60,7 @@ public class BloomFilteredCollection<T> implements Collection<T> {
 
   private void increaseFilterSize() {
     BloomFilter<T> newFilter = new BloomFilter<>(filter.flagsSize() * 2, false);
-    for(Function<T, Integer> f : filter.getHashFunctions()) {
+    for(Function1<T, Integer> f : filter.getHashFunction1s()) {
       newFilter.addHashFunction(f);
     }
     filter = newFilter;

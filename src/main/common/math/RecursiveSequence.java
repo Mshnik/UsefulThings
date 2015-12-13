@@ -1,12 +1,12 @@
 package common.math;
 
-import functional.Function;
+import functional.impl.Function1;
 
 public class RecursiveSequence extends Sequence {
 
-  private Function<Double, Double> recF;
+  private Function1<Double, Double> recF;
 
-  public RecursiveSequence(double initial, Function<Double, Double> func) {
+  public RecursiveSequence(double initial, Function1<Double, Double> func) {
     super(initial);
     recF = func;
   }

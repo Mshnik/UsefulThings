@@ -2,7 +2,7 @@ package common.dataStructures;
 
 import java.util.Iterator;
 
-import functional.Function;
+import functional.impl.Function1;
 
 /**
  * A generic Trie, able to store any T that is Iterable of C
@@ -13,9 +13,9 @@ import functional.Function;
  */
 public class ITrie<T extends Iterable<C>, C> extends AbsTrie<T, C> {
 
-  private final Function<Iterable<C>, T> fromSequenceConverter;
+  private final Function1<Iterable<C>, T> fromSequenceConverter;
 
-  public ITrie(Function<Iterable<C>, T> fromSequenceConverter) {
+  public ITrie(Function1<Iterable<C>, T> fromSequenceConverter) {
     this.fromSequenceConverter = fromSequenceConverter;
   }
 

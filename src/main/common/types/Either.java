@@ -1,6 +1,6 @@
 package common.types;
 
-import functional.BiFunction;
+import functional.impl.Function2;
 
 import java.util.Objects;
 
@@ -36,7 +36,7 @@ public abstract class Either<A, B> {
    * @param <B> - the type of the second argument
    * @return - either a Left(a) if selectA(a,b) returns true, or a Right(b) if selectA(a,b) returns false.
    */
-  public static <A,B> Either<A,B> selectFrom(A a, B b, BiFunction<A,B,Boolean> selectA) {
+  public static <A,B> Either<A,B> selectFrom(A a, B b, Function2<A,B,Boolean> selectA) {
     if (selectA.apply(a,b)) {
       return new Left<>(a);
     } else {

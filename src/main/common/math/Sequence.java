@@ -1,7 +1,6 @@
 package common.math;
 
 import common.dataStructures.DeArrList;
-import functional.Function;
 
 import java.util.List;
 

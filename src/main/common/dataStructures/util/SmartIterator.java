@@ -3,7 +3,7 @@ package common.dataStructures.util;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-import functional.Supplier;
+import functional.impl.Supplier;
 
 public class SmartIterator<T> implements Iterator<T> {
 

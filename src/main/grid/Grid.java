@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 import common.Util;
 import common.dataStructures.ConsList;
-import functional.BiFunction;
+import functional.impl.Function2;
 
 /**
  * A collection for arbitrarily deep nested arrays
@@ -73,7 +73,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
    *                 The first argument to combine will be a tile from grid1, and the second will be a tile from grid2.
    * @return - A grid with array size equal to the max of the two grids on each dimension, and each element combined
    */
-  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, BiFunction<T,T,T> combinor)
+  public static <T extends Tile> Grid<T> merge(Grid<? extends T> grid1, Grid<? extends T> grid2, Function2<T,T,T> combinor)
       throws IllegalDimensionException {
     if (grid1.dimension != grid2.dimension)
       throw new IllegalDimensionException(grid2.dimension, grid1);

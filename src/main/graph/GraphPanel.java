@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 import javax.swing.*;
 
-import functional.Function;
+import functional.impl.Function1;
 
 public class GraphPanel<V,E> extends JPanel {
 
@@ -22,9 +22,9 @@ public class GraphPanel<V,E> extends JPanel {
 	private final boolean directed;
 	
 	//private GraphPanel<V,E>.Circle selectedCircle;
-	private Function<Circle, String> circleStringToDrawFunc;
-	private Function<Line, String> lineStringToDrawFunc;
-	private Function<Line, Stroke> lineStrokeFunc;
+	private Function1<Circle, String> circleStringToDrawFunc;
+	private Function1<Line, String> lineStringToDrawFunc;
+	private Function1<Line, Stroke> lineStrokeFunc;
 	
 	private Dimension size = new Dimension(500,500);
 	//private final JPanel drawPanel;
@@ -69,7 +69,7 @@ public class GraphPanel<V,E> extends JPanel {
 	 * @param f - the function to use
 	 * @throws IllegalArgumentException if f is null.
 	 */
-	public void setCircleStringToDrawFunc(Function<Circle, String> f){
+	public void setCircleStringToDrawFunc(Function1<Circle, String> f){
 		if(f == null)
 			throw new IllegalArgumentException("f cannot be null");
 		circleStringToDrawFunc = f;
@@ -80,7 +80,7 @@ public class GraphPanel<V,E> extends JPanel {
 	 * @param f - the function to use
 	 * @throws IllegalArgumentException if f is null.
 	 */
-	public void setLineStringToDrawFunc(Function<Line, String> f){
+	public void setLineStringToDrawFunc(Function1<Line, String> f){
 		if(f == null)
 			throw new IllegalArgumentException("f cannot be null");
 		lineStringToDrawFunc = f;
@@ -91,7 +91,7 @@ public class GraphPanel<V,E> extends JPanel {
 	 * @param f - the function to use
 	 * @throws IllegalArgumentException if f is null.
 	 */
-	public void setLineStrokeFunc(Function<Line, Stroke> f){
+	public void setLineStrokeFunc(Function1<Line, Stroke> f){
 		if(f == null)
 			throw new IllegalArgumentException("f cannot be null");
 		lineStrokeFunc = f;
@@ -99,7 +99,7 @@ public class GraphPanel<V,E> extends JPanel {
 	
 	public void setCirclesDraggable(boolean draggable) {
 		if(draggable) {
-			Function<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener(){
+			Function1<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener(){
 				/** When clicked, store the initial point at which this is clicked. */
 				@Override
 				public void mousePressed(MouseEvent e) {
@@ -114,7 +114,7 @@ public class GraphPanel<V,E> extends JPanel {
 				public void mouseExited(MouseEvent e) {}	
 			};
 
-			Function<Circle, MouseMotionListener> motionListenerProvider = (c) -> new MouseMotionListener(){
+			Function1<Circle, MouseMotionListener> motionListenerProvider = (c) -> new MouseMotionListener(){
 				/** When this is dragged, perform the translation from the point
 				 * where this was clicked to the new dragged point. */
 				@Override
@@ -161,7 +161,7 @@ public class GraphPanel<V,E> extends JPanel {
 	
 //	public void setCirclesResizable(boolean resizable) {
 //		if(resizable) {
-//			Function<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener() {
+//			Function1<Circle, MouseListener> clickListenerProvider = (c) -> new MouseListener() {
 //				@SuppressWarnings("unchecked")
 //				@Override
 //				public void mouseClicked(MouseEvent e) {
@@ -213,7 +213,7 @@ public class GraphPanel<V,E> extends JPanel {
 	
 	public void setLinesBendable(boolean bendable) {
 		if(bendable) {
-			Function<Line, MouseListener> clickListenerProvider = (l) -> new MouseListener(){
+			Function1<Line, MouseListener> clickListenerProvider = (l) -> new MouseListener(){
 
 				/** When clicked, store the initial point at which this is clicked. */
 				@Override
@@ -233,7 +233,7 @@ public class GraphPanel<V,E> extends JPanel {
 				public void mouseExited(MouseEvent e) {}
 			};
 					
-			Function<Line, MouseMotionListener> motionListenerProvider = (l) -> new MouseMotionListener(){
+			Function1<Line, MouseMotionListener> motionListenerProvider = (l) -> new MouseMotionListener(){
 				/** When this is dragged, perform the translation from the point
 				 * where this was clicked to the new dragged point. */
 				@Override

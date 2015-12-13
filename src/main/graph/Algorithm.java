@@ -1,6 +1,6 @@
 package graph;
 
-import functional.BiFunction;
+import functional.impl.Function2;
 import graph.matching.*;
 
 import java.util.ArrayList;
@@ -111,7 +111,7 @@ public class Algorithm {
    * @throws  RuntimeException if any edges have negative weights, or the heuristic returned a distance shorter than the
    *            true path length for any path.
    */
-  public static <V, E extends Weighted> LinkedList<V> shortestPath(Graph<V, E> g, V start, V goal, BiFunction<V, V, Integer> heuristic)
+  public static <V, E extends Weighted> LinkedList<V> shortestPath(Graph<V, E> g, V start, V goal, Function2<V, V, Integer> heuristic)
       throws NotInCollectionException, RuntimeException {
     if (!g.containsVertex(start) || !g.containsVertex(goal))
       throw new NotInCollectionException("Can't tun dijkstra's algorithm", start, goal);

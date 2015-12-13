@@ -3,8 +3,8 @@ package concurrent;
 import common.types.Either;
 import common.types.Left;
 import common.types.Right;
-import functional.BiFunction;
-import functional.Supplier;
+import functional.impl.Function2;
+import functional.impl.Supplier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -163,7 +163,7 @@ public class ThreadMaster<R> {
     return results.get(id);
   }
 
-  public <X> X reduceResults(X initial, BiFunction<X, Either<Throwable, R>, X> f) {
+  public <X> X reduceResults(X initial, Function2<X, Either<Throwable, R>, X> f) {
     for(Either<Throwable, R> e : results.values()) {
       initial = f.apply(initial, e);
     }

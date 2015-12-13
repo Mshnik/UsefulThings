@@ -1,13 +1,13 @@
 package common.math;
 
 import common.dataStructures.DeArrList;
-import functional.Function;
+import functional.impl.Function1;
 
 public class Sum extends Sequence {
 
-  private Function<Integer, Double> sFunc;
+  private Function1<Integer, Double> sFunc;
 
-  public Sum(Function<Integer, Double> f) {
+  public Sum(Function1<Integer, Double> f) {
     super(0.0);
     sFunc = f;
     computed = new DeArrList<>();

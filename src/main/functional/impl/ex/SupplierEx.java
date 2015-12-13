@@ -1,12 +1,14 @@
 package functional.impl.ex;
 
+import functional._0ArgShell;
 import functional._ExShell;
+import functional._ReturnShell;
 import functional.impl.Function1;
 import functional.impl.Supplier;
 import functional.impl.Unit;
 
 @FunctionalInterface
-public interface SupplierEx<R> extends _ExShell {
+public interface SupplierEx<R> extends _ExShell, _0ArgShell, _ReturnShell<R> {
   R apply() throws Throwable;
 
   default Supplier<R> withHandler(Function1<Throwable, R> handler) {
@@ -37,8 +39,8 @@ public interface SupplierEx<R> extends _ExShell {
     }
   }
 
-  default UnitEx asUnit() {
-    return () -> apply();
+  default Unit asUnit() {
+    return withNoHandler(null).asUnit();
   }
 
   default SupplierEx<R> butFirst(Unit before) {

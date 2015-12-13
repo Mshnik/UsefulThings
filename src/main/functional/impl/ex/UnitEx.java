@@ -1,13 +1,15 @@
 package functional.impl.ex;
 
+import functional._0ArgShell;
 import functional._ExShell;
+import functional._NonReturnShell;
 import functional.impl.Supplier;
 import functional.impl.Unit;
 import functional.impl.Consumer1;
 
 
 @FunctionalInterface
-public interface UnitEx extends _ExShell {
+public interface UnitEx extends _ExShell, _0ArgShell, _NonReturnShell {
 
   void apply() throws Throwable;
 
@@ -43,6 +45,13 @@ public interface UnitEx extends _ExShell {
     };
   }
 
+  default UnitEx butFirst(Unit before) {
+    return () -> {
+      before.apply();
+      apply();
+    };
+  }
+
   default UnitEx andThen(UnitEx next) {
     return () -> {
       apply();
@@ -53,4 +62,5 @@ public interface UnitEx extends _ExShell {
   default Supplier<? extends UnitEx> asResult() {
     return () -> this;
   }
+
 }

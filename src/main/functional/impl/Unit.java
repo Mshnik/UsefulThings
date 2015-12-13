@@ -2,9 +2,10 @@ package functional.impl;
 
 import functional._0ArgShell;
 import functional._NonReturnShell;
+import functional.impl.ex.UnitEx;
 
 @FunctionalInterface
-public interface Unit extends _0ArgShell, _NonReturnShell {
+public interface Unit extends _0ArgShell, _NonReturnShell, UnitEx {
 	void apply();
 	
 	default Unit asUnit() {
@@ -32,7 +33,7 @@ public interface Unit extends _0ArgShell, _NonReturnShell {
     };
   }
 
-	default Supplier<Unit> asResult() {
+	default Supplier<? extends Unit> asResult() {
     return () -> this;
   }
 }

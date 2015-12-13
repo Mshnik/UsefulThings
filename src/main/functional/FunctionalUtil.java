@@ -3,17 +3,15 @@ package functional;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.*;
 
 import common.dataStructures.DeArrList;
-import common.types.Tuple;
-import common.types.Tuple2;
+import functional.impl.*;
 
 public class FunctionalUtil {
   /**
-   * Returns a UsefulThings version of the given Consumer
+   * Returns a UsefulThings version of the given Consumer1
    */
-  public static <A> Consumer<A> migrate(java.util.function.Consumer<A> consumer) {
+  public static <A> Consumer1<A> migrate(java.util.function.Consumer<A> consumer) {
     return consumer::accept;
   }
 
@@ -25,37 +23,37 @@ public class FunctionalUtil {
   }
 
   /**
-   * Returns a UsefulThings version of the given Predicate
+   * Returns a UsefulThings version of the given Predicate1
    */
-  public static <A> Predicate<A> migrate(java.util.function.Predicate<A> predicate) {
+  public static <A> Predicate1<A> migrate(java.util.function.Predicate<A> predicate) {
     return predicate::test;
   }
 
   /**
-   * Returns a UsefulThings version of the given Function
+   * Returns a UsefulThings version of the given Function1
    */
-  public static <A,R> Function<A,R> migrate(java.util.function.Function<A,R> function) {
+  public static <A,R> Function1<A,R> migrate(java.util.function.Function<A,R> function) {
     return function::apply;
   }
 
   /**
-   * Returns a UsefulThings version of the given BiConsumer
+   * Returns a UsefulThings version of the given Consumer2
    */
-  public static <A,B> BiConsumer<A,B> migrate(java.util.function.BiConsumer<A,B> biConsumer) {
+  public static <A,B> Consumer2<A,B> migrate(java.util.function.BiConsumer<A,B> biConsumer) {
     return biConsumer::accept;
   }
 
   /**
-   * Returns a UsefulThings version of the given BiPredicate
+   * Returns a UsefulThings version of the given Predicate2
    */
-  public static <A,B> BiPredicate<A,B> migrate(java.util.function.BiPredicate<A,B> biPredicate) {
+  public static <A,B> Predicate2<A,B> migrate(java.util.function.BiPredicate<A,B> biPredicate) {
     return biPredicate::test;
   }
 
   /**
-   * Returns a UsefulThings version of the given BiFunction
+   * Returns a UsefulThings version of the given Function2
    */
-  public static <A,B,R> BiFunction<A,B,R> migrate(java.util.function.BiFunction<A,B,R> biFunction) {
+  public static <A,B,R> Function2<A,B,R> migrate(java.util.function.BiFunction<A,B,R> biFunction) {
     return biFunction::apply;
   }
 
@@ -65,7 +63,7 @@ public class FunctionalUtil {
    * @param arr - an array of values.
    * @param f   - a consumer function
    */
-  public static void forEach(int[] arr, Consumer<Integer> f) {
+  public static void forEach(int[] arr, Consumer1<Integer> f) {
     for (int i = 0; i < arr.length; i++) {
       f.apply(arr[i]);
     }
@@ -77,7 +75,7 @@ public class FunctionalUtil {
    * @param arr - an array of values.
    * @param f   - a consumer function
    */
-  public static void forEach(double[] arr, Consumer<Double> f) {
+  public static void forEach(double[] arr, Consumer1<Double> f) {
     for (int i = 0; i < arr.length; i++) {
       f.apply(arr[i]);
     }
@@ -89,7 +87,7 @@ public class FunctionalUtil {
    * @param arr - an array of values.
    * @param f   - a consumer function
    */
-  public static void forEach(long[] arr, Consumer<Long> f) {
+  public static void forEach(long[] arr, Consumer1<Long> f) {
     for (int i = 0; i < arr.length; i++) {
       f.apply(arr[i]);
     }
@@ -101,7 +99,7 @@ public class FunctionalUtil {
    * @param arr - an array of values.
    * @param f   - a consumer function
    */
-  public static <T> void forEach(T[] arr, Consumer<T> f) {
+  public static <T> void forEach(T[] arr, Consumer1<T> f) {
     for (int i = 0; i < arr.length; i++) {
       f.apply(arr[i]);
     }
@@ -113,7 +111,7 @@ public class FunctionalUtil {
    * @param col - an iterable of values.
    * @param f   - a consumer function
    */
-  public static <T> void forEach(Iterable<T> col, Consumer<T> f) {
+  public static <T> void forEach(Iterable<T> col, Consumer1<T> f) {
     for (T t : col) {
       f.apply(t);
     }
@@ -126,7 +124,7 @@ public class FunctionalUtil {
    * @param f   - a function
    * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
    */
-  public static <T, S> List<S> map(T[] arr, Function<T, S> f) {
+  public static <T, S> List<S> map(T[] arr, Function1<T, S> f) {
     DeArrList<S> lst = new DeArrList<>();
     for (T t : arr) {
       lst.add(f.apply(t));
@@ -141,7 +139,7 @@ public class FunctionalUtil {
    * @param f   - a function
    * @return - a list of the mapped values: [f(arr[0]), f(arr[1]), ....]
    */
-  public static <T, S> List<S> map(Iterable<T> col, Function<T, S> f) {
+  public static <T, S> List<S> map(Iterable<T> col, Function1<T, S> f) {
     DeArrList<S> lst = new DeArrList<>();
     for (T t : col) {
       lst.add(f.apply(t));
@@ -158,7 +156,7 @@ public class FunctionalUtil {
    * @param f     - the folding function
    * @return - the folded value. If arr is empty, returns start.
    */
-  public static <T, R> R foldLeft(R start, T[] arr, BiFunction<R, T, R> f) {
+  public static <T, R> R foldLeft(R start, T[] arr, Function2<R, T, R> f) {
     return foldLeft(start, Arrays.asList(arr), f);
   }
 
@@ -171,7 +169,7 @@ public class FunctionalUtil {
    * @param f     - the folding function
    * @return - the folded value. If col is empty, returns start.
    */
-  public static <T, R> R foldLeft(R start, Iterable<T> col, BiFunction<R, T, R> f) {
+  public static <T, R> R foldLeft(R start, Iterable<T> col, Function2<R, T, R> f) {
     for (T t : col) {
       start = f.apply(start, t);
     }
@@ -187,7 +185,7 @@ public class FunctionalUtil {
    * @param f     - the folding function
    * @return - the folded value. If arr is empty, returns start.
    */
-  public static <T, S, R> R foldLeft2(R start, T[] arr, S[] arr2, TriFunction<R, T, S, R> f) {
+  public static <T, S, R> R foldLeft2(R start, T[] arr, S[] arr2, Function3<R, T, S, R> f) {
     int min = Math.min(arr.length, arr2.length);
     for (int i = 0; i < min; i++) {
       start = f.apply(start, arr[i], arr2[i]);
@@ -204,7 +202,7 @@ public class FunctionalUtil {
    * @param f     - the folding function
    * @return - the folded value. If col is empty, returns start.
    */
-  public static <T, S, R> R foldLeft2(R start, Iterable<T> col, Iterable<S> col2, TriFunction<R, T, S, R> f) {
+  public static <T, S, R> R foldLeft2(R start, Iterable<T> col, Iterable<S> col2, Function3<R, T, S, R> f) {
     Iterator<T> c = col.iterator();
     Iterator<S> c2 = col2.iterator();
     while (c.hasNext() && c2.hasNext()) {
@@ -216,14 +214,14 @@ public class FunctionalUtil {
   /**
    * Constructs a new list with elements filtered by the given predicate
    */
-  public static <T> List<T> filter(T[] col, Predicate<T> f) {
+  public static <T> List<T> filter(T[] col, Predicate1<T> f) {
     return filter(Arrays.asList(col), f);
   }
 
   /**
    * Constructs a new list with elements filtered by the given predicate
    */
-  public static <T> List<T> filter(Iterable<T> col, Predicate<T> f) {
+  public static <T> List<T> filter(Iterable<T> col, Predicate1<T> f) {
     List<T> lst = new DeArrList<>();
     for (T t : col) {
       if (f.apply(t)) {

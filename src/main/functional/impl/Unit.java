@@ -1,9 +1,10 @@
 package functional.impl;
 
 import functional._0ArgShell;
+import functional._NonReturnShell;
 
 @FunctionalInterface
-public interface Unit extends _0ArgShell {
+public interface Unit extends _0ArgShell, _NonReturnShell {
 	void apply();
 	
 	default Unit asUnit() {

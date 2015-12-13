@@ -1,12 +1,12 @@
 package functional.impl;
 
-import functional._3ArgShell;
+import functional._ReturnShell;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Predicate3<A, B, C> extends _3ArgShell<A, B, C> {
-  boolean apply(A a, B b, C c);
+public interface Predicate3<A, B, C> extends Function3<A,B,C,Boolean>, _ReturnShell<Boolean> {
+  Boolean apply(A a, B b, C c);
 
   default boolean test(A a, B b, C c) {
     return apply(a, b, c);
@@ -24,10 +24,6 @@ public interface Predicate3<A, B, C> extends _3ArgShell<A, B, C> {
     return partialApply(a).partialApply(b);
   }
 
-  default Supplier<Boolean> partialApply(A a, B b, C c) {
-    return partialApply(a).partialApply(b).partialApply(c);
-  }
-
   default Predicate1<C> partialLazyApply(Supplier<A> aSupplier, B b) {
     return lazyApply(aSupplier).partialApply(b);
   }
@@ -36,36 +32,8 @@ public interface Predicate3<A, B, C> extends _3ArgShell<A, B, C> {
     return partialApply(a).lazyApply(bSupplier);
   }
 
-  default Supplier<Boolean> partialLazyApply(Supplier<A> aSupplier, B b, C c) {
-    return lazyApply(aSupplier).partialApply(b).partialApply(c);
-  }
-
-  default Supplier<Boolean> partialLazyApply(A a, Supplier<B> bSupplier, C c) {
-    return partialApply(a).lazyApply(bSupplier).partialApply(c);
-  }
-
-  default Supplier<Boolean> partialLazyApply(A a, B b, Supplier<C> cSupplier) {
-    return partialApply(a).partialApply(b).lazyApply(cSupplier);
-  }
-
-  default Supplier<Boolean> partialLazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier, C c) {
-    return lazyApply(aSupplier).lazyApply(bSupplier).partialApply(c);
-  }
-
-  default Supplier<Boolean> partialLazyApply(A a, Supplier<B> bSupplier, Supplier<C> cSupplier) {
-    return partialApply(a).lazyApply(bSupplier).lazyApply(cSupplier);
-  }
-
-  default Supplier<Boolean> partialLazyApply(Supplier<A> aSupplier, B b, Supplier<C> cSupplier) {
-    return lazyApply(aSupplier).partialApply(b).lazyApply(cSupplier);
-  }
-
   default Predicate1<C> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
     return lazyApply(aSupplier).lazyApply(bSupplier);
-  }
-
-  default Supplier<Boolean> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier, Supplier<C> cSupplier) {
-    return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
   default Consumer3<A, B, C> discardReturn() {

@@ -1,6 +1,8 @@
 package functional;
 
-public interface _0ArgShell extends FuncShell {
+import functional.impl.Unit;
+
+public interface _0ArgShell extends __RootShell {
 
   Unit asUnit();
 }

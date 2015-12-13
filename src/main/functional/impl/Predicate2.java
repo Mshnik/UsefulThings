@@ -1,38 +1,22 @@
 package functional.impl;
 
-import functional._2ArgShell;
+import functional._ReturnShell;
 
 import java.util.Objects;
 
-public interface Predicate2<A, B> extends java.util.function.BiPredicate<A, B>, _2ArgShell<A, B> {
-  boolean apply(A a, B b);
+public interface Predicate2<A, B> extends java.util.function.BiPredicate<A, B>, Function2<A, B, Boolean>, _ReturnShell<Boolean> {
+  Boolean apply(A a, B b);
 
   default boolean test(A a, B b) {
     return apply(a, b);
   }
 
-  default Predicate<B> partialApply(A a) {
+  default Predicate1<B> partialApply(A a) {
     return (b) -> apply(a, b);
   }
 
-  default Predicate<B> lazyApply(Supplier<A> aSupplier) {
+  default Predicate1<B> lazyApply(Supplier<A> aSupplier) {
     return (b) -> apply(aSupplier.apply(), b);
-  }
-
-  default Supplier<Boolean> partialApply(A a, B b) {
-    return partialApply(a).partialApply(b);
-  }
-
-  default Supplier<Boolean> partialLazyApply(A a, Supplier<B> bSupplier) {
-    return partialApply(a).lazyApply(bSupplier);
-  }
-
-  default Supplier<Boolean> partialLazyApply(Supplier<A> aSupplier, B b) {
-    return lazyApply(aSupplier).partialApply(b);
-  }
-
-  default Supplier<Boolean> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
-    return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
   default Consumer2<A, B> discardReturn() {

@@ -1,10 +1,13 @@
 package functional;
 
-public interface _1ArgShell<A> extends FuncShell {
+import functional.impl.Consumer1;
+import functional.impl.Supplier;
 
-  UnitFuncShell partialApply(A a);
+public interface _1ArgShell<A> extends __RootShell {
 
-  UnitFuncShell lazyApply(Supplier<A> aSupplier);
+  _0ArgShell partialApply(A a);
 
-  Consumer<A> discardReturn();
+  _0ArgShell lazyApply(Supplier<A> aSupplier);
+
+  Consumer1<A> discardReturn();
 }

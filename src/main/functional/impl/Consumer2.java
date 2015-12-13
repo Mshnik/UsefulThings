@@ -1,20 +1,21 @@
 package functional.impl;
 
 import functional._2ArgShell;
+import functional._NonReturnShell;
 
 @FunctionalInterface
-public interface Consumer2<A, B> extends java.util.function.BiConsumer<A, B>, _2ArgShell<A, B> {
+public interface Consumer2<A, B> extends java.util.function.BiConsumer<A, B>, _2ArgShell<A, B>, _NonReturnShell {
   void apply(A a, B b);
 
   default void accept(A a, B b) {
     apply(a, b);
   }
 
-  default Consumer<B> partialApply(A a) {
+  default Consumer1<B> partialApply(A a) {
     return (b) -> apply(a, b);
   }
 
-  default Consumer<B> lazyApply(Supplier<A> aSupplier) {
+  default Consumer1<B> lazyApply(Supplier<A> aSupplier) {
     return (b) -> apply(aSupplier.apply(), b);
   }
 

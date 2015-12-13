@@ -1,6 +1,9 @@
 package functional;
 
-public interface _3ArgShell<A, B, C> extends FuncShell {
+import functional.impl.Supplier;
+import functional.impl.Consumer3;
+
+public interface _3ArgShell<A, B, C> extends __RootShell {
 
   _2ArgShell<B, C> partialApply(A a);
 
@@ -10,7 +13,7 @@ public interface _3ArgShell<A, B, C> extends FuncShell {
     return partialApply(a).partialApply(b);
   }
 
-  default UnitFuncShell partialApply(A a, B b, C c) {
+  default _0ArgShell partialApply(A a, B b, C c) {
     return partialApply(a).partialApply(b).partialApply(c);
   }
 
@@ -22,27 +25,27 @@ public interface _3ArgShell<A, B, C> extends FuncShell {
     return partialApply(a).lazyApply(bSupplier);
   }
 
-  default UnitFuncShell partialLazyApply(Supplier<A> aSupplier, B b, C c) {
+  default _0ArgShell partialLazyApply(Supplier<A> aSupplier, B b, C c) {
     return lazyApply(aSupplier).partialApply(b).partialApply(c);
   }
 
-  default UnitFuncShell partialLazyApply(A a, Supplier<B> bSupplier, C c) {
+  default _0ArgShell partialLazyApply(A a, Supplier<B> bSupplier, C c) {
     return partialApply(a).lazyApply(bSupplier).partialApply(c);
   }
 
-  default UnitFuncShell partialLazyApply(A a, B b, Supplier<C> cSupplier) {
+  default _0ArgShell partialLazyApply(A a, B b, Supplier<C> cSupplier) {
     return partialApply(a).partialApply(b).lazyApply(cSupplier);
   }
 
-  default UnitFuncShell partialLazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier, C c) {
+  default _0ArgShell partialLazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier, C c) {
     return lazyApply(aSupplier).lazyApply(bSupplier).partialApply(c);
   }
 
-  default UnitFuncShell partialLazyApply(A a, Supplier<B> bSupplier, Supplier<C> cSupplier) {
+  default _0ArgShell partialLazyApply(A a, Supplier<B> bSupplier, Supplier<C> cSupplier) {
     return partialApply(a).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  default UnitFuncShell partialLazyApply(Supplier<A> aSupplier, B b, Supplier<C> cSupplier) {
+  default _0ArgShell partialLazyApply(Supplier<A> aSupplier, B b, Supplier<C> cSupplier) {
     return lazyApply(aSupplier).partialApply(b).lazyApply(cSupplier);
   }
 
@@ -50,9 +53,9 @@ public interface _3ArgShell<A, B, C> extends FuncShell {
     return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
-  default UnitFuncShell lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier, Supplier<C> cSupplier) {
+  default _0ArgShell lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier, Supplier<C> cSupplier) {
     return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  TriConsumer<A, B, C> discardReturn();
+  Consumer3<A, B, C> discardReturn();
 }

@@ -1,14 +1,13 @@
 package grid;
 
 import static common.JUnitUtil.*;
-import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import functional.Consumer;
+import functional.impl.Consumer1;
 import org.junit.Test;
 
 public class GridTest {
@@ -210,7 +209,7 @@ public class GridTest {
     g.add(t3);
     assertEquals(t3, g.getFrom(t2, loc2));
 
-    shouldFail((Consumer<Integer[]>) g::get,  ArrayIndexOutOfBoundsException.class, new Integer[]{-1, 0});
+    shouldFail((Consumer1<Integer[]>) g::get,  ArrayIndexOutOfBoundsException.class, new Integer[]{-1, 0});
 
     assertEquals(null, g.getSafe(new Integer[]{-1, 0}));
   }

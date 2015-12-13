@@ -1,7 +1,9 @@
-package functional;
+package functional.impl;
+
+import functional._2ArgShell;
 
 @FunctionalInterface
-public interface BiConsumer<A, B> extends java.util.function.BiConsumer<A, B>, BiFuncShell<A, B> {
+public interface Consumer2<A, B> extends java.util.function.BiConsumer<A, B>, _2ArgShell<A, B> {
   void apply(A a, B b);
 
   default void accept(A a, B b) {
@@ -32,15 +34,15 @@ public interface BiConsumer<A, B> extends java.util.function.BiConsumer<A, B>, B
     return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
-  default BiConsumer<B, A> rotate() {
+  default Consumer2<B, A> rotate() {
     return (b, a) -> apply(a, b);
   }
 
-  default BiConsumer<A, B> discardReturn() {
+  default Consumer2<A, B> discardReturn() {
     return this;
   }
 
-  default BiConsumer<A, B> butFirst(Unit before) {
+  default Consumer2<A, B> butFirst(Unit before) {
     return (a, b) -> {
       before.apply();
       apply(a, b);

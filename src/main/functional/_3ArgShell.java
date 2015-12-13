@@ -1,12 +1,12 @@
 package functional;
 
-public interface TriFuncShell<A, B, C> {
+public interface _3ArgShell<A, B, C> extends FuncShell {
 
-  BiFuncShell<B, C> partialApply(A a);
+  _2ArgShell<B, C> partialApply(A a);
 
-  BiFuncShell<B, C> lazyApply(Supplier<A> aSupplier);
+  _2ArgShell<B, C> lazyApply(Supplier<A> aSupplier);
 
-  default SingleFuncShell<C> partialApply(A a, B b) {
+  default _1ArgShell<C> partialApply(A a, B b) {
     return partialApply(a).partialApply(b);
   }
 
@@ -14,11 +14,11 @@ public interface TriFuncShell<A, B, C> {
     return partialApply(a).partialApply(b).partialApply(c);
   }
 
-  default SingleFuncShell<C> partialLazyApply(Supplier<A> aSupplier, B b) {
+  default _1ArgShell<C> partialLazyApply(Supplier<A> aSupplier, B b) {
     return lazyApply(aSupplier).partialApply(b);
   }
 
-  default SingleFuncShell<C> partialLazyApply(A a, Supplier<B> bSupplier) {
+  default _1ArgShell<C> partialLazyApply(A a, Supplier<B> bSupplier) {
     return partialApply(a).lazyApply(bSupplier);
   }
 
@@ -46,7 +46,7 @@ public interface TriFuncShell<A, B, C> {
     return lazyApply(aSupplier).partialApply(b).lazyApply(cSupplier);
   }
 
-  default SingleFuncShell<C> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
+  default _1ArgShell<C> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
     return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 

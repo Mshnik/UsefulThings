@@ -11,9 +11,7 @@ import java.util.Objects;
 
 import common.dataStructures.NotInCollectionException;
 
-import functional.BiFunction;
-import functional.TriConsumer;
-import functional.Unit;
+import functional.impl.Function2;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -644,7 +642,7 @@ public class GraphTest {
     g.addEdge('A', 'B', new SuperEdge("ab", 10));
     path.clear();
 
-    BiFunction<Character, Character, Integer> heuristic = (v1, v2) -> Math.abs(v2 - v1);
+    Function2<Character, Character, Integer> heuristic = (v1, v2) -> Math.abs(v2 - v1);
     path.add('A');
 
     assertEquals(path, Algorithm.shortestPath(g, 'A', 'A'));

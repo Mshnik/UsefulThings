@@ -1,7 +1,9 @@
-package functional;
+package functional.impl;
+
+import functional._0ArgShell;
 
 @FunctionalInterface
-public interface Unit extends UnitFuncShell {
+public interface Unit extends _0ArgShell {
 	void apply();
 	
 	default Unit asUnit() {

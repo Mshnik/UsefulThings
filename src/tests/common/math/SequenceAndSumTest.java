@@ -1,6 +1,6 @@
 package common.math;
 
-import functional.Function;
+import functional.impl.Function1;
 import org.junit.Test;
 
 import static common.JUnitUtil.*;
@@ -17,7 +17,7 @@ public class SequenceAndSumTest {
 
     assertEquals(50, (int)s.compute(25));
 
-    Function<Integer, Double> f = s::compute;
+    Function1<Integer, Double> f = s::compute;
     shouldFail(f, IllegalArgumentException.class, -5);
   }
 
@@ -32,7 +32,7 @@ public class SequenceAndSumTest {
     }
 
     assertEquals((int)Math.pow(2.0, 25.0), (int)s.compute(25));
-    Function<Integer, Double> f = s::compute;
+    Function1<Integer, Double> f = s::compute;
     shouldFail(f, IllegalArgumentException.class, -5);
   }
 
@@ -45,7 +45,7 @@ public class SequenceAndSumTest {
       assertEquals(x, (int)s.compute(i));
     }
 
-    Function<Integer, Double> f = s::compute;
+    Function1<Integer, Double> f = s::compute;
     shouldFail(f, IllegalArgumentException.class, -5);
   }
 
@@ -59,7 +59,7 @@ public class SequenceAndSumTest {
       assertEquals(5 * i, (int)s3.compute(i));
     }
 
-    Function<Integer, Double> f = s::compute;
+    Function1<Integer, Double> f = s::compute;
     shouldFail(f, IllegalArgumentException.class, -5);
   }
 }

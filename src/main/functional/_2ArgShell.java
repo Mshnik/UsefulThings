@@ -1,10 +1,10 @@
 package functional;
 
-public interface BiFuncShell<A, B> extends FuncShell {
+public interface _2ArgShell<A, B> extends FuncShell {
 
-  SingleFuncShell<B> partialApply(A a);
+  _1ArgShell<B> partialApply(A a);
 
-  SingleFuncShell<B> lazyApply(Supplier<A> aSupplier);
+  _1ArgShell<B> lazyApply(Supplier<A> aSupplier);
 
   default UnitFuncShell partialApply(A a, B b) {
     return partialApply(a).partialApply(b);

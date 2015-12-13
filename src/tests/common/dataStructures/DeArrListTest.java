@@ -7,8 +7,8 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import functional.BiConsumer;
-import functional.Supplier;
+import functional.impl.Consumer2;
+import functional.impl.Supplier;
 import org.junit.Test;
 
 public class DeArrListTest {
@@ -165,8 +165,8 @@ public class DeArrListTest {
 		assertEquals("(10,1,12,4,2,3,45,5,6,99)",a.toString());
 		assertEquals(10, a.size());
 		
-		shouldFail( (BiConsumer<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, 12, 3);
-		shouldFail( (BiConsumer<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, -1, 3);
+		shouldFail( (Consumer2<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, 12, 3);
+		shouldFail( (Consumer2<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, -1, 3);
 		
 		//Test reArraying working correctly
 		DeArrList<Integer> a2 = new DeArrList<Integer>(4);

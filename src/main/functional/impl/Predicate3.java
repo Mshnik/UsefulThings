@@ -1,24 +1,26 @@
-package functional;
+package functional.impl;
+
+import functional._3ArgShell;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface TriPredicate<A, B, C> extends TriFuncShell<A, B, C> {
+public interface Predicate3<A, B, C> extends _3ArgShell<A, B, C> {
   boolean apply(A a, B b, C c);
 
   default boolean test(A a, B b, C c) {
     return apply(a, b, c);
   }
 
-  default BiPredicate<B, C> partialApply(A a) {
+  default Predicate2<B, C> partialApply(A a) {
     return (b, c) -> apply(a, b, c);
   }
 
-  default BiPredicate<B, C> lazyApply(Supplier<A> aSupplier) {
+  default Predicate2<B, C> lazyApply(Supplier<A> aSupplier) {
     return (b, c) -> apply(aSupplier.apply(), b, c);
   }
 
-  default Predicate<C> partialApply(A a, B b) {
+  default Predicate1<C> partialApply(A a, B b) {
     return partialApply(a).partialApply(b);
   }
 
@@ -26,11 +28,11 @@ public interface TriPredicate<A, B, C> extends TriFuncShell<A, B, C> {
     return partialApply(a).partialApply(b).partialApply(c);
   }
 
-  default Predicate<C> partialLazyApply(Supplier<A> aSupplier, B b) {
+  default Predicate1<C> partialLazyApply(Supplier<A> aSupplier, B b) {
     return lazyApply(aSupplier).partialApply(b);
   }
 
-  default Predicate<C> partialLazyApply(A a, Supplier<B> bSupplier) {
+  default Predicate1<C> partialLazyApply(A a, Supplier<B> bSupplier) {
     return partialApply(a).lazyApply(bSupplier);
   }
 
@@ -58,7 +60,7 @@ public interface TriPredicate<A, B, C> extends TriFuncShell<A, B, C> {
     return lazyApply(aSupplier).partialApply(b).lazyApply(cSupplier);
   }
 
-  default Predicate<C> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
+  default Predicate1<C> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
     return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
@@ -66,51 +68,51 @@ public interface TriPredicate<A, B, C> extends TriFuncShell<A, B, C> {
     return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  default TriConsumer<A, B, C> discardReturn() {
+  default Consumer3<A, B, C> discardReturn() {
     return (a, b, c) -> apply(a, b, c);
   }
 
-  default TriPredicate<C, A, B> rotate() {
+  default Predicate3<C, A, B> rotate() {
     return (c, a, b) -> apply(a, b, c);
   }
 
-  default TriPredicate<A, B, C> negate() {
+  default Predicate3<A, B, C> negate() {
     return (a, b, c) -> !apply(a, b, c);
   }
 
-  default TriPredicate<A, B, C> butFirst(Unit before) {
+  default Predicate3<A, B, C> butFirst(Unit before) {
     return (a, b, c) -> {
       before.apply();
       return apply(a, b, c);
     };
   }
 
-  default TriPredicate<A, B, C> and(TriPredicate<A, B, C> other) {
+  default Predicate3<A, B, C> and(Predicate3<A, B, C> other) {
     Objects.requireNonNull(other);
     return (a, b, c) -> apply(a, b, c) && other.apply(a, b, c);
   }
 
-  default TriPredicate<A, B, C> or(TriPredicate<A, B, C> other) {
+  default Predicate3<A, B, C> or(Predicate3<A, B, C> other) {
     Objects.requireNonNull(other);
     return (a, b, c) -> apply(a, b, c) || other.apply(a, b, c);
   }
 
-  default TriPredicate<A, B, C> nand(TriPredicate<A, B, C> other) {
+  default Predicate3<A, B, C> nand(Predicate3<A, B, C> other) {
     Objects.requireNonNull(other);
     return (a, b, c) -> !(apply(a, b, c) && other.apply(a, b, c));
   }
 
-  default TriPredicate<A, B, C> nor(TriPredicate<A, B, C> other) {
+  default Predicate3<A, B, C> nor(Predicate3<A, B, C> other) {
     Objects.requireNonNull(other);
     return (a, b, c) -> !(apply(a, b, c) || other.apply(a, b, c));
   }
 
-  default TriPredicate<A, B, C> xor(TriPredicate<A, B, C> other) {
+  default Predicate3<A, B, C> xor(Predicate3<A, B, C> other) {
     Objects.requireNonNull(other);
     return (a, b, c) -> apply(a, b, c) ^ other.apply(a, b, c);
   }
 
-  default TriPredicate<A, B, C> xnor(TriPredicate<A, B, C> other) {
+  default Predicate3<A, B, C> xnor(Predicate3<A, B, C> other) {
     Objects.requireNonNull(other);
     return (a, b, c) -> !(apply(a, b, c) ^ other.apply(a, b, c));
   }

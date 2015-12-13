@@ -1,16 +1,18 @@
-package functional;
+package functional.impl;
+
+import functional._2ArgShell;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface BiFunction<A, B, R> extends java.util.function.BiFunction<A, B, R>, BiFuncShell<A, B> {
+public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, R>, _2ArgShell<A, B> {
   R apply(A a, B b);
 
-  default Function<B, R> partialApply(A a) {
+  default Function1<B, R> partialApply(A a) {
     return (b) -> apply(a, b);
   }
 
-  default Function<B, R> lazyApply(Supplier<A> aSupplier) {
+  default Function1<B, R> lazyApply(Supplier<A> aSupplier) {
     return (b) -> apply(aSupplier.apply(), b);
   }
 
@@ -30,20 +32,20 @@ public interface BiFunction<A, B, R> extends java.util.function.BiFunction<A, B,
     return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
-  default BiFunction<B, A, R> rotate() {
+  default Function2<B, A, R> rotate() {
     return (b, a) -> apply(a, b);
   }
 
-  default BiConsumer<A, B> discardReturn() {
+  default Consumer2<A, B> discardReturn() {
     return (a, b) -> apply(a, b);
   }
 
-  default <V> BiFunction<A, B, V> andThen(java.util.function.Function<? super R, ? extends V> after) {
+  default <V> Function2<A, B, V> andThen(java.util.function.Function<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (a, b) -> after.apply(apply(a, b));
   }
 
-  default BiFunction<A, B, R> butFirst(Unit before) {
+  default Function2<A, B, R> butFirst(Unit before) {
     return (a, b) -> {
       before.apply();
       return apply(a, b);

@@ -2,15 +2,16 @@ package functional;
 
 import static org.junit.Assert.*;
 
+import functional.impl.*;
 import org.junit.Test;
 
 public class FunctionalTest {
 
   @Test
   public void testCurrying() {
-    TriFunction<Integer, Integer, Integer, Integer> f3 = (a, b, c) -> a + b * c;
-    BiFunction<Integer, Integer, Integer> f3_c1 = f3.partialApply(5);
-    BiFunction<Integer, Integer, Integer> f2 = (a, b) -> 5 + a * b;
+    Function3<Integer, Integer, Integer, Integer> f3 = (a, b, c) -> a + b * c;
+    Function2<Integer, Integer, Integer> f3_c1 = f3.partialApply(5);
+    Function2<Integer, Integer, Integer> f2 = (a, b) -> 5 + a * b;
 
     for (int i = -5; i < 5; i++) {
       for (int j = -5; j < 5; j++) {
@@ -18,9 +19,9 @@ public class FunctionalTest {
       }
     }
 
-    Function<Integer, Integer> f3_c2 = f3.partialApply(5, 3);
-    Function<Integer, Integer> f2_c1 = f2.partialApply(3);
-    Function<Integer, Integer> f1 = (a) -> 5 + 3 * a;
+    Function1<Integer, Integer> f3_c2 = f3.partialApply(5, 3);
+    Function1<Integer, Integer> f2_c1 = f2.partialApply(3);
+    Function1<Integer, Integer> f1 = (a) -> 5 + 3 * a;
 
     for (int i = -5; i < 5; i++) {
       assertEquals(f1.apply(i), f2_c1.apply(i));
@@ -39,9 +40,9 @@ public class FunctionalTest {
 
   @Test
   public void testLazyCurrying() {
-    TriFunction<Integer, Integer, Integer, Integer> f3 = (a, b, c) -> a + b * c;
-    BiFunction<Integer, Integer, Integer> f3_c1 = f3.lazyApply(() -> 5);
-    BiFunction<Integer, Integer, Integer> f2 = (a, b) -> 5 + a * b;
+    Function3<Integer, Integer, Integer, Integer> f3 = (a, b, c) -> a + b * c;
+    Function2<Integer, Integer, Integer> f3_c1 = f3.lazyApply(() -> 5);
+    Function2<Integer, Integer, Integer> f2 = (a, b) -> 5 + a * b;
 
     for (int i = -5; i < 5; i++) {
       for (int j = -5; j < 5; j++) {
@@ -49,9 +50,9 @@ public class FunctionalTest {
       }
     }
 
-    Function<Integer, Integer> f3_c2 = f3.lazyApply(() -> 5, () -> 3);
-    Function<Integer, Integer> f2_c1 = f2.lazyApply(() -> 3);
-    Function<Integer, Integer> f1 = (a) -> 5 + 3 * a;
+    Function1<Integer, Integer> f3_c2 = f3.lazyApply(() -> 5, () -> 3);
+    Function1<Integer, Integer> f2_c1 = f2.lazyApply(() -> 3);
+    Function1<Integer, Integer> f1 = (a) -> 5 + 3 * a;
 
     for (int i = -5; i < 5; i++) {
       assertEquals(f1.apply(i), f2_c1.apply(i));
@@ -73,7 +74,7 @@ public class FunctionalTest {
       mut.x++;
       return mut;
     };
-    Function<MutableClass, Integer> getFour = (m) -> 4;
+    Function1<MutableClass, Integer> getFour = (m) -> 4;
 
     Supplier<Integer> partialAppFunc1 = getFour.partialApply(getMutAndInc.apply());
     assertEquals(1, mut.x);
@@ -106,8 +107,8 @@ public class FunctionalTest {
 
   @Test
   public void testAndThen() {
-    Function<Integer, Integer> f1 = (a) -> (a + 2);
-    Function<Integer, Integer> f2 = (a) -> -a;
+    Function1<Integer, Integer> f1 = (a) -> (a + 2);
+    Function1<Integer, Integer> f2 = (a) -> -a;
 
     assertEquals(-5, f1.andThen(f2).apply(3).intValue());
     assertEquals(-1, f2.andThen(f1).apply(3).intValue());
@@ -116,8 +117,8 @@ public class FunctionalTest {
 
   @Test
   public void testPredicateLogic() {
-    Predicate<Integer> p1 = (a) -> a > 5;
-    Predicate<Integer> p2 = (a) -> a < 8;
+    Predicate1<Integer> p1 = (a) -> a > 5;
+    Predicate1<Integer> p2 = (a) -> a < 8;
 
     assertTrue(p1.apply(8));
     assertFalse(p1.apply(5));

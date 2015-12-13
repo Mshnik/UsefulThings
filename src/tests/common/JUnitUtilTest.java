@@ -1,8 +1,6 @@
 package common;
 
-import functional.Consumer;
-import functional.FunctionalUtil;
-import functional.Unit;
+import functional.impl.Unit;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +12,7 @@ public class JUnitUtilTest {
 
   @Test
   public void testTestOn() {
-    assertEquals(0, JUnitUtil.testAll(null));
+    assertEquals(0, JUnitUtil.testAll((Unit[])null));
     assertEquals(0, JUnitUtil.testAll());
 
     assertEquals(0, JUnitUtil.testAll(Assert::fail));

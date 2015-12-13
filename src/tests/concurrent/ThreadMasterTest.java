@@ -1,7 +1,7 @@
 package concurrent;
 
 import common.types.Either;
-import functional.Function;
+import functional.impl.Function1;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class ThreadMasterTest {
   public void testTimedWaitingStress() throws InterruptedException {
     final int arrSize = 100;
     ThreadMaster<Integer> t = new ThreadMaster<>();
-    Function<Integer, Integer> f = (x) -> {
+    Function1<Integer, Integer> f = (x) -> {
       try {
         Thread.sleep((long) (1000 * Math.random()));
       }catch(InterruptedException e){};
@@ -57,7 +57,7 @@ public class ThreadMasterTest {
   @Test
   public void testReduce() throws InterruptedException {
     ThreadMaster<Integer> t = new ThreadMaster<>();
-    Function<Integer, Integer> f = (i) -> i;
+    Function1<Integer, Integer> f = (i) -> i;
     for(int i = 1; i <= 5; i ++) {
       t.spawnWorker(f.partialApply(i));
     }

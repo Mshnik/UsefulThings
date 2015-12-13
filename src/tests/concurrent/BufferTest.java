@@ -1,7 +1,7 @@
 package concurrent;
 
 import common.MethodRunner;
-import functional.Supplier;
+import functional.impl.Supplier;
 import org.junit.Test;
 
 import static common.JUnitUtil.*;

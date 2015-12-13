@@ -1,7 +1,10 @@
-package functional;
+package functional.impl;
+
+import functional._1ArgShell;
+import functional._NonReturnShell;
 
 @FunctionalInterface
-public interface Consumer<A> extends java.util.function.Consumer<A>, SingleFuncShell<A> {
+public interface Consumer1<A> extends java.util.function.Consumer<A>, _1ArgShell<A>, _NonReturnShell {
 	void apply(A a);
 	
 	default void accept(A a) {
@@ -16,11 +19,11 @@ public interface Consumer<A> extends java.util.function.Consumer<A>, SingleFuncS
     return () -> apply(aSupplier.apply());
   }
 
-	default Consumer<A> discardReturn() {
+	default Consumer1<A> discardReturn() {
 		return this;
 	}
 
-	default Consumer<A> butFirst(Unit before) {
+	default Consumer1<A> butFirst(Unit before) {
 		return (a) -> {
 			before.apply();
 			apply(a);

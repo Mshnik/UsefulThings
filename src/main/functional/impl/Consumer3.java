@@ -1,24 +1,26 @@
-package functional;
+package functional.impl;
+
+import functional._3ArgShell;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface TriConsumer<A, B, C> extends TriFuncShell<A, B, C> {
+public interface Consumer3<A, B, C> extends _3ArgShell<A, B, C> {
   void apply(A a, B b, C c);
 
   default void accept(A a, B b, C c) {
     apply(a, b, c);
   }
 
-  default BiConsumer<B, C> partialApply(A a) {
+  default Consumer2<B, C> partialApply(A a) {
     return (b, c) -> apply(a, b, c);
   }
 
-  default BiConsumer<B, C> lazyApply(Supplier<A> aSupplier) {
+  default Consumer2<B, C> lazyApply(Supplier<A> aSupplier) {
     return (b, c) -> apply(aSupplier.apply(), b, c);
   }
 
-  default Consumer<C> partialApply(A a, B b) {
+  default Consumer1<C> partialApply(A a, B b) {
     return partialApply(a).partialApply(b);
   }
 
@@ -26,11 +28,11 @@ public interface TriConsumer<A, B, C> extends TriFuncShell<A, B, C> {
     return partialApply(a).partialApply(b).partialApply(c);
   }
 
-  default Consumer<C> partialLazyApply(Supplier<A> aSupplier, B b) {
+  default Consumer1<C> partialLazyApply(Supplier<A> aSupplier, B b) {
     return lazyApply(aSupplier).partialApply(b);
   }
 
-  default Consumer<C> partialLazyApply(A a, Supplier<B> bSupplier) {
+  default Consumer1<C> partialLazyApply(A a, Supplier<B> bSupplier) {
     return partialApply(a).lazyApply(bSupplier);
   }
 
@@ -58,7 +60,7 @@ public interface TriConsumer<A, B, C> extends TriFuncShell<A, B, C> {
     return lazyApply(aSupplier).partialApply(b).lazyApply(cSupplier);
   }
 
-  default Consumer<C> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
+  default Consumer1<C> lazyApply(Supplier<A> aSupplier, Supplier<B> bSupplier) {
     return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
@@ -66,15 +68,15 @@ public interface TriConsumer<A, B, C> extends TriFuncShell<A, B, C> {
     return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  default TriConsumer<C, A, B> rotate() {
+  default Consumer3<C, A, B> rotate() {
     return (c, a, b) -> apply(a, b, c);
   }
 
-  default TriConsumer<A, B, C> discardReturn() {
+  default Consumer3<A, B, C> discardReturn() {
     return this;
   }
 
-  default TriConsumer<A, B, C> andThen(TriConsumer<? super A, ? super B, ? super C> after) {
+  default Consumer3<A, B, C> andThen(Consumer3<? super A, ? super B, ? super C> after) {
     Objects.requireNonNull(after);
     return (a, b, c) -> {
       apply(a, b, c);
@@ -82,7 +84,7 @@ public interface TriConsumer<A, B, C> extends TriFuncShell<A, B, C> {
     };
   }
 
-  default TriConsumer<A, B, C> butFirst(Unit before) {
+  default Consumer3<A, B, C> butFirst(Unit before) {
     return (a, b, c) -> {
       before.apply();
       apply(a, b, c);

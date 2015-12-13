@@ -1,6 +1,6 @@
 package functional;
 
-public interface SingleFuncShell<A> extends FuncShell {
+public interface _1ArgShell<A> extends FuncShell {
 
   UnitFuncShell partialApply(A a);
 

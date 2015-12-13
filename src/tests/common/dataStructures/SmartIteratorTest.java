@@ -1,6 +1,5 @@
 package common.dataStructures;
 
-import static org.junit.Assert.*;
 import static common.JUnitUtil.*;
 
 import java.util.Arrays;

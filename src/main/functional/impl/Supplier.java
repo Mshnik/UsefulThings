@@ -1,7 +1,10 @@
-package functional;
+package functional.impl;
+
+import functional._0ArgShell;
+import functional._ReturnShell;
 
 @FunctionalInterface
-public interface Supplier<R> extends java.util.function.Supplier<R>, UnitFuncShell {
+public interface Supplier<R> extends java.util.function.Supplier<R>, _0ArgShell, _ReturnShell<R> {
   R apply();
 
   default R get() {

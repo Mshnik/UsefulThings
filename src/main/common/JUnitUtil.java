@@ -1,14 +1,9 @@
 package common;
 
-import functional.*;
-import functional.BiConsumer;
-import functional.Consumer;
-import functional.Supplier;
+import functional.impl.*;
 import org.junit.Assert;
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.*;
 
 import static org.junit.Assert.*;
 import static functional.FunctionalUtil.*;
@@ -19,6 +14,14 @@ public class JUnitUtil {
 
   /** Error term for comparing floats and doubles. If the diff is less than this, they are considered equal */
   private static float ERR_TERM = 0.00001f;
+
+  public static void fail() {
+    Assert.fail();
+  }
+
+  public static void fail(String message) {
+    Assert.fail(message);
+  }
 
   public static void assertTrue(String message, boolean condition) {
     if(!condition) {
@@ -93,43 +96,43 @@ public class JUnitUtil {
 
   /** Returns a Unit that causes an assertion failure with the given message */
   public static Unit failFunc(String message) {
-    Consumer<String> f = Assert::fail;
+    Consumer1<String> f = Assert::fail;
     return f.partialApply(message);
   }
 
   /** Returns a Unit that asserts that the given condition is true */
   public static Unit assertTrueFunc(boolean condition) {
-    Consumer<Boolean> f = Assert::assertTrue;
+    Consumer1<Boolean> f = Assert::assertTrue;
     return f.partialApply(condition);
   }
 
   /** Returns a Unit that asserts that the given condition is true with the given message */
   public static Unit assertTrueFunc(String message, boolean condition) {
-    BiConsumer<String, Boolean> f = Assert::assertTrue;
+    Consumer2<String, Boolean> f = Assert::assertTrue;
     return f.partialApply(message, condition);
   }
 
   /** Returns a Unit that asserts that the given condition is false */
   public static Unit assertFalseFunc(boolean condition) {
-    Consumer<Boolean> f = Assert::assertFalse;
+    Consumer1<Boolean> f = Assert::assertFalse;
     return f.partialApply(condition);
   }
 
   /** Returns a Unit that asserts that the given condition is false with the given message */
   public static Unit assertFalseFunc(String message, boolean condition) {
-    BiConsumer<String, Boolean> f = Assert::assertFalse;
+    Consumer2<String, Boolean> f = Assert::assertFalse;
     return f.partialApply(message, condition);
   }
 
   /** Returns a Unit that asserts that the two objects are equal */
   public static Unit assertEqualsFunc(Object expected, Object actual) {
-    BiConsumer<Object, Object> f = Assert::assertEquals;
+    Consumer2<Object, Object> f = Assert::assertEquals;
     return f.partialApply(expected, actual);
   }
 
   /** Returns a Unit that asserts that the two objects are equal with the given message */
   public static Unit assertEqualsFunc(String message, Object expected, Object actual) {
-    TriConsumer<String, Object, Object> f = Assert::assertEquals;
+    Consumer3<String, Object, Object> f = Assert::assertEquals;
     return f.partialApply(message, expected, actual);
   }
 
@@ -175,49 +178,49 @@ public class JUnitUtil {
 
   /** Returns a Unit that asserts that the condition from the given supplier is true */
   public static Unit callAndAssertTrueFunc(Supplier<Boolean> conditionSupplier) {
-    Consumer<Boolean> f = Assert::assertTrue;
+    Consumer1<Boolean> f = Assert::assertTrue;
     return f.lazyApply(conditionSupplier);
   }
 
   /** Returns a Unit that asserts that the given condition is true with the given message */
   public static Unit callAndAssertTrueFunc(String message, Supplier<Boolean> conditionSupplier) {
-    BiConsumer<String, Boolean> f = Assert::assertTrue;
+    Consumer2<String, Boolean> f = Assert::assertTrue;
     return f.partialLazyApply(message, conditionSupplier);
   }
 
   /** Returns a Unit that asserts that the given condition is false */
   public static Unit callAndAssertFalseFunc(Supplier<Boolean> conditionSupplier) {
-    Consumer<Boolean> f = Assert::assertFalse;
+    Consumer1<Boolean> f = Assert::assertFalse;
     return f.lazyApply(conditionSupplier);
   }
 
   /** Returns a Unit that asserts that the given condition is false with the given message */
   public static Unit callAndAssertFalseFunc(String message, Supplier<Boolean> conditionSupplier) {
-    BiConsumer<String, Boolean> f = Assert::assertFalse;
+    Consumer2<String, Boolean> f = Assert::assertFalse;
     return f.partialLazyApply(message, conditionSupplier);
   }
 
   /** Returns a Unit that asserts that the two objects are equal */
   public static Unit callAndAssertEqualsFunc(Object expected, Supplier<Object> actualSupplier) {
-    BiConsumer<Object, Object> f = Assert::assertEquals;
+    Consumer2<Object, Object> f = Assert::assertEquals;
     return f.partialLazyApply(expected, actualSupplier);
   }
 
   /** Returns a Unit that asserts that the two objects are equal */
   public static Unit callAndAssertEqualsFunc(Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
-    BiConsumer<Object, Object> f = Assert::assertEquals;
+    Consumer2<Object, Object> f = Assert::assertEquals;
     return f.lazyApply(expectedSupplier, actualSupplier);
   }
 
   /** Returns a Unit that asserts that the two objects are equal with the given message */
   public static Unit callAndAssertEqualsFunc(String message, Object expected, Supplier<Object> actualSupplier) {
-    TriConsumer<String, Object, Object> f = Assert::assertEquals;
+    Consumer3<String, Object, Object> f = Assert::assertEquals;
     return f.partialLazyApply(message, expected, actualSupplier);
   }
 
   /** Returns a Unit that asserts that the two objects are equal with the given message */
   public static Unit callAndAssertEqualsFunc(String message, Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
-    TriConsumer<String, Object, Object> f = Assert::assertEquals;
+    Consumer3<String, Object, Object> f = Assert::assertEquals;
     return f.partialLazyApply(message, expectedSupplier, actualSupplier);
   }
 
@@ -361,7 +364,7 @@ public class JUnitUtil {
    * Tests that the given request fails on the given inputs
    * Throws an assertion exception if it does not fail
    */
-  public static <T, R, S> void shouldFail(TriConsumer<T, R, S> request, T arg1, R arg2, S arg3) {
+  public static <T, R, S> void shouldFail(Consumer3<T, R, S> request, T arg1, R arg2, S arg3) {
     shouldFail(request.partialApply(arg1, arg2, arg3).asUnit());
   }
 
@@ -370,7 +373,7 @@ public class JUnitUtil {
    * Throws an assertion exception if it does not fail, or fails with a different
    * class of exception
    */
-  public static <T, R, S, E extends Throwable> void shouldFail(TriConsumer<T, R, S> request, Class<E> expectedException,
+  public static <T, R, S, E extends Throwable> void shouldFail(Consumer3<T, R, S> request, Class<E> expectedException,
                                                                T arg1, R arg2, S arg3) {
     shouldFail(request.partialApply(arg1, arg2, arg3).asUnit(), expectedException);
   }

@@ -8,7 +8,7 @@ public class BloomFilter<T> {
 
   public static int DEFAULT_FLAGS_SIZE = 1024;
   private boolean flags[];
-  private ArrayList<Function1<T, Integer>> hashFunction1s;
+  private ArrayList<Function1<T, Integer>> hashFunctions;
   private int size;
 
   public BloomFilter() {
@@ -17,7 +17,7 @@ public class BloomFilter<T> {
 
   public BloomFilter(int flagsLength, boolean useDefaultHashFunctions) {
     this.flags = new boolean[flagsLength];
-    this.hashFunction1s = new ArrayList<>();
+    this.hashFunctions = new ArrayList<>();
     this.size = 0;
 
     if(useDefaultHashFunctions) {
@@ -32,20 +32,20 @@ public class BloomFilter<T> {
     if(size != 0) {
       return false;
     }
-    hashFunction1s.add(f);
+    hashFunctions.add(f);
     return true;
   }
 
   public int getHashFunctionCount() {
-    return hashFunction1s.size();
+    return hashFunctions.size();
   }
 
-  public List<Function1<T, Integer>> getHashFunction1s() {
-    return new DeArrList<>(hashFunction1s);
+  public List<Function1<T, Integer>> getHashFunctions() {
+    return new DeArrList<>(hashFunctions);
   }
 
   public void add(T t) {
-    for(Function1<? super T, Integer> func : hashFunction1s) {
+    for(Function1<? super T, Integer> func : hashFunctions) {
       flags[func.apply(t) % flags.length] = true;
     }
     size++;
@@ -67,7 +67,7 @@ public class BloomFilter<T> {
 
   public boolean contains(Object o){
     try {
-      for (Function1<? super T, Integer> func : hashFunction1s) {
+      for (Function1<? super T, Integer> func : hashFunctions) {
         if (!flags[func.apply((T)o) % flags.length]) {
           return false;
         }

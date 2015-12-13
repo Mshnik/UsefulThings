@@ -60,7 +60,7 @@ public class BloomFilteredCollection<T> implements Collection<T> {
 
   private void increaseFilterSize() {
     BloomFilter<T> newFilter = new BloomFilter<>(filter.flagsSize() * 2, false);
-    for(Function1<T, Integer> f : filter.getHashFunction1s()) {
+    for(Function1<T, Integer> f : filter.getHashFunctions()) {
       newFilter.addHashFunction(f);
     }
     filter = newFilter;

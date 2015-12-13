@@ -5,7 +5,7 @@ import functional._NonReturnShell;
 import functional.impl.ex.UnitEx;
 
 @FunctionalInterface
-public interface Unit extends _0ArgShell, _NonReturnShell, UnitEx {
+public interface Unit extends _0ArgShell, _NonReturnShell {
 	void apply();
 	
 	default Unit asUnit() {

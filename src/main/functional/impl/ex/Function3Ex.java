@@ -77,7 +77,7 @@ public interface Function3Ex<A, B, C, R> extends _ExShell, _3ArgShell<A, B, C>, 
   }
 
   default Consumer3Ex<A, B, C> discardReturn() {
-    return (a, b, c) -> apply(a, b, c);
+    return this::apply;
   }
 
   default Function3Ex<A, B, C, R> butFirst(Unit before) {

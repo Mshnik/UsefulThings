@@ -43,8 +43,8 @@ public interface Function1Ex<A, R> extends _ExShell, _1ArgShell<A>, _ReturnShell
     return () -> apply(aSupplier.apply());
   }
 
-  default Consumer1<A> discardReturn() {
-    return withNoHandler(null).discardReturn();
+  default Consumer1Ex<A> discardReturn() {
+    return this::apply;
   }
 
   default <V> Function1Ex<V, R> compose(Function1Ex<? super V, ? extends A> before) {

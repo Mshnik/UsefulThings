@@ -12,7 +12,7 @@ public interface Supplier<R> extends java.util.function.Supplier<R>, _0ArgShell,
     return apply();
   }
 
-  default Unit asUnit() {
+  default Unit discardReturn() {
     return () -> apply();
   }
 

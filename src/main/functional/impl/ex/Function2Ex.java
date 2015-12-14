@@ -41,7 +41,7 @@ public interface Function2Ex<A, B, R> extends _ExShell, _2ArgShell<A, B>, _Retur
   }
 
   default Consumer2Ex<A, B> discardReturn() {
-    return (a, b) -> apply(a, b);
+    return this::apply;
   }
 
   default <V> Function2Ex<A, B, V> andThen(Function1Ex<? super R, ? extends V> after) {

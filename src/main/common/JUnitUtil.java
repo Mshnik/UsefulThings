@@ -6,8 +6,6 @@ import org.junit.Assert;
 
 import java.util.Iterator;
 
-import static functional.FunctionalUtil.*;
-
 public class JUnitUtil {
 
   private JUnitUtil() {}
@@ -280,7 +278,7 @@ public class JUnitUtil {
    * Throws an assertion exception if it does not fail
    */
   public static <T> void shouldFail(SupplierEx<T> request) {
-    shouldFail(request.asUnit());
+    shouldFail(request.discardReturn());
   }
 
   /**
@@ -289,7 +287,7 @@ public class JUnitUtil {
    * class of exception
    */
   public static <T, E extends Throwable> void shouldFail(SupplierEx<T> request, Class<E> expectedException) {
-    shouldFail(request.asUnitEx(), expectedException);
+    shouldFail(request.discardReturn(), expectedException);
   }
 
   /**
@@ -314,7 +312,7 @@ public class JUnitUtil {
    * Throws an assertion exception if it does not fail
    */
   public static <T, R> void shouldFail(Function1Ex<T, R> request, T arg) {
-    shouldFail(request.partialApply(arg).asUnitEx());
+    shouldFail(request.partialApply(arg).discardReturn());
   }
 
   /**
@@ -323,7 +321,7 @@ public class JUnitUtil {
    * class of exception
    */
   public static <T, R, E extends Throwable> void shouldFail(Function1Ex<T, R> request, Class<E> expectedException, T arg) {
-    shouldFail(request.partialApply(arg).asUnitEx(), expectedException);
+    shouldFail(request.partialApply(arg).discardReturn(), expectedException);
   }
 
   /**
@@ -348,7 +346,7 @@ public class JUnitUtil {
    * Throws an assertion exception if it does not fail
    */
   public static <T, R, S> void shouldFail(Function2Ex<T, R, S> request, T arg1, R arg2) {
-    shouldFail(request.partialApply(arg1, arg2).asUnitEx());
+    shouldFail(request.partialApply(arg1, arg2).discardReturn());
   }
 
   /**
@@ -357,7 +355,7 @@ public class JUnitUtil {
    * class of exception
    */
   public static <T, R, S, E extends Throwable> void shouldFail(Function2Ex<T, R, S> request, Class<E> expectedException, T arg1, R arg2) {
-    shouldFail(request.partialApply(arg1, arg2).asUnitEx(), expectedException);
+    shouldFail(request.partialApply(arg1, arg2).discardReturn(), expectedException);
   }
 
   /**

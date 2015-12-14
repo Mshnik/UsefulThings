@@ -27,8 +27,8 @@ public interface UnitEx extends _ExShell, _0ArgShell, _NonReturnShell {
     return withHandler(DO_NOTHING);
   }
 
-  default Unit asUnit() {
-    return withHandler(DO_NOTHING);
+  default UnitEx discardReturn() {
+    return this;
   }
 
   default SupplierEx<Void> supplyNothing() {

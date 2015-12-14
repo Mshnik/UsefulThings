@@ -39,12 +39,8 @@ public interface SupplierEx<R> extends _ExShell, _0ArgShell, _ReturnShell<R> {
     }
   }
 
-  default UnitEx asUnitEx() {
+  default UnitEx discardReturn() {
     return this::apply;
-  }
-
-  default Unit asUnit() {
-    return withNoHandler(null).asUnit();
   }
 
   default SupplierEx<R> butFirst(Unit before) {

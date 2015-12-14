@@ -9,7 +9,7 @@ import functional.impl.ex.UnitEx;
 public interface Unit extends _0ArgShell, _NonReturnShell, UnitEx {
 	void apply();
 	
-	default Unit asUnit() {
+	default Unit discardReturn() {
 		return this;
 	}
 

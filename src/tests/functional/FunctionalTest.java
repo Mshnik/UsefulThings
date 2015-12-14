@@ -1,8 +1,10 @@
 package functional;
 
+import static common.JUnitUtil.shouldFail;
 import static org.junit.Assert.*;
 
 import functional.impl.*;
+import functional.impl.ex.SupplierEx;
 import org.junit.Test;
 
 public class FunctionalTest {
@@ -135,6 +137,14 @@ public class FunctionalTest {
     assertFalse(p1.and(p2).apply(9));
 
     assertTrue(p1.and(p2.negate()).apply(10));
+  }
+
+  @Test
+  public void testExceptionalInterfaces() {
+    SupplierEx<String> s = () -> { throw new RuntimeException(); };
+
+
+
   }
 
 }

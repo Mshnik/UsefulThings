@@ -4,7 +4,7 @@ import static common.JUnitUtil.shouldFail;
 import static org.junit.Assert.*;
 
 import functional.impl.*;
-import functional.impl.ex.SupplierEx;
+import functional.impl.ex.*;
 import org.junit.Test;
 
 public class FunctionalTest {
@@ -141,11 +141,14 @@ public class FunctionalTest {
 
   @Test
   public void testExceptionalInterfaces() {
-    SupplierEx<String> s = () -> { throw new Exception(); };
 
-    shouldFail(s, Exception.class);
-
-
+    shouldFail((UnitEx) () -> { throw new Exception(); }, Exception.class);
+    shouldFail((SupplierEx<String>) () -> { throw new Exception(); }, Exception.class);
+    shouldFail((Function1Ex<String, String>) (s) -> { throw new Exception(); }, Exception.class, "H");
+    shouldFail((Function2Ex<String, String, String>) (a, s) -> { throw new Exception(); }, Exception.class, "H", "H");
+    shouldFail((a, b, c) -> { throw new Exception(); }, Exception.class, "H", "I", "J");
+    shouldFail((Consumer1Ex<String>) (s) -> { throw new Exception(); }, Exception.class, "H");
+    shouldFail((Consumer2Ex<String, String>) (a, s) -> { throw new Exception(); }, Exception.class, "H", "H");
   }
 
 }

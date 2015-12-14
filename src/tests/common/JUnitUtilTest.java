@@ -29,13 +29,13 @@ public class JUnitUtilTest {
   public void testShouldFail() {
     shouldFail(JUnitUtilTest::fails);
     shouldFail(JUnitUtilTest::runsIfNotZero, 0);
-    shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), 0, 1);
-    shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), 1, 0);
+    shouldFail(JUnitUtilTest::runsIfNeitherZero, 0, 1);
+    shouldFail(JUnitUtilTest::runsIfNeitherZero, 1, 0);
 
     shouldFail(JUnitUtilTest::fails, RuntimeException.class);
     shouldFail(JUnitUtilTest::runsIfNotZero, RuntimeException.class, 0);
-    shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), RuntimeException.class, 0, 1);
-    shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), RuntimeException.class, 1, 0);
+    shouldFail(JUnitUtilTest::runsIfNeitherZero, RuntimeException.class, 0, 1);
+    shouldFail(JUnitUtilTest::runsIfNeitherZero, RuntimeException.class, 1, 0);
   }
 
   private static void fails() throws RuntimeException {

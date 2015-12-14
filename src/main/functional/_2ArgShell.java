@@ -25,5 +25,5 @@ public interface _2ArgShell<A, B> extends __RootShell {
     return lazyApply(aSupplier).lazyApply(bSupplier);
   }
 
-  Consumer2<A, B> discardReturn();
+  <X extends _2ArgShell<A, B> & _NonReturnShell> X discardReturn();
 }

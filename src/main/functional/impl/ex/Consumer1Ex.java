@@ -1,5 +1,6 @@
 package functional.impl.ex;
 
+import functional._1ArgShell;
 import functional._ExShell;
 import functional._NonReturnShell;
 import functional.impl.Consumer1;
@@ -7,7 +8,7 @@ import functional.impl.Supplier;
 import functional.impl.Unit;
 
 @FunctionalInterface
-public interface Consumer1Ex<A> extends _ExShell, _NonReturnShell {
+public interface Consumer1Ex<A> extends _ExShell, _NonReturnShell, _1ArgShell<A> {
 	void apply(A a) throws Throwable;
 
 	default Consumer1<A> withHandler(Consumer1<Throwable> handler) {

@@ -1,6 +1,5 @@
 package functional;
 
-import functional.impl.Consumer1;
 import functional.impl.Supplier;
 
 public interface _1ArgShell<A> extends __RootShell {
@@ -9,5 +8,5 @@ public interface _1ArgShell<A> extends __RootShell {
 
   _0ArgShell lazyApply(Supplier<A> aSupplier);
 
-  Consumer1<A> discardReturn();
+  <X extends _1ArgShell<A> & _NonReturnShell> X discardReturn();
 }

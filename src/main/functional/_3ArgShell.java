@@ -57,5 +57,5 @@ public interface _3ArgShell<A, B, C> extends __RootShell {
     return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  Consumer3<A, B, C> discardReturn();
+  <X extends _3ArgShell<A, B, C> & _NonReturnShell> X discardReturn();
 }

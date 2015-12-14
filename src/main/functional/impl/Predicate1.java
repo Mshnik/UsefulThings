@@ -52,4 +52,8 @@ public interface Predicate1<A> extends java.util.function.Predicate<A>, Function
     Objects.requireNonNull(other);
     return (a) -> !(apply(a) ^ other.test(a));
   }
+
+  default Consumer1<A> discardReturn() {
+    return (a) -> apply(a);
+  }
 }

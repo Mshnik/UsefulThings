@@ -276,58 +276,6 @@ public class JUnitUtil {
   }
 
   /**
-   * Tests that the given request fails on the given inputs
-   * Throws an assertion exception if it does not fail
-   */
-  public static <T, R> void shouldFail(java.util.function.BiConsumer<T, R> request, T arg1, R arg2) {
-    shouldFail(migrate(request).partialApply(arg1, arg2).asUnit());
-  }
-
-  /**
-   * Tests that the given request fails on the given inputs with the given class of exception.
-   * Throws an assertion exception if it does not fail, or fails with a different
-   * class of exception
-   */
-  public static <T, R, E extends Throwable> void shouldFail(java.util.function.BiConsumer<T, R> request, Class<E> expectedException, T arg1, R arg2) {
-    shouldFail(migrate(request).partialApply(arg1, arg2).asUnit(), expectedException);
-  }
-
-  /**
-   * Tests that the given request fails on the given inputs
-   * Throws an assertion exception if it does not fail
-   */
-  public static <T, R, S> void shouldFail(java.util.function.BiFunction<T, R, S> request, T arg1, R arg2) {
-    shouldFail(migrate(request).partialApply(arg1, arg2).asUnit());
-  }
-
-  /**
-   * Tests that the given request fails on the given inputs with the given class of exception.
-   * Throws an assertion exception if it does not fail, or fails with a different
-   * class of exception
-   */
-  public static <T, R, S, E extends Throwable> void shouldFail(java.util.function.BiFunction<T, R, S> request, Class<E> expectedException, T arg1, R arg2) {
-    shouldFail(migrate(request).partialApply(arg1, arg2).asUnit(), expectedException);
-  }
-
-  /**
-   * Tests that the given request fails on the given inputs
-   * Throws an assertion exception if it does not fail
-   */
-  public static <T, R, S> void shouldFail(Consumer3<T, R, S> request, T arg1, R arg2, S arg3) {
-    shouldFail(request.partialApply(arg1, arg2, arg3).asUnit());
-  }
-
-  /**
-   * Tests that the given request fails on the given inputs with the given class of exception.
-   * Throws an assertion exception if it does not fail, or fails with a different
-   * class of exception
-   */
-  public static <T, R, S, E extends Throwable> void shouldFail(Consumer3<T, R, S> request, Class<E> expectedException,
-                                                               T arg1, R arg2, S arg3) {
-    shouldFail(request.partialApply(arg1, arg2, arg3).asUnit(), expectedException);
-  }
-
-  /**
    * Tests that the given request fails.
    * Throws an assertion exception if it does not fail
    */
@@ -378,57 +326,55 @@ public class JUnitUtil {
     shouldFail(request.partialApply(arg).asUnitEx(), expectedException);
   }
 
-  //Uncomment once more ex functional interfaces are created
+  /**
+   * Tests that the given request fails on the given inputs
+   * Throws an assertion exception if it does not fail
+   */
+  public static <T, R> void shouldFail(Consumer2Ex<T, R> request, T arg1, R arg2) {
+    shouldFail(request.partialApply(arg1, arg2));
+  }
 
-//  /**
-//   * Tests that the given request fails on the given inputs
-//   * Throws an assertion exception if it does not fail
-//   */
-//  public static <T, R> void shouldFail(Consumer2Ex<T, R> request, T arg1, R arg2) {
-//    shouldFail(request.partialApply(arg1, arg2).asUnit());
-//  }
-//
-//  /**
-//   * Tests that the given request fails on the given inputs with the given class of exception.
-//   * Throws an assertion exception if it does not fail, or fails with a different
-//   * class of exception
-//   */
-//  public static <T, R, E extends Throwable> void shouldFail(Consumer2Ex<T, R> request, Class<E> expectedException, T arg1, R arg2) {
-//    shouldFail(request.partialApply(arg1, arg2).asUnit(), expectedException);
-//  }
-//
-//  /**
-//   * Tests that the given request fails on the given inputs
-//   * Throws an assertion exception if it does not fail
-//   */
-//  public static <T, R, S> void shouldFail(Function2Ex<T, R, S> request, T arg1, R arg2) {
-//    shouldFail(request.partialApply(arg1, arg2).asUnit());
-//  }
-//
-//  /**
-//   * Tests that the given request fails on the given inputs with the given class of exception.
-//   * Throws an assertion exception if it does not fail, or fails with a different
-//   * class of exception
-//   */
-//  public static <T, R, S, E extends Throwable> void shouldFail(Function2Ex<T, R, S> request, Class<E> expectedException, T arg1, R arg2) {
-//    shouldFail(request.partialApply(arg1, arg2).asUnit(), expectedException);
-//  }
-//
-//  /**
-//   * Tests that the given request fails on the given inputs
-//   * Throws an assertion exception if it does not fail
-//   */
-//  public static <T, R, S> void shouldFail(Consumer3Ex<T, R, S> request, T arg1, R arg2, S arg3) {
-//    shouldFail(request.partialApply(arg1, arg2, arg3).asUnit());
-//  }
-//
-//  /**
-//   * Tests that the given request fails on the given inputs with the given class of exception.
-//   * Throws an assertion exception if it does not fail, or fails with a different
-//   * class of exception
-//   */
-//  public static <T, R, S, E extends Throwable> void shouldFail(Consumer3Ex<T, R, S> request, Class<E> expectedException,
-//                                                               T arg1, R arg2, S arg3) {
-//    shouldFail(request.partialApply(arg1, arg2, arg3).asUnit(), expectedException);
-//  }
+  /**
+   * Tests that the given request fails on the given inputs with the given class of exception.
+   * Throws an assertion exception if it does not fail, or fails with a different
+   * class of exception
+   */
+  public static <T, R, E extends Throwable> void shouldFail(Consumer2Ex<T, R> request, Class<E> expectedException, T arg1, R arg2) {
+    shouldFail(request.partialApply(arg1, arg2), expectedException);
+  }
+
+  /**
+   * Tests that the given request fails on the given inputs
+   * Throws an assertion exception if it does not fail
+   */
+  public static <T, R, S> void shouldFail(Function2Ex<T, R, S> request, T arg1, R arg2) {
+    shouldFail(request.partialApply(arg1, arg2).asUnitEx());
+  }
+
+  /**
+   * Tests that the given request fails on the given inputs with the given class of exception.
+   * Throws an assertion exception if it does not fail, or fails with a different
+   * class of exception
+   */
+  public static <T, R, S, E extends Throwable> void shouldFail(Function2Ex<T, R, S> request, Class<E> expectedException, T arg1, R arg2) {
+    shouldFail(request.partialApply(arg1, arg2).asUnitEx(), expectedException);
+  }
+
+  /**
+   * Tests that the given request fails on the given inputs
+   * Throws an assertion exception if it does not fail
+   */
+  public static <T, R, S> void shouldFail(Consumer3Ex<T, R, S> request, T arg1, R arg2, S arg3) {
+    shouldFail(request.partialApply(arg1, arg2, arg3));
+  }
+
+  /**
+   * Tests that the given request fails on the given inputs with the given class of exception.
+   * Throws an assertion exception if it does not fail, or fails with a different
+   * class of exception
+   */
+  public static <T, R, S, E extends Throwable> void shouldFail(Consumer3Ex<T, R, S> request, Class<E> expectedException,
+                                                               T arg1, R arg2, S arg3) {
+    shouldFail(request.partialApply(arg1, arg2, arg3), expectedException);
+  }
 }

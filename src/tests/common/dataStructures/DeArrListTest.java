@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import functional.impl.Consumer2;
+import functional.impl.ex.Consumer2Ex;
 import functional.impl.ex.SupplierEx;
 import org.junit.Test;
 
@@ -165,8 +165,8 @@ public class DeArrListTest {
 		assertEquals("(10,1,12,4,2,3,45,5,6,99)",a.toString());
 		assertEquals(10, a.size());
 		
-		shouldFail( (Consumer2<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, 12, 3);
-		shouldFail( (Consumer2<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, -1, 3);
+		shouldFail( (Consumer2Ex<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, 12, 3);
+		shouldFail( (Consumer2Ex<Integer, Integer>) a::add, ArrayIndexOutOfBoundsException.class, -1, 3);
 		
 		//Test reArraying working correctly
 		DeArrList<Integer> a2 = new DeArrList<Integer>(4);

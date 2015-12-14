@@ -8,7 +8,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import functional.impl.Consumer2;
-import functional.impl.Supplier;
+import functional.impl.ex.SupplierEx;
 import org.junit.Test;
 
 public class DeArrListTest {
@@ -465,9 +465,9 @@ public class DeArrListTest {
 		assertEquals(null, a.pollFirst());
 		assertEquals(null, a.pollLast());
 		
-		shouldFail( (Supplier<Integer>) a::getFirst, ArrayIndexOutOfBoundsException.class);
-		shouldFail( (Supplier<Integer>) a::getLast, ArrayIndexOutOfBoundsException.class);
-		shouldFail( (Supplier<Integer>) a::removeFirst, ArrayIndexOutOfBoundsException.class);
-		shouldFail( (Supplier<Integer>) a::removeLast, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (SupplierEx<Integer>) a::getFirst, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (SupplierEx<Integer>) a::getLast, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (SupplierEx<Integer>) a::removeFirst, ArrayIndexOutOfBoundsException.class);
+		shouldFail( (SupplierEx<Integer>) a::removeLast, ArrayIndexOutOfBoundsException.class);
 	}
 }

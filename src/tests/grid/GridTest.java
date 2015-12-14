@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import functional.impl.Consumer1;
+import functional.impl.ex.Consumer1Ex;
 import org.junit.Test;
 
 public class GridTest {
@@ -209,7 +210,7 @@ public class GridTest {
     g.add(t3);
     assertEquals(t3, g.getFrom(t2, loc2));
 
-    shouldFail((Consumer1<Integer[]>) g::get,  ArrayIndexOutOfBoundsException.class, new Integer[]{-1, 0});
+    shouldFail((Consumer1Ex<Integer[]>) g::get,  ArrayIndexOutOfBoundsException.class, new Integer[]{-1, 0});
 
     assertEquals(null, g.getSafe(new Integer[]{-1, 0}));
   }

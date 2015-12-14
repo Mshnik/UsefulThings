@@ -1,7 +1,6 @@
 package graph;
 
 import static common.JUnitUtil.*;
-import static functional.FunctionalUtil.migrate;
 
 import java.util.ArrayList;
 import java.util.HashSet;

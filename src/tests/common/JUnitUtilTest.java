@@ -28,12 +28,12 @@ public class JUnitUtilTest {
   @Test
   public void testShouldFail() {
     shouldFail(JUnitUtilTest::fails);
-    shouldFail(migrate(JUnitUtilTest::runsIfNotZero), 0);
+    shouldFail(JUnitUtilTest::runsIfNotZero, 0);
     shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), 0, 1);
     shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), 1, 0);
 
     shouldFail(JUnitUtilTest::fails, RuntimeException.class);
-    shouldFail(migrate(JUnitUtilTest::runsIfNotZero), RuntimeException.class, 0);
+    shouldFail(JUnitUtilTest::runsIfNotZero, RuntimeException.class, 0);
     shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), RuntimeException.class, 0, 1);
     shouldFail(migrate(JUnitUtilTest::runsIfNeitherZero), RuntimeException.class, 1, 0);
   }

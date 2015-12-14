@@ -276,57 +276,6 @@ public class JUnitUtil {
   }
 
   /**
-   * Tests that the given request fails.
-   * Throws an assertion exception if it does not fail
-   */
-  public static <T> void shouldFail(java.util.function.Supplier<T> request) {
-    shouldFail(migrate(request).asUnit());
-  }
-
-  /**
-   * Tests that the given request fails with the given class of exception.
-   * Throws an assertion exception if it does not fail, or fails with a different
-   * class of exception
-   */
-  public static <T, E extends Throwable> void shouldFail(java.util.function.Supplier<T> request, Class<E> expectedException) {
-    shouldFail(migrate(request).asUnit(), expectedException);
-  }
-
-  /**
-   * Tests that the given request fails on the given input.
-   * Throws an assertion exception if it does not fail
-   */
-  public static <T> void shouldFail(java.util.function.Consumer<T> request, T arg) {
-    shouldFail(migrate(request).partialApply(arg));
-  }
-
-  /**
-   * Tests that the given request fails on the given input with the given class of exception.
-   * Throws an assertion exception if it does not fail, or fails with a different
-   * class of exception
-   */
-  public static <T, E extends Throwable> void shouldFail(java.util.function.Consumer<T> request, Class<E> expectedException, T arg) {
-    shouldFail(migrate(request).partialApply(arg), expectedException);
-  }
-
-  /**
-   * Tests that the given request fails on the given input
-   * Throws an assertion exception if it does not fail
-   */
-  public static <T, R> void shouldFail(java.util.function.Function<T, R> request, T arg) {
-    shouldFail(migrate(request).partialApply(arg).asUnit());
-  }
-
-  /**
-   * Tests that the given request fails on the given input with the given class of exception.
-   * Throws an assertion exception if it does not fail, or fails with a different
-   * class of exception
-   */
-  public static <T, R, E extends Throwable> void shouldFail(java.util.function.Function<T, R> request, Class<E> expectedException, T arg) {
-    shouldFail(migrate(request).partialApply(arg).asUnit(), expectedException);
-  }
-
-  /**
    * Tests that the given request fails on the given inputs
    * Throws an assertion exception if it does not fail
    */
@@ -392,7 +341,7 @@ public class JUnitUtil {
    * class of exception
    */
   public static <T, E extends Throwable> void shouldFail(SupplierEx<T> request, Class<E> expectedException) {
-    shouldFail(request.asUnit(), expectedException);
+    shouldFail(request.asUnitEx(), expectedException);
   }
 
   /**
@@ -417,7 +366,7 @@ public class JUnitUtil {
    * Throws an assertion exception if it does not fail
    */
   public static <T, R> void shouldFail(Function1Ex<T, R> request, T arg) {
-    shouldFail(request.partialApply(arg).asUnit());
+    shouldFail(request.partialApply(arg).asUnitEx());
   }
 
   /**
@@ -425,8 +374,8 @@ public class JUnitUtil {
    * Throws an assertion exception if it does not fail, or fails with a different
    * class of exception
    */
-  public static <T, R, E extends Throwable> void shouldFail(Function1<T, R> request, Class<E> expectedException, T arg) {
-    shouldFail(request.partialApply(arg).asUnit(), expectedException);
+  public static <T, R, E extends Throwable> void shouldFail(Function1Ex<T, R> request, Class<E> expectedException, T arg) {
+    shouldFail(request.partialApply(arg).asUnitEx(), expectedException);
   }
 
   //Uncomment once more ex functional interfaces are created

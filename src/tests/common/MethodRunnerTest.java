@@ -3,6 +3,7 @@ package common;
 import functional.impl.Function2;
 import functional.impl.Function1;
 import functional.impl.Supplier;
+import functional.impl.ex.Function1Ex;
 import org.junit.Test;
 import static common.JUnitUtil.*;
 
@@ -11,7 +12,7 @@ public class MethodRunnerTest {
 
   @Test
   public void testConstruction() {
-    Function1<Supplier<Object>, MethodRunner<Object>> c = MethodRunner::new;
+    Function1Ex<Supplier<Object>, MethodRunner<Object>> c = MethodRunner::new;
     Function2<Supplier<Object>, Long, MethodRunner<Object>> c2 = MethodRunner::new;
     shouldFail(c, null);
     shouldFail(c2, null, -5L);

@@ -141,8 +141,9 @@ public class FunctionalTest {
 
   @Test
   public void testExceptionalInterfaces() {
-    SupplierEx<String> s = () -> { throw new RuntimeException(); };
+    SupplierEx<String> s = () -> { throw new Exception(); };
 
+    shouldFail(s, Exception.class);
 
 
   }

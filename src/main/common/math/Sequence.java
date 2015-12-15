@@ -1,6 +1,7 @@
 package common.math;
 
 import common.dataStructures.DeArrList;
+import functional.impl.Function2;
 
 import java.util.List;
 
@@ -53,12 +54,22 @@ public abstract class Sequence {
     return new DeArrList<>(computed);
   }
 
-  public Sequence add(final Sequence seq) {
-    return new Sequence(compute(0) + seq.compute(0)){
+  public Sequence combine(final Sequence seq, Function2<Double, Double, Double> f) {
+    return new Sequence(f.apply(compute(0), seq.compute(0))){
       public double func(int index) {
-        return Sequence.this.func(index) + seq.func(index);
+        return f.apply(Sequence.this.func(index),seq.func(index));
       }
     };
   }
+
+  public Sequence negate(){
+    return new Sequence(-compute(0)) {
+      public double func(int index) {
+        return -Sequence.this.func(index);
+      }
+    };
+  }
+
+
 
 }

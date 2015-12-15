@@ -50,10 +50,10 @@ public class SequenceAndSumTest {
   }
 
   @Test
-  public void testSequenceAddition() {
+  public void testSequenceCombination() {
     Sequence s = new EmpiricalSequence((i) -> i * 2.0);
     Sequence s2 = new EmpiricalSequence((i) -> i * 3.0);
-    Sequence s3 = s.add(s2);
+    Sequence s3 = s.combine(s2, (a, b) -> a+b);
 
     for(int i = 0; i < 10; i++) {
       assertEquals(5 * i, (int)s3.compute(i));
@@ -61,5 +61,14 @@ public class SequenceAndSumTest {
 
     Function1Ex<Integer, Double> f = s::compute;
     shouldFail(f, IllegalArgumentException.class, -5);
+
+    s = s.negate();
+    for(int i = 0; i < 10; i++) {
+      assertEquals(-2 * i, (int)s.compute(i));
+    }
+    s = s.negate();
+    for(int i = 0; i < 10; i++) {
+      assertEquals(2 * i, (int)s.compute(i));
+    }
   }
 }

@@ -734,6 +734,51 @@ public class GraphTest {
 
     g3.addEdge("SINK", "SOURCE", new SuperEdge("directReverse", 100));
     assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
+
+    //Test non-unique answers, on reduction problem
+    Graph<String, SuperEdge> g4 = new Graph<>();
+    g4.addVertex("SOURCE");
+    g4.addVertex("SINK");
+
+    g4.addVertex("P1");
+    g4.addVertex("P2");
+    g4.addVertex("P3");
+
+    g4.addEdge("SOURCE", "P1", new SuperEdge("p1", 1));
+    g4.addEdge("SOURCE", "P2", new SuperEdge("p2", 1));
+    g4.addEdge("SOURCE", "P3", new SuperEdge("p3", 1));
+
+    g4.addVertex("E1");
+    g4.addVertex("E2");
+    g4.addVertex("E3");
+
+    g4.addEdge("E1", "SINK", new SuperEdge("e1", 1));
+    g4.addEdge("E2", "SINK", new SuperEdge("e2", 1));
+    g4.addEdge("E3", "SINK", new SuperEdge("e3", 1));
+
+    assertEquals(new Integer(0), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+    g4.addEdge("P1", "E1", new SuperEdge("p1-e1", 1));
+    assertEquals(new Integer(1), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+    g4.addEdge("P2",  "E1", new SuperEdge("p2-e1", 1));
+    assertEquals(new Integer(1), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+    g4.addEdge("P1", "E2", new SuperEdge("p1-e2", 1));
+    assertEquals(new Integer(2), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+    g4.addEdge("P3", "E3", new SuperEdge("p3-e3", 1));
+    assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+    g4.addEdge("P1", "E3", new SuperEdge("p1-e3", 1));
+    assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+    g4.addEdge("P3", "E1", new SuperEdge("p3-e1", 1));
+    assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+    g4.addEdge("P3", "E2", new SuperEdge("p3-e2", 1));
+    assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
   }
 
   private <V, E> void testIsValidCycle(Graph<V, E> g, List<E> path) {

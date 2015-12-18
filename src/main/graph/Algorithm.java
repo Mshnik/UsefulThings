@@ -1,5 +1,6 @@
 package graph;
 
+import common.dataStructures.DeArrList;
 import functional.impl.Function2;
 import graph.matching.*;
 
@@ -387,6 +388,7 @@ public class Algorithm {
     private HashMap<V, Integer> label;
     private HashMap<E, Integer> flow;
     private HashMap<V, Integer> excess;
+    private final Set<V> vertices;
     private final V source;
     private final V sink;
     private final Graph<V, E> g;
@@ -396,12 +398,13 @@ public class Algorithm {
       this.g = g;
       this.source = source;
       this.sink = sink;
+      this.vertices = g.vertexSet();
 
       label = new HashMap<>();
       excess = new HashMap<>();
       flow = new HashMap<>();
 
-      for (V v : g.vertexSet()) {
+      for (V v : vertices) {
         label.put(v, 0);
         excess.put(v, 0);
         for (V v2 : g.vertexSet()) {
@@ -426,22 +429,32 @@ public class Algorithm {
       }
 
       //Main loop. Continue while an operation occurred
-      boolean opOccured;
-      do {
-        opOccured = false;
-        for (V v : g.vertexSet()) {
+      while(continueLoop()) {
+        for(V v : vertices) {
           for (E e : g.edgeSetOfSource(v)) {
-            opOccured = push(v, e, true) | opOccured;
+            push(v, e, true);
           }
           for (E e : g.edgeSetOfSink(v)) {
-            opOccured = push(v, e, false) | opOccured;
+            push(v, e, false);
           }
-          if (!opOccured) opOccured = relabel(v);
+          if (excess.get(v) > 0) {
+           relabel(v);
+          }
         }
-      } while (opOccured);
+      }
 
       flowObj = new Flow<>(excess.get(sink), flow);
+    }
 
+    /** Helper method for the maxFlow calculation */
+    private boolean continueLoop() {
+      for(V v : vertices) {
+        if(v.equals(source) || v.equals(sink)) continue;
+        if(excess.get(v) > 0) {
+          return true;
+        }
+      }
+      return false;
     }
 
     /**
@@ -451,11 +464,11 @@ public class Algorithm {
       V v = g.getOther(e, u);
       if (excess.get(u) <= 0 || label.get(u) != label.get(v) + 1)
         return false;
-      int mult = (forward ? 1 : -1);
-      int delta = Math.min(excess.get(u), e.getCapacity() - flow.get(e));
-      flow.put(e, flow.get(e) + mult * delta);
-      excess.put(u, excess.get(u) - mult * delta);
-      excess.put(v, excess.get(v) + mult * delta);
+      int maxPush = forward ? (e.getCapacity() - flow.get(e)) : flow.get(e);
+      int delta = Math.min(excess.get(u), maxPush);
+      flow.put(e, flow.get(e) + (forward ? delta : -delta));
+      excess.put(u, excess.get(u) - delta);
+      excess.put(v, excess.get(v) + delta);
       return delta != 0;
     }
 
@@ -466,12 +479,19 @@ public class Algorithm {
       if (excess.get(u) <= 0 || u == source || u == sink)
         return false;
       int minVal = Integer.MAX_VALUE;
-      for (V v : g.vertexSet()) {
+      for (V v : vertices) {
         E e = g.getConnection(u, v);
         if (e != null && flow.get(e) < e.getCapacity()) {
-          if (label.get(u) > label.get(v))
-            return false;
-          minVal = Math.min(minVal, label.get(v));
+          if (label.get(u) <= label.get(v)) {
+            minVal = Math.min(minVal, label.get(v));
+          }
+        }
+
+        E e2 = g.getConnection(v, u);
+        if (e2 != null && flow.get(e2) == e2.getCapacity()) {
+          if (label.get(u) <= label.get(v)) {
+            minVal = Math.min(minVal, label.get(v));
+          }
         }
       }
       if (minVal == Integer.MAX_VALUE) return false;

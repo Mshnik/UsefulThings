@@ -8,14 +8,14 @@ package common.types;
  * @param <B> The unused type.
  * @author Mshnik
  */
-public class Left<A, B> extends Either<A, B> {
+class Left<A, B> extends Either<A, B> {
 
   private A val;
 
   /**
    * Constructs a new Left wrapping the given A
    */
-  public Left(A a) throws IllegalArgumentException {
+  Left(A a) throws IllegalArgumentException {
     super(true);
     val = a;
   }

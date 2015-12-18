@@ -226,10 +226,10 @@ public class Matching<A, B> {
   public HashSet<Either<A, B>> getMatched() {
     HashSet<Either<A, B>> obj = new HashSet<>();
     for (A a : getMatchedA()) {
-      obj.add(new Left<A, B>(a));
+      obj.add(Either.createLeft(a));
     }
     for (B b : getMatchedB()) {
-      obj.add(new Right<A, B>(b));
+      obj.add(Either.createRight(b));
     }
     return obj;
   }
@@ -243,10 +243,10 @@ public class Matching<A, B> {
   public HashSet<Either<A, B>> getUnmatched() {
     HashSet<Either<A, B>> obj = new HashSet<>();
     for (A a : getUnmatchedA()) {
-      obj.add(new Left<A, B>(a));
+      obj.add(Either.createLeft(a));
     }
     for (B b : getUnmatchedB()) {
-      obj.add(new Right<A, B>(b));
+      obj.add(Either.createRight(b));
     }
     return obj;
   }

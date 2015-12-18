@@ -1,7 +1,9 @@
 package common.types;
 
+import common.dataStructures.DeArrList;
 import functional.impl.Function2;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -9,6 +11,11 @@ import java.util.Objects;
  * A + B. Every instance of Either is either (haha.. tomatoes, rocks)
  * an instance of Left, with a value of type A, or an instance of Right,
  * with a value of type B.
+ * <br><br>
+ * The types and constructors for Left and Right are not exposed.
+ * Instead, to construct new instance of Left and Right, the createLeft and createRight
+ * methods of class Either should be used.
+ * <br><br>
  * The types can be the same, but in that case there isn't much use to using Either.
  *
  * @param <A> The first type to sum
@@ -28,6 +35,16 @@ public abstract class Either<A, B> {
     this.isLeft = isLeft;
   }
 
+  /** Creates a Either instance of the given A */
+  public static <A, B> Either<A, B> createLeft(A a) {
+    return new Left<>(a);
+  }
+
+  /** Creates a Either instance of the given B */
+  public static <A, B> Either<A, B> createRight(B b) {
+    return new Right<>(b);
+  }
+
   /** Constructs a new Either, selecting from the two arguments with the given criteria
    * @param a - the first argument to select from
    * @param b - the second argument to select from
@@ -38,9 +55,9 @@ public abstract class Either<A, B> {
    */
   public static <A,B> Either<A,B> selectFrom(A a, B b, Function2<A,B,Boolean> selectA) {
     if (selectA.apply(a,b)) {
-      return new Left<>(a);
+      return createLeft(a);
     } else {
-      return new Right<>(b);
+      return createRight(b);
     }
   }
 
@@ -49,9 +66,9 @@ public abstract class Either<A, B> {
    */
   public static <A,B> Either<A,B> selectFirstIf(A a, B b, boolean selectA) {
     if (selectA) {
-      return new Left<>(a);
+      return createLeft(a);
     } else {
-      return new Right<>(b);
+      return createRight(b);
     }
   }
 
@@ -60,6 +77,41 @@ public abstract class Either<A, B> {
    */
   public static <A,B> Either<A,B> selectNonNull(A a, B b) {
     return selectFrom(a,b, (x,y) -> x != null);
+  }
+
+  /** Filters the given collection into a list of A, removing B instances */
+  public static <A,B> List<A> filterA(Iterable<Either<A,B>> col) {
+    DeArrList<A> lst = new DeArrList<>();
+    for(Either<A,B> e : col) {
+      if(e.isLeft()) {
+        lst.add(e.asLeft());
+      }
+    }
+    return lst;
+  }
+
+  /** Filters the given collection into a list of B, removing A instances */
+  public static <A,B> List<B> filterB(Iterable<Either<A,B>> col) {
+    DeArrList<B> lst = new DeArrList<>();
+    for(Either<A,B> e : col) {
+      if(! e.isLeft()) {
+        lst.add(e.asRight());
+      }
+    }
+    return lst;
+  }
+
+  /** Filters the given collection into a tuple of lists of the two types */
+  public static <A,B> Tuple2<List<A>, List<B>> filterAndSplit(Iterable<Either<A,B>> col) {
+    Tuple2<List<A>,List<B>> t = Tuple.of(new DeArrList<>(), new DeArrList<>());
+    for(Either<A,B> e : col) {
+      if(e.isLeft()) {
+        t._1.add(e.asLeft());
+      } else {
+        t._2.add(e.asRight());
+      }
+    }
+    return t;
   }
 
   /**
@@ -109,6 +161,8 @@ public abstract class Either<A, B> {
    */
   @Override
   public boolean equals(Object o) {
+    if(this == o) return true;
+    if(o == null) return false;
     try {
       @SuppressWarnings("unchecked")
       Either<A, B> e = (Either<A, B>) o;
@@ -126,7 +180,7 @@ public abstract class Either<A, B> {
    */
   @Override
   public int hashCode() {
-    return getVal().hashCode();
+    return Objects.hashCode(getVal());
   }
 
 }

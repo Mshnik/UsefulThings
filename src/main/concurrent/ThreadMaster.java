@@ -1,8 +1,6 @@
 package concurrent;
 
 import common.types.Either;
-import common.types.Left;
-import common.types.Right;
 import functional.impl.Function2;
 import functional.impl.Supplier;
 
@@ -45,9 +43,9 @@ public class ThreadMaster<R> {
     public void run() {
       Either<Throwable, R> result = null;
       try {
-        result = new Right<>(methodCall.apply());
+        result = Either.createRight(methodCall.apply());
       } catch(Throwable t) {
-        result = new Left<>(t);
+        result = Either.createLeft(t);
       } finally {
         synchronized (workersDoneCondition) {
           results.put(id, result);

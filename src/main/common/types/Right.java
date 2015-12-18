@@ -8,14 +8,14 @@ package common.types;
  * @param <B> The type of objects to wrap in this Left.
  * @author Mshnik
  */
-public class Right<A, B> extends Either<A, B> {
+class Right<A, B> extends Either<A, B> {
 
   private B val;
 
   /**
    * Constructs a new Right wrapping the given B
    */
-  public Right(B b) throws IllegalArgumentException {
+  Right(B b) throws IllegalArgumentException {
     super(false);
     val = b;
   }

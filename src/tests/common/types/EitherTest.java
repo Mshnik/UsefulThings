@@ -1,14 +1,16 @@
 package common.types;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+import static common.JUnitUtil.*;
 
 public class EitherTest {
 
   @Test
   public void testGetters() {
-    Either<String, Integer> l = new Left<>("Hello");
+    Either<String, Integer> l = Either.createLeft("Hello");
     assertTrue(l.isLeft());
     assertEquals("Hello", l.getVal());
     assertEquals("Hello", l.asLeft());
@@ -16,7 +18,7 @@ public class EitherTest {
     assertEquals(String.class, l.getType());
     assertEquals("Hello".hashCode(), l.hashCode());
 
-    Either<String, Integer> r = new Right<>(5);
+    Either<String, Integer> r = Either.createRight(5);
     assertFalse(r.isLeft());
     assertEquals(5, r.getVal());
     assertEquals(new Integer(5), r.asRight());
@@ -27,28 +29,55 @@ public class EitherTest {
 
   @Test
   public void testEquality() {
-    Either<String, Integer> l = new Left<>("Hello");
-    Either<String, Integer> l2 = new Left<>("Hi");
+    Either<String, Integer> l = Either.createLeft("Hello");
+    Either<String, Integer> l2 = Either.createLeft("Hi");
 
     assertTrue(l.equals(l));
 
     assertFalse(l.equals(l2));
     assertFalse(l2.equals(l));
 
-    Either<String, Integer> r = new Right<>(2);
+    Either<String, Integer> r = Either.createRight(2);
 
     assertFalse(l.equals(r));
     assertFalse(r.equals(l));
 
-    Either<String, Object> l3 = new Left<>("Hello");
-    Either<String, Integer> l4 = new Left<>("Hello");
+    Either<String, Object> l3 = Either.createLeft("Hello");
+    Either<String, Integer> l4 = Either.createLeft("Hello");
     assertTrue(l.equals(l3));
     assertTrue(l.equals(l4));
     assertEquals(l.hashCode(), l3.hashCode());
     assertEquals(l.hashCode(), l4.hashCode());
 
-    Either<Integer, String> r2 = new Right<>("Hello");
+    Either<Integer, String> r2 = Either.createRight("Hello");
     assertFalse(l.equals(r2));
+
+    Either<Integer, String> n = Either.createLeft(null);
+    assertTrue(n.equals(n));
+    assertFalse(n.equals(l4));
+    assertFalse(l4.equals(n));
+    assertFalse(n.equals(r2));
+    assertFalse(r2.equals(n));
+  }
+
+  @Test
+  public void testFiltering() {
+    List<Either<String, Integer>> lst = Arrays.asList(Either.createLeft("Hello"), Either.createLeft("Hi"), Either.createRight(1));
+    Tuple2<List<String>, List<Integer>> t = Either.filterAndSplit(lst);
+    assertEquals(2, t._1.size());
+    assertEquals("Hello", t._1.get(0));
+    assertEquals("Hi", t._1.get(1));
+    assertEquals(1, t._2.size());
+    assertEquals(1, t._2.get(0));
+
+    List<String> lst2 = Either.filterA(lst);
+    assertEquals(2, lst2.size());
+    assertEquals("Hello", lst2.get(0));
+    assertEquals("Hi", lst2.get(1));
+
+    List<Integer> lst3 = Either.filterB(lst);
+    assertEquals(1, lst3.size());
+    assertEquals(1, lst3.get(0));
   }
 
 }

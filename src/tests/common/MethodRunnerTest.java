@@ -1,8 +1,8 @@
 package common;
 
-import functional.impl.Supplier;
 import functional.impl.ex.Function1Ex;
 import functional.impl.ex.Function2Ex;
+import functional.impl.ex.SupplierEx;
 import org.junit.Test;
 import static common.JUnitUtil.*;
 
@@ -11,15 +11,15 @@ public class MethodRunnerTest {
 
   @Test
   public void testConstruction() {
-    Function1Ex<Supplier<Object>, MethodRunner<Object>> c = MethodRunner::new;
-    Function2Ex<Supplier<Object>, Long, MethodRunner<Object>> c2 = MethodRunner::new;
+    Function1Ex<SupplierEx<Object>, MethodRunner<Object>> c = MethodRunner::new;
+    Function2Ex<SupplierEx<Object>, Long, MethodRunner<Object>> c2 = MethodRunner::new;
     shouldFail(c, null);
     shouldFail(c2, null, -5L);
     shouldFail(c2, null, 100L);
     shouldFail(c2, () -> null, -5L);
 
     try{
-      new MethodRunner<>(() -> null);
+      new MethodRunner<>(() -> "");
       new MethodRunner<>(() -> null, 5);
     }catch(IllegalArgumentException e) {
       fail("Valid construction failed");
@@ -28,7 +28,7 @@ public class MethodRunnerTest {
 
   @Test
   public void testValidRunning() {
-    MethodRunner<Integer> mR = new MethodRunner<>(() -> 10);
+    MethodRunner<Integer> mR = new MethodRunner<Integer>(() -> 10);
 
     assertEquals(new Integer(10), mR.get().asRight());
     try {
@@ -50,7 +50,7 @@ public class MethodRunnerTest {
     assertTrue(mR2.getCompletionMillis() < MethodRunner.DEFAULT_WAIT_TIME);
   }
 
-  private static Integer throwsException() throws RuntimeException {
+  private static Integer throwsException() throws Throwable {
     throw new RuntimeException("Message here");
   }
 

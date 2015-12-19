@@ -179,7 +179,7 @@ public class Matching<A, B> {
   }
 
   /**
-   * Returns a set of the A that are currently matched
+   * Returns a set of the B that are currently matched
    */
   public Set<B> getMatchedB() {
     HashSet<B> obj = new HashSet<>();
@@ -192,7 +192,7 @@ public class Matching<A, B> {
   }
 
   /**
-   * Returns a set of the A that are currently matched
+   * Returns a set of the A that are currently unmatched
    */
   public Set<A> getUnmatchedA() {
     HashSet<A> obj = new HashSet<>();
@@ -205,7 +205,7 @@ public class Matching<A, B> {
   }
 
   /**
-   * Returns a set of the A that are currently matched
+   * Returns a set of the B that are currently unmatched
    */
   public Set<B> getUnmatchedB() {
     HashSet<B> obj = new HashSet<>();

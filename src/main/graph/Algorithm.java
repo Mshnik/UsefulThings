@@ -428,14 +428,12 @@ public class Algorithm {
         }
       }
 
-      //Main loop. Continue while an operation occurred
+      //Main loop. Continue while a non-source or sink node has excess flow
       while(continueLoop()) {
         for(V v : vertices) {
-          for (E e : g.edgeSetOfSource(v)) {
-            push(v, e, true);
-          }
-          for (E e : g.edgeSetOfSink(v)) {
-            push(v, e, false);
+          for (E e : g.edgeSetOf(v)) {
+            if(! g.isSelfEdge(e))
+              push(v, e, g.sourceOf(e) == v);
           }
           if (excess.get(v) > 0) {
            relabel(v);

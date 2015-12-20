@@ -28,4 +28,12 @@ public class Tuple1<A> extends Tuple {
   public <B> Tuple2<A,B> and(B b) {
     return Tuple.of(_1, b);
   }
+
+  public Tuple0 dropRight() {
+    return Tuple.of();
+  }
+
+  public Tuple0 dropLeft() {
+    return Tuple.of();
+  }
 }

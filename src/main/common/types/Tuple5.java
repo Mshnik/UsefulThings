@@ -50,4 +50,15 @@ public class Tuple5<A, B, C, D, E> extends Tuple {
   public <F> Tuple and(F f) {
     return new Tuple6<>(_1, _2, _3, _4, _5, f);
   }
+
+  @Override
+  public Tuple4<B,C,D,E> dropLeft() {
+    return Tuple.of(_2,_3,_4,_5);
+  }
+
+  @Override
+  public Tuple4<A,B,C,D> dropRight() {
+    return Tuple.of(_1,_2,_3,_4);
+  }
+
 }

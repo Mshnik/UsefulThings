@@ -67,6 +67,16 @@ public class Tuple8<A, B, C, D, E, F, G, H> extends Tuple {
   }
 
   public <X> Tuple and(X x) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Can't make tuples greater than size eight");
+    throw new UnsupportedOperationException("Can't make tuples greater than size eight (at this time)");
+  }
+
+  @Override
+  public Tuple7<B,C,D,E,F,G,H> dropLeft() {
+    return Tuple.of(_2,_3,_4,_5,_6,_7,_8);
+  }
+
+  @Override
+  public Tuple7<A,B,C,D,E,F,G> dropRight() {
+    return Tuple.of(_1,_2,_3,_4,_5,_6,_7);
   }
 }

@@ -46,4 +46,12 @@ public class Tuple4<A, B, C, D> extends Tuple {
   public <E> Tuple5<A, B, C, D, E> and(E e) {
     return Tuple.of(_1, _2, _3, _4, e);
   }
+
+  public Tuple3<A,B,C> dropRight() {
+    return Tuple.of(_1,_2,_3);
+  }
+
+  public Tuple3<B,C,D> dropLeft() {
+    return Tuple.of(_2,_3,_4);
+  }
 }

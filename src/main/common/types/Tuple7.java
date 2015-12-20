@@ -65,4 +65,14 @@ public class Tuple7<A, B, C, D, E, F, G> extends Tuple {
   public <H> Tuple8<A, B, C, D, E, F, G, H> and(H h) {
     return Tuple.of(_1, _2, _3, _4, _5, _6, _7, h);
   }
+
+  @Override
+  public Tuple6<B,C,D,E,F,G> dropLeft() {
+    return Tuple.of(_2, _3, _4, _5, _6, _7);
+  }
+
+  @Override
+  public Tuple6<A,B,C,D,E,F> dropRight() {
+    return Tuple.of(_1, _2, _3, _4, _5, _6);
+  }
 }

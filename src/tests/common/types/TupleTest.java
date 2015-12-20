@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 public class TupleTest {
 
+  private Tuple0 t0;
   private Tuple1<String> t1;
   private Tuple2<String, String> t2;
   private Tuple3<String, String, String> t3;
@@ -20,9 +21,11 @@ public class TupleTest {
   private Tuple8<String, String, String, String, String, String, String, String> t8;
 
   private Tuple[] tupleArr;
+  private String[][] arrs;
 
   @Before
   public void setup() {
+    t0 = Tuple.of();
     t1 = Tuple.of("A");
     t2 = Tuple.of("A", "B");
     t3 = Tuple.of("A", "B", "C");
@@ -32,7 +35,18 @@ public class TupleTest {
     t7 = Tuple.of("A", "B", "C", "D", "E", "F", "G");
     t8 = Tuple.of("A", "B", "C", "D", "E", "F", "G", "H");
 
-    tupleArr = new Tuple[]{t1, t2, t3, t4, t5, t6, t7, t8};
+    tupleArr = new Tuple[]{t0, t1, t2, t3, t4, t5, t6, t7, t8};
+    arrs = new String[][]{
+        {},
+        {"A"},
+        {"A","B"},
+        {"A","B","C"},
+        {"A","B","C","D"},
+        {"A","B","C","D","E"},
+        {"A","B","C","D","E","F"},
+        {"A","B","C","D","E","F","G"},
+        {"A","B","C","D","E","F","G","H"}
+    };
   }
 
   @Test
@@ -84,6 +98,7 @@ public class TupleTest {
 
   @Test
   public void testToStringAndToCollections() {
+    assertEquals("()", t0.toString());
     assertEquals("(A)", t1.toString());
     assertEquals("(A,B)", t2.toString());
     assertEquals("(A,B,C)", t3.toString());
@@ -92,17 +107,6 @@ public class TupleTest {
     assertEquals("(A,B,C,D,E,F)", t6.toString());
     assertEquals("(A,B,C,D,E,F,G)", t7.toString());
     assertEquals("(A,B,C,D,E,F,G,H)", t8.toString());
-
-    String[][] arrs = {
-        {"A"},
-        {"A","B"},
-        {"A","B","C"},
-        {"A","B","C","D"},
-        {"A","B","C","D","E"},
-        {"A","B","C","D","E","F"},
-        {"A","B","C","D","E","F","G"},
-        {"A","B","C","D","E","F","G","H"}
-    };
 
     for (int i = 0; i < arrs.length; i++) {
       assertArrayEquals(tupleArr[i].vals, tupleArr[i].toArray());
@@ -136,6 +140,23 @@ public class TupleTest {
         assertFalse(t1.equals(t2));
         assertFalse(t2.equals(t1));
       }
+    }
+  }
+
+  @Test
+  public void testAndAndDrop(){
+    Tuple t = tupleArr[tupleArr.length - 1];
+    for(int i = tupleArr.length - 1; i > 1; i--) {
+      t = t.dropRight();
+      assertEquals(tupleArr[i-1], t);
+    }
+
+    assertEquals(t0, t0.dropRight());
+
+    t = t0;
+    for(int i = 0; i < tupleArr.length - 1; i++) {
+      t = t.and(arrs[i+1][arrs[i+1].length - 1]);
+      assertEquals(tupleArr[i+1], t);
     }
   }
 }

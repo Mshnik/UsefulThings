@@ -21,10 +21,10 @@ public abstract class Tuple implements Cloneable, Iterable<Object>, Serializable
   /** The size of the largest available tuple */
   private static final int MAX_TUPLE_SIZE = 8;
 
-  /** Returns a new empty tuple */
+  /** Returns the empty tuple - this is the singleton instance declared in Tuple0 */
   public static Tuple0 of() {
-    return new Tuple0();
-  };
+    return Tuple0.SINGLETON_INSTANCE;
+  }
 
   /**
    * Returns a new tuple of the given objects
@@ -90,11 +90,12 @@ public abstract class Tuple implements Cloneable, Iterable<Object>, Serializable
   protected final Object[] vals;
 
   /**
-   * Constructor for the AbsTuple class. Takes the values stored in this tuple
-   *
+   * Constructor for the AbsTuple class. Takes the values stored in this tuple.
+   * Only implementations should be declared in this package, thus the constructor
+   * has package protected visibility.
    * @param v - the values stored in this tuple
    */
-  public Tuple(Object... v) {
+  Tuple(Object... v) {
     vals = v;
   }
 
@@ -113,11 +114,26 @@ public abstract class Tuple implements Cloneable, Iterable<Object>, Serializable
    */
   public abstract <X> Tuple and(X x);
 
+  /** Creates a new tuple that drops the left most value of this tuple, creating
+   * a tuple of length one less than this. The new Tuple is a shallow copy; the values are copied.
+   * If this is a Tuple0, returns the same Tuple0.
+   */
+  public abstract Tuple dropLeft();
+
+  /** Creates a new tuple that drops the right most value of this tuple, creating
+   * a tuple of length one less than this. The new Tuple is a shallow copy; the values are copied.
+   * If this is a Tuple0, returns the same Tuple0.
+   */
+  public abstract Tuple dropRight();
+
   /**
    * A basic toString for all tuples. Returns a comma separated list
    * of the values stored in this tuple, with parenthesis around it
    */
   public String toString() {
+    if(vals.length == 0) {
+      return "()";
+    }
     String s = "(";
     for (Object o : vals) {
       s += o + ",";

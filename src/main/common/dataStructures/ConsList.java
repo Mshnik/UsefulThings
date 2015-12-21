@@ -1,5 +1,7 @@
 package common.dataStructures;
 
+import functional.impl.Predicate1;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -81,6 +83,13 @@ public class ConsList<E> implements Iterable<E> {
   /**
    * Returns the value stored in the head of this ConsList
    */
+  public E head() {
+    return head;
+  }
+
+  /**
+   * Returns the value stored in the head of this ConsList
+   */
   public E value() {
     return head;
   }
@@ -97,7 +106,7 @@ public class ConsList<E> implements Iterable<E> {
    * A Nil element has no tail and no value
    */
   public boolean isNil() {
-    return tail() == null && head == null;
+    return tail == null && head == null;
   }
 
   /**
@@ -106,7 +115,7 @@ public class ConsList<E> implements Iterable<E> {
    * Used to stop iteration before it reaches the NIL terminator
    */
   public boolean isLast() {
-    return isNil() || tail().tail() == null && tail().head == null;
+    return isNil() || tail.tail == null && tail.head == null;
   }
 
   /**
@@ -138,12 +147,12 @@ public class ConsList<E> implements Iterable<E> {
     String s = "(";
     ConsList<E> current = this;
     while (current != null) {
-      if (current.head == null && current.tail() == null) {
+      if (current.head == null && current.tail == null) {
         if (current == this) s += NIL_STRING + ",";
       } else {
         s += current.head + ",";
       }
-      current = current.tail();
+      current = current.tail;
     }
     return s.substring(0, s.length() - 1) + ")";
   }
@@ -159,7 +168,7 @@ public class ConsList<E> implements Iterable<E> {
 
     ConsList<?> lst = (ConsList<?>) o;
 
-    return size == lst.size && Objects.equals(head, lst.head) && Objects.equals(tail(), lst.tail());
+    return size == lst.size && Objects.equals(head, lst.head) && Objects.equals(tail, lst.tail);
   }
 
   /** Hashes the ConsList by the combined hash of its elements.
@@ -196,7 +205,7 @@ public class ConsList<E> implements Iterable<E> {
    * list for any input will always return false.
    */
   public boolean contains(Object o) {
-    return !isNil() && (Objects.equals(head, o) || !isLast() && tail().contains(o));
+    return !isNil() && (Objects.equals(head, o) || !isLast() && tail.contains(o));
   }
 
   /**
@@ -232,7 +241,7 @@ public class ConsList<E> implements Iterable<E> {
   public Object[] toArray() {
     Object[] arr = new Object[size];
     ConsList<E> current = this;
-    for (int i = 0; i < size; i++, current = current.tail()) {
+    for (int i = 0; i < size; i++, current = current.tail) {
       arr[i] = current.head;
     }
     return arr;
@@ -250,10 +259,21 @@ public class ConsList<E> implements Iterable<E> {
       arr = Arrays.copyOf(arr, size);
     }
     ConsList<E> current = this;
-    for (int i = 0; i < size; i++, current = current.tail()) {
+    for (int i = 0; i < size; i++, current = current.tail) {
       arr[i] = (T) current.head;
     }
     return arr;
+  }
+
+  /** Return a new ConsList, containing only the elements that pass the predicate */
+  public ConsList<E> filter(Predicate1<? super E> predicate) {
+    ConsList<E> lst = new ConsList<>();
+    for(E e : this) {
+      if(predicate.apply(e)){
+        lst = lst.cons(e);
+      }
+    }
+    return lst.reverse();
   }
 
   /**
@@ -267,7 +287,7 @@ public class ConsList<E> implements Iterable<E> {
       throw new IllegalArgumentException("Can't get element at index " + index + " OOB");
 
     if (index == 0) return head;
-    return tail().get(index - 1);
+    return tail.get(index - 1);
   }
 
   /**
@@ -285,7 +305,7 @@ public class ConsList<E> implements Iterable<E> {
   private int indexOf(Object o, int x) {
     if (Objects.equals(head, o)) return x;
     else if (isLast()) return -1;
-    return tail().indexOf(o, x + 1);
+    return tail.indexOf(o, x + 1);
   }
 
   /**
@@ -322,7 +342,7 @@ public class ConsList<E> implements Iterable<E> {
     @Override
     public E next() {
       E val = current.head;
-      current = current.tail();
+      current = current.tail;
       return val;
     }
 

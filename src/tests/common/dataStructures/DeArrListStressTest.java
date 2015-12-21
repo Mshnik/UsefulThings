@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-public class StressTest {
+public class DeArrListStressTest {
 
-  private static final int BIG_VAL = 200000;
+  private static final int BIG_VAL = 100000;
   private static final float TOLERANCE = 1.1f;
 
   @Test

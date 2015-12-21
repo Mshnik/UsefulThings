@@ -34,14 +34,14 @@ public class ConsList<E> implements Iterable<E> {
    * If this is Nil, tail is null. Otherwise, this is another ConsList
    * of one smaller size.
    */
-  private final ConsList<E> tail;
+  public final ConsList<E> tail;
 
   /**
    * The value stored in the head of this list.
    * If this is Nil, value is null. Otherwise the value may be null,
    * or the value stored in the head.
    */
-  public final E val;
+  public final E head;
 
   /**
    * The size of this list. Because ConsLists are immutable, this size
@@ -51,14 +51,14 @@ public class ConsList<E> implements Iterable<E> {
   public final int size;
 
   /**
-   * Initializes an empty (NIL) ConsList, with tail = null, val = null,
+   * Initializes an empty (NIL) ConsList, with tail = null, head = null,
    * size = 0. <br>
    * A Nil element is required to be at the end of every ConsList,
    * so this constructor is used to start any ConsList. Elements are then
    * cons (prepended) on to this element to build a list.
    */
   public ConsList() {
-    val = null;
+    head = null;
     tail = null;
     size = 0;
   }
@@ -66,15 +66,15 @@ public class ConsList<E> implements Iterable<E> {
   /**
    * Creates a new head of a list
    *
-   * @param val  - the value to store in the head of this list
+   * @param head  - the value to store in the head of this list
    * @param tail - the tail of this list, an existing ConsList
    * @param size - the size of this list
    */
-  private ConsList(E val, ConsList<E> tail, int size) {
-    this.val = val;
+  private ConsList(E head, ConsList<E> tail, int size) {
+    this.head = head;
     this.size = size;
     this.tail = tail;
-    if (val == null || tail == null || size < 1)
+    if (tail == null || size < 1)
       throw new RuntimeException("Illegal ConsList construction" + this);
   }
 
@@ -82,7 +82,7 @@ public class ConsList<E> implements Iterable<E> {
    * Returns the value stored in the head of this ConsList
    */
   public E value() {
-    return val;
+    return head;
   }
 
   /**
@@ -97,7 +97,7 @@ public class ConsList<E> implements Iterable<E> {
    * A Nil element has no tail and no value
    */
   public boolean isNil() {
-    return tail() == null && val == null;
+    return tail() == null && head == null;
   }
 
   /**
@@ -106,7 +106,7 @@ public class ConsList<E> implements Iterable<E> {
    * Used to stop iteration before it reaches the NIL terminator
    */
   public boolean isLast() {
-    return isNil() || tail().tail() == null && tail().val == null;
+    return isNil() || tail().tail() == null && tail().head == null;
   }
 
   /**
@@ -114,7 +114,7 @@ public class ConsList<E> implements Iterable<E> {
    * onto this ConsList
    */
   public ConsList<E> cons(E head) {
-    return new ConsList<E>(head, this, size + 1);
+    return new ConsList<>(head, this, size + 1);
   }
 
   /**
@@ -124,7 +124,7 @@ public class ConsList<E> implements Iterable<E> {
     ConsList<E> reversed = new ConsList<E>();
     ConsList<E> ptr = this;
     while (!ptr.isNil()) {
-      reversed = reversed.cons(ptr.val);
+      reversed = reversed.cons(ptr.head);
       ptr = ptr.tail;
     }
     return reversed;
@@ -138,10 +138,10 @@ public class ConsList<E> implements Iterable<E> {
     String s = "(";
     ConsList<E> current = this;
     while (current != null) {
-      if (current.val == null && current.tail() == null) {
+      if (current.head == null && current.tail() == null) {
         if (current == this) s += NIL_STRING + ",";
       } else {
-        s += current.val + ",";
+        s += current.head + ",";
       }
       current = current.tail();
     }
@@ -155,11 +155,25 @@ public class ConsList<E> implements Iterable<E> {
    */
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof ConsList<?>) || o == null) return false;
+    if (o == null || !(o instanceof ConsList<?>)) return false;
 
     ConsList<?> lst = (ConsList<?>) o;
 
-    return size == lst.size && Objects.equals(val, lst.val) && Objects.equals(tail(), lst.tail());
+    return size == lst.size && Objects.equals(head, lst.head) && Objects.equals(tail(), lst.tail());
+  }
+
+  /** Hashes the ConsList by the combined hash of its elements.
+   * Hash definition copied from Arrays.hashCode and implemented
+   * with iterator so a new array isn't implemented. */
+  @Override
+  public int hashCode() {
+    int result = 1;
+
+    for (E element : this) {
+      result = 31 * result + (element == null ? 0 : element.hashCode());
+    }
+
+    return result;
   }
 
   /**
@@ -182,7 +196,7 @@ public class ConsList<E> implements Iterable<E> {
    * list for any input will always return false.
    */
   public boolean contains(Object o) {
-    return !isNil() && (Objects.equals(val, o) || !isLast() && tail().contains(o));
+    return !isNil() && (Objects.equals(head, o) || !isLast() && tail().contains(o));
   }
 
   /**
@@ -219,7 +233,7 @@ public class ConsList<E> implements Iterable<E> {
     Object[] arr = new Object[size];
     ConsList<E> current = this;
     for (int i = 0; i < size; i++, current = current.tail()) {
-      arr[i] = current.val;
+      arr[i] = current.head;
     }
     return arr;
   }
@@ -237,7 +251,7 @@ public class ConsList<E> implements Iterable<E> {
     }
     ConsList<E> current = this;
     for (int i = 0; i < size; i++, current = current.tail()) {
-      arr[i] = (T) current.val;
+      arr[i] = (T) current.head;
     }
     return arr;
   }
@@ -252,7 +266,7 @@ public class ConsList<E> implements Iterable<E> {
     if (index < 0 || index >= size)
       throw new IllegalArgumentException("Can't get element at index " + index + " OOB");
 
-    if (index == 0) return val;
+    if (index == 0) return head;
     return tail().get(index - 1);
   }
 
@@ -269,7 +283,7 @@ public class ConsList<E> implements Iterable<E> {
    * if {@code o} is found.
    */
   private int indexOf(Object o, int x) {
-    if (Objects.equals(val, o)) return x;
+    if (Objects.equals(head, o)) return x;
     else if (isLast()) return -1;
     return tail().indexOf(o, x + 1);
   }
@@ -307,7 +321,7 @@ public class ConsList<E> implements Iterable<E> {
      */
     @Override
     public E next() {
-      E val = current.val;
+      E val = current.head;
       current = current.tail();
       return val;
     }

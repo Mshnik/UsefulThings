@@ -7,6 +7,8 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import common.JUnitUtil;
+import functional.impl.Function1;
 import functional.impl.ex.Consumer2Ex;
 import functional.impl.ex.SupplierEx;
 import org.junit.Test;
@@ -469,5 +471,24 @@ public class DeArrListTest {
 		shouldFail( (SupplierEx<Integer>) a::getLast, ArrayIndexOutOfBoundsException.class);
 		shouldFail( (SupplierEx<Integer>) a::removeFirst, ArrayIndexOutOfBoundsException.class);
 		shouldFail( (SupplierEx<Integer>) a::removeLast, ArrayIndexOutOfBoundsException.class);
+	}
+
+	@Test
+	public void testSortedList() {
+    Function1<List<Integer>, Boolean> isSorted = (lst) -> {
+      if(lst.isEmpty()) return true;
+      Integer current = lst.get(0);
+      for(int i = 1; i < lst.size(); i++) {
+        if(lst.get(i) < current) return false;
+        current = lst.get(i);
+      }
+      return true;
+    };
+
+		SortedList<Integer> s = new SortedList<>();
+    for(int i = 0; i < 10; i++) {
+      s.add(i);
+      assertTrue(isSorted.apply(s));
+    }
 	}
 }

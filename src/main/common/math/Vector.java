@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import common.Util;
 
-import functional.FunctionalUtil;
+import functional.util.FunctionalUtil;
 
 public class Vector implements Iterable<Double> {
 

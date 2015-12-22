@@ -1,4 +1,4 @@
-package functional;
+package functional.util;
 
 import java.util.Arrays;
 import java.util.Iterator;

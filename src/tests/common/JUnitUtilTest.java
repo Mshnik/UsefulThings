@@ -4,7 +4,6 @@ import functional.impl.Unit;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static functional.FunctionalUtil.*;
 import static org.junit.Assert.*;
 import static common.JUnitUtil.*;
 

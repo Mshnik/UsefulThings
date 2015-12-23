@@ -4,12 +4,12 @@ import common.dataStructures.DeArrList;
 
 import java.util.concurrent.Semaphore;
 
-public class Buffer<T> {
+public class UnboundedBuffer<T> {
 
   private DeArrList<T> buffer;
   private Semaphore itemsAvailable;
 
-  public Buffer() {
+  public UnboundedBuffer() {
     buffer = new DeArrList<>();
     itemsAvailable = new Semaphore(0);
   }

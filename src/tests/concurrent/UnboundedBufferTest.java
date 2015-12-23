@@ -6,11 +6,11 @@ import org.junit.Test;
 
 import static common.JUnitUtil.*;
 
-public class BufferTest {
+public class UnboundedBufferTest {
 
   @Test
   public void testNonConcurrent() throws InterruptedException {
-    Buffer<Integer> b = new Buffer<>();
+    UnboundedBuffer<Integer> b = new UnboundedBuffer<>();
 
     assertEquals(0, b.size());
     assertEquals("()", b.toString());
@@ -32,7 +32,7 @@ public class BufferTest {
 
   @Test
   public void testGetOnEmpty() {
-    Buffer<Integer> b = new Buffer<>();
+    UnboundedBuffer<Integer> b = new UnboundedBuffer<>();
     MethodRunner<Integer> m = new MethodRunner<>(() -> {
       try {
         return b.get();
@@ -46,7 +46,7 @@ public class BufferTest {
 
   @Test
   public void testConcurrent() throws InterruptedException {
-    Buffer<Integer> b = new Buffer<>();
+    UnboundedBuffer<Integer> b = new UnboundedBuffer<>();
     final int count = 50;
     ThreadMaster<Integer> t = new ThreadMaster<>();
 

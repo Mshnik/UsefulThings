@@ -19,6 +19,10 @@ public class Turnstile implements SynchroBuffer{
     return workerCount;
   }
 
+  public synchronized void waitUntilReady(String arg) throws InterruptedException {
+    waitUntilReady();
+  }
+
   public synchronized void waitUntilReady() throws InterruptedException {
     workersCompleted++;
     int roundLocal = round;

@@ -2,6 +2,6 @@ package concurrent;
 
 public interface SynchroBuffer {
 
-  public void waitUntilReady() throws InterruptedException;
+  public void waitUntilReady(String arg) throws InterruptedException;
 
 }

@@ -2,7 +2,7 @@ package concurrent;
 
 import java.util.ArrayList;
 
-public class NWayJoin implements SynchroBuffer {
+public class NWayJoin extends SynchroBuffer {
 
   private ArrayList<String> ids;
   private Object[] locks;
@@ -26,8 +26,17 @@ public class NWayJoin implements SynchroBuffer {
   }
 
   @Override
-  public synchronized void waitUntilReady(String arg) throws InterruptedException {
-    int index = ids.indexOf(arg);
+  protected boolean validateKey(String arg) {
+    return ids.contains(arg);
+  }
+
+  @Override
+  public void waitUntilReady() throws InterruptedException {
+    String key = getKey();
+    if(key == null) {
+      throw new RuntimeException("Can't wait in " + this + " until assignKey is called for this Thread");
+    }
+    int index = ids.indexOf(key);
     synchronized (locks[index]) {
       synchronized (wayInCondition) {
         typesArrived++;

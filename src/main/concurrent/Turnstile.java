@@ -1,6 +1,6 @@
 package concurrent;
 
-public class Turnstile implements SynchroBuffer{
+public class Turnstile extends SynchroBuffer{
 
   private final int workerCount;
   private int round;
@@ -21,10 +21,9 @@ public class Turnstile implements SynchroBuffer{
     return workerCount;
   }
 
-  public void waitUntilReady(String arg) throws InterruptedException {
-    synchronized (mux) {
-      waitUntilReady();
-    }
+  @Override
+  protected boolean validateKey(String arg) {
+    return true; //Keys unused in Turnstile, so all are valid.
   }
 
   public void waitUntilReady() throws InterruptedException {

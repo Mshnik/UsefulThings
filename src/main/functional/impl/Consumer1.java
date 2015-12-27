@@ -8,7 +8,11 @@ import functional.impl.ex.Consumer1Ex;
 @FunctionalInterface
 public interface Consumer1<A> extends java.util.function.Consumer<A>, _1ArgShell<A>, _NonReturnShell, _NonExShell {
 	void apply(A a);
-	
+
+	default Consumer1Ex<A> asEx() {
+		return this::apply;
+	}
+
 	default void accept(A a) {
 		apply(a);
 	}

@@ -11,6 +11,10 @@ import java.util.Objects;
 public interface Function1<A, R> extends java.util.function.Function<A, R>, _1ArgShell<A>, _ReturnShell<R>, _NonExShell {
   R apply(A a);
 
+  default Function1Ex<A, R> asEx() {
+    return this::apply;
+  }
+
   default Supplier<R> partialApply(A a) {
     return () -> apply(a);
   }

@@ -2,12 +2,17 @@ package functional.impl;
 
 import functional._NonExShell;
 import functional._ReturnShell;
+import functional.impl.ex.Function3Ex;
 
 import java.util.Objects;
 
 @FunctionalInterface
 public interface Predicate3<A, B, C> extends Function3<A,B,C,Boolean>, _ReturnShell<Boolean>, _NonExShell {
   Boolean apply(A a, B b, C c);
+
+  default Function3Ex<A, B, C, Boolean> asEx() {
+    return this::apply;
+  }
 
   default boolean test(A a, B b, C c) {
     return apply(a, b, c);

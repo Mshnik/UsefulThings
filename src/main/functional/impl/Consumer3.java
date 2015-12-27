@@ -3,12 +3,17 @@ package functional.impl;
 import functional._3ArgShell;
 import functional._NonExShell;
 import functional._NonReturnShell;
+import functional.impl.ex.Consumer3Ex;
 
 import java.util.Objects;
 
 @FunctionalInterface
 public interface Consumer3<A, B, C> extends _3ArgShell<A, B, C>, _NonReturnShell, _NonExShell {
   void apply(A a, B b, C c);
+
+  default Consumer3Ex<A, B, C> asEx() {
+    return this::apply;
+  }
 
   default void accept(A a, B b, C c) {
     apply(a, b, c);

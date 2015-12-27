@@ -9,6 +9,10 @@ import functional.impl.ex.SupplierEx;
 public interface Supplier<R> extends java.util.function.Supplier<R>, _0ArgShell, _ReturnShell<R>, _NonExShell {
   R apply();
 
+  default SupplierEx<R> asEx() {
+    return this::apply;
+  }
+
   default R get() {
     return apply();
   }

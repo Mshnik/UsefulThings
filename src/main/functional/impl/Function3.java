@@ -1,12 +1,13 @@
 package functional.impl;
 
 import functional._3ArgShell;
+import functional._NonExShell;
 import functional._ReturnShell;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell<R> {
+public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell<R>, _NonExShell {
   R apply(A a, B B, C c);
 
   default Function2<B, C, R> partialApply(A a) {

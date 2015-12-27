@@ -21,7 +21,7 @@ public interface SupplierEx<R> extends _ExShell, _0ArgShell, _ReturnShell<R> {
     };
   }
 
-  default Supplier<R> withNoHandler(R ifExceptionThrown) {
+  default Supplier<R> ignoreThrowable(R ifExceptionThrown) {
     return () -> {
       try {
         return apply();

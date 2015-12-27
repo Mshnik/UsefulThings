@@ -1,10 +1,11 @@
 package functional.impl;
 
+import functional._NonExShell;
 import functional._ReturnShell;
 
 import java.util.Objects;
 
-public interface Predicate2<A, B> extends java.util.function.BiPredicate<A, B>, Function2<A, B, Boolean>, _ReturnShell<Boolean> {
+public interface Predicate2<A, B> extends java.util.function.BiPredicate<A, B>, Function2<A, B, Boolean>, _ReturnShell<Boolean>, _NonExShell {
   Boolean apply(A a, B b);
 
   default boolean test(A a, B b) {

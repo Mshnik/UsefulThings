@@ -1,11 +1,12 @@
 package functional.impl;
 
 import functional._1ArgShell;
+import functional._NonExShell;
 import functional._NonReturnShell;
 import functional.impl.ex.Consumer1Ex;
 
 @FunctionalInterface
-public interface Consumer1<A> extends java.util.function.Consumer<A>, _1ArgShell<A>, _NonReturnShell {
+public interface Consumer1<A> extends java.util.function.Consumer<A>, _1ArgShell<A>, _NonReturnShell, _NonExShell {
 	void apply(A a);
 	
 	default void accept(A a) {

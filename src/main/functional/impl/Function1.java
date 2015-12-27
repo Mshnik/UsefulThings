@@ -1,13 +1,14 @@
 package functional.impl;
 
 import functional._1ArgShell;
+import functional._NonExShell;
 import functional._ReturnShell;
 import functional.impl.ex.Function1Ex;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Function1<A, R> extends java.util.function.Function<A, R>, _1ArgShell<A>, _ReturnShell<R> {
+public interface Function1<A, R> extends java.util.function.Function<A, R>, _1ArgShell<A>, _ReturnShell<R>, _NonExShell {
   R apply(A a);
 
   default Supplier<R> partialApply(A a) {

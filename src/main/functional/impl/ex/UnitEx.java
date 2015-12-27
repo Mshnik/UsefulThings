@@ -23,7 +23,7 @@ public interface UnitEx extends _ExShell, _0ArgShell, _NonReturnShell {
     };
   }
 
-  default Unit withNoHandler() {
+  default Unit ignoreThrowable() {
     return withHandler(DO_NOTHING);
   }
 

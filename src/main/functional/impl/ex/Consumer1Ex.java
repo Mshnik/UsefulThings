@@ -21,7 +21,7 @@ public interface Consumer1Ex<A> extends _ExShell, _NonReturnShell, _1ArgShell<A>
 		};
 	}
 
-	default Consumer1<A> withNoHandler() {
+	default Consumer1<A> ignoreThrowable() {
     return withHandler(DO_NOTHING);
   }
 	

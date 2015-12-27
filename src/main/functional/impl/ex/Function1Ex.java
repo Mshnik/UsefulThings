@@ -25,7 +25,7 @@ public interface Function1Ex<A, R> extends _ExShell, _1ArgShell<A>, _ReturnShell
     };
   }
 
-  default Function1<A, R> withNoHandler(R ifExceptionThrown) {
+  default Function1<A, R> ignoreThrowable(R ifExceptionThrown) {
     return (a) -> {
       try {
         return apply(a);

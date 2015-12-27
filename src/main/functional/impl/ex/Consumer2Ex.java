@@ -4,12 +4,27 @@ import functional._2ArgShell;
 import functional._ExShell;
 import functional._NonReturnShell;
 import functional.impl.Consumer1;
+import functional.impl.Consumer2;
 import functional.impl.Supplier;
 import functional.impl.Unit;
 
 @FunctionalInterface
 public interface Consumer2Ex<A, B> extends _ExShell, _2ArgShell<A, B>, _NonReturnShell {
   void apply(A a, B b) throws Throwable;
+
+  default Consumer2<A, B> withHandler(Consumer1<Throwable> handler) {
+    return (a, b) -> {
+      try {
+        apply(a, b);
+      } catch(Throwable t) {
+        handler.apply(t);
+      }
+    };
+  }
+
+  default Consumer2<A, B> ignoreThrowable() {
+    return withHandler(DO_NOTHING);
+  }
 
   default Consumer1Ex<B> partialApply(A a) {
     return (b) -> apply(a, b);

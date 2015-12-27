@@ -1,11 +1,12 @@
 package functional.impl;
 
+import functional._NonExShell;
 import functional._ReturnShell;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Predicate1<A> extends java.util.function.Predicate<A>, Function1<A, Boolean>, _ReturnShell<Boolean> {
+public interface Predicate1<A> extends java.util.function.Predicate<A>, Function1<A, Boolean>, _ReturnShell<Boolean>, _NonExShell {
   Boolean apply(A a);
 
   default boolean test(A a) {

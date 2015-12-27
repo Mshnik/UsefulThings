@@ -3,16 +3,27 @@ package functional.impl.ex;
 import functional._3ArgShell;
 import functional._ExShell;
 import functional._NonReturnShell;
-import functional.impl.Consumer1;
-import functional.impl.Consumer2;
-import functional.impl.Supplier;
-import functional.impl.Unit;
+import functional.impl.*;
 
 import java.util.Objects;
 
 @FunctionalInterface
 public interface Consumer3Ex<A, B, C> extends _ExShell, _3ArgShell<A, B, C>, _NonReturnShell {
   void apply(A a, B b, C c) throws Throwable;
+
+  default Consumer3<A, B, C> withHandler(Consumer1<Throwable> handler) {
+    return (a, b, c) -> {
+      try {
+        apply(a, b, c);
+      } catch(Throwable t) {
+        handler.apply(t);
+      }
+    };
+  }
+
+  default Consumer3<A, B, C> ignoreThrowable() {
+    return withHandler(DO_NOTHING);
+  }
 
   default Consumer2Ex<B, C> partialApply(A a) {
     return (b, c) -> apply(a, b, c);

@@ -11,6 +11,26 @@ import java.util.Objects;
 public interface Function3Ex<A, B, C, R> extends _ExShell, _3ArgShell<A, B, C>, _ReturnShell<R> {
   R apply(A a, B B, C c) throws Throwable;
 
+  default Function3<A, B, C, R> withHandler(Function1<Throwable, R> handler) {
+    return (a, b, c) -> {
+      try {
+        return apply(a, b, c);
+      } catch(Throwable t) {
+        return handler.apply(t);
+      }
+    };
+  }
+
+  default Function3<A, B, C, R> ignoreThrowable(R ifExceptionThrown) {
+    return (a, b, c) -> {
+      try {
+        return apply(a, b, c);
+      } catch(Throwable t) {
+        return ifExceptionThrown;
+      }
+    };
+  }
+
   default Function2Ex<B, C, R> partialApply(A a) {
     return (b, c) -> apply(a, b, c);
   }

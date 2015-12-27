@@ -1,12 +1,13 @@
 package functional.impl;
 
 import functional._2ArgShell;
+import functional._NonExShell;
 import functional._ReturnShell;
 
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, R>, _2ArgShell<A, B>, _ReturnShell<R> {
+public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, R>, _2ArgShell<A, B>, _ReturnShell<R>, _NonExShell {
   R apply(A a, B b);
 
   default Function1<B, R> partialApply(A a) {

@@ -3,6 +3,8 @@ package functional.impl.ex;
 import functional._2ArgShell;
 import functional._ExShell;
 import functional._ReturnShell;
+import functional.impl.Function1;
+import functional.impl.Function2;
 import functional.impl.Supplier;
 import functional.impl.Unit;
 
@@ -11,6 +13,26 @@ import java.util.Objects;
 @FunctionalInterface
 public interface Function2Ex<A, B, R> extends _ExShell, _2ArgShell<A, B>, _ReturnShell<R> {
   R apply(A a, B b) throws Throwable;
+
+  default Function2<A, B, R> withHandler(Function1<Throwable, R> handler) {
+    return (a, b) -> {
+      try {
+        return apply(a, b);
+      } catch(Throwable t) {
+        return handler.apply(t);
+      }
+    };
+  }
+
+  default Function2<A, B, R> ignoreThrowable(R ifExceptionThrown) {
+    return (a, b) -> {
+      try {
+        return apply(a, b);
+      } catch(Throwable t) {
+        return ifExceptionThrown;
+      }
+    };
+  }
 
   default Function1Ex<B, R> partialApply(A a) {
     return (b) -> apply(a, b);

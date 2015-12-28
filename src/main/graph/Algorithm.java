@@ -1,6 +1,5 @@
 package graph;
 
-import common.dataStructures.DeArrList;
 import functional.impl.Function2;
 import graph.matching.*;
 
@@ -533,7 +532,7 @@ public class Algorithm {
    * @param items  - the items. No preferences for items are taken into account.
    * @return - a Matching of agents and items.
    */
-  public static <A extends StrictAgent<I>, I> Matching<A, I> serialDictator(Set<A> agents, Set<I> items) {
+  public static <A extends StrictlyRankedAgent<I>, I> Matching<A, I> serialDictator(Set<A> agents, Set<I> items) {
     List<A> ordering = new ArrayList<>(agents);
     Collections.shuffle(ordering);
     return serialDictator(ordering, items);
@@ -548,7 +547,7 @@ public class Algorithm {
    * @return - a Matching of agents and items.
    * @throws IllegalArgumentException if any agent appears in the list twice.
    */
-  public static <A extends StrictAgent<I>, I> Matching<A, I> serialDictator(List<A> agents, Set<I> items)
+  public static <A extends StrictlyRankedAgent<I>, I> Matching<A, I> serialDictator(List<A> agents, Set<I> items)
       throws IllegalArgumentException {
     //Make sure agent doesn't appear twice in ordering
     HashSet<A> agentsSet = new HashSet<>(agents);
@@ -559,7 +558,7 @@ public class Algorithm {
     matching.addAllA(agents);
     matching.addAllB(items);
     for (A agent : agents) {
-      for (I item : agent.getRankPreferences()) {
+      for (I item : agent.getStrictPreferences()) {
         if (matching.isUnmatched(item)) {
           matching.match(agent, item);
           break;
@@ -582,7 +581,7 @@ public class Algorithm {
    * acceptable at any step in the algorithm. If all agents have complete preferences
    * over the available items, this will never occur.
    */
-  public static <A extends StrictAgent<I> & Endowed<I>, I> Matching<A, I> ttc(Set<A> agents)
+  public static <A extends StrictlyRankedAgent<I> & Endowed<I>, I> Matching<A, I> ttc(Set<A> agents)
       throws RuntimeException {
     Matching<A, I> matching = new Matching<>();
     HashMap<I, A> reverseInitialEndowment = new HashMap<>();
@@ -600,10 +599,10 @@ public class Algorithm {
     //Add initial edges - top choice among present items for each agent
     for (A agent : agents) {
 
-      for (int i = 0; i < agent.getRankPreferences().length; i++) {
-        if (matching.contains(agent.getRankPreferences()[i])) {
+      for (int i = 0; i < agent.getStrictPreferences().size(); i++) {
+        if (matching.contains(agent.getStrictPreferences().get(i))) {
           currentPreference.put(agent, i);
-          g.addEdge(agent, reverseInitialEndowment.get(agent.getRankPreferences()[i]), new Object());
+          g.addEdge(agent, reverseInitialEndowment.get(agent.getStrictPreferences().get(i)), new Object());
           break;
         }
       }
@@ -635,8 +634,8 @@ public class Algorithm {
         if (matching.isMatched(agent)) continue;
 
         boolean foundItem = false;
-        for (int i = currentPreference.get(agent); i < agent.getRankPreferences().length; i++) {
-          I pref = agent.getRankPreferences()[i];
+        for (int i = currentPreference.get(agent); i < agent.getStrictPreferences().size(); i++) {
+          I pref = agent.getStrictPreferences().get(i);
           if (!matching.isMatched(pref)) {
             currentPreference.put(agent, i);
             g.addEdge(agent, reverseInitialEndowment.get(pref), new Object());
@@ -653,7 +652,7 @@ public class Algorithm {
   }
 
   /** */
-  public static <A extends StrictAgent<B>, B extends StrictAgent<A>> Matching<A, B> stableMarriage(Set<A> proposers, Set<B> proposees) {
+  public static <A extends StrictlyRankedAgent<B>, B extends StrictlyRankedAgent<A>> Matching<A, B> stableMarriage(Set<A> proposers, Set<B> proposees) {
 
     Matching<A, B> matching = new Matching<>(proposers, proposees);
 
@@ -686,18 +685,18 @@ public class Algorithm {
         //Find next actual existing woman
         do {
           nextProposal++;
-          if (nextProposal == a.getRankPreferences().length) {
+          if (nextProposal == a.getStrictPreferences().size()) {
             proposing = false;
             doneProposing.put(a, true);
           }
-        } while (proposing && !proposees.contains(a.getRankPreferences()[nextProposal]));
+        } while (proposing && !proposees.contains(a.getStrictPreferences().get(nextProposal)));
 
         //If not proposing, just do nothing - no good proposees left to propose to
         if (proposing) {
-          B b = a.getRankPreferences()[nextProposal];
+          B b = a.getStrictPreferences().get(nextProposal);
 
-          if (matching.isUnmatched(b) && Agent.isAcceptable(b, a)
-              || Agent.prefers(b, a, matching.getMatchedA(b))) {
+          if (matching.isUnmatched(b) && b.isAcceptable(a)
+              || b.prefers(a, matching.getMatchedA(b))) {
             matching.match(a, b);
           }
         }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+//TODO - SPEC
 public class ThreadMaster<R> {
 
   private AtomicInteger nextSlaveID;

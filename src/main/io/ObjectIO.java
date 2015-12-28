@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+//TODO - SPEC
+//TODO - TEST
 public class ObjectIO {
 
   private ObjectIO(){}

@@ -3,6 +3,8 @@ package functional.util;
 import functional.impl.Function1;
 import functional.impl.Function2;
 
+//TODO - SPEC
+//TODO - TEST
 public class FunctionState<I,S> {
 
   private S currentVal;

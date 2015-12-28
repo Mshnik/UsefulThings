@@ -4,6 +4,8 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+//TODO - SPEC
+//TODO - TEST
 public class ScannerUtils {
 
   private ScannerUtils() {

@@ -3,6 +3,8 @@ package common.math;
 import common.types.Tuple;
 import common.types.Tuple2;
 
+//TODO - SPEC
+//TODO - TEST
 public class Vector2 extends Vector {
 
   public Vector2(double x, double y) {

@@ -2,6 +2,7 @@ package common.math;
 
 import functional.impl.Function1;
 
+//TODO - SPEC
 public class RecursiveSequence extends Sequence {
 
   private Function1<Double, Double> recF;

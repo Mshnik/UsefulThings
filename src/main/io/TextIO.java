@@ -9,7 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+//TODO - SPEC
+//TODO - TEST
 public class TextIO {
 
   /**

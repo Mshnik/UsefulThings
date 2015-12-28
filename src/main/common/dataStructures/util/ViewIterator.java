@@ -2,6 +2,8 @@ package common.dataStructures.util;
 
 import java.util.Iterator;
 
+//TODO - SPEC
+//TODO - TEST
 public abstract class ViewIterator<E> implements Iterator<E> {
 
   protected final Iterator<E> iterator;

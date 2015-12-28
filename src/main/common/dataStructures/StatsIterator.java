@@ -7,6 +7,7 @@ import functional.util.FunctionState;
 import java.util.HashMap;
 import java.util.Iterator;
 
+//TODO - SPEC
 public class StatsIterator<T extends Number> implements Iterator<T> {
 
   private Iterator<T> underlyingIterator;

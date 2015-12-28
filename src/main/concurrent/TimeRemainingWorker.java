@@ -4,6 +4,8 @@ package concurrent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//TODO - SPEC (UPDATE)
+//TODO - TEST
 /**
  * Monitors the progress of the inputed TimeRemainingTask and periodically sends time remaining updates to the TimeRemainingTask
  * <p/>

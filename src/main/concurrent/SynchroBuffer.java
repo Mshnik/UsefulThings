@@ -4,7 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class SynchroBuffer {
+//TODO - TEST
+abstract class SynchroBuffer {
 
   private final Map<Thread, String> threadToKeyMap;
 

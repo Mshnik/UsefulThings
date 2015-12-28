@@ -4,6 +4,7 @@ import functional.impl.Function1;
 
 import java.util.*;
 
+//TODO - SPEC
 public class BloomFilter<T> {
 
   public static int DEFAULT_FLAGS_SIZE = 1024;

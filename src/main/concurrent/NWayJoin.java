@@ -2,6 +2,8 @@ package concurrent;
 
 import java.util.ArrayList;
 
+//TODO - SPEC
+//TODO - TEST
 public class NWayJoin extends SynchroBuffer {
 
   private ArrayList<String> ids;

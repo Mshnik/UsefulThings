@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import functional.impl.Function1;
 
+//TODO - TEST
 /**
  * A generic Trie, able to store any T that is Iterable of C
  *

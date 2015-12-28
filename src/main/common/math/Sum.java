@@ -3,6 +3,7 @@ package common.math;
 import common.dataStructures.DeArrList;
 import functional.impl.Function1;
 
+//TODO - SPEC
 public class Sum extends Sequence {
 
   private Function1<Integer, Double> sFunc;

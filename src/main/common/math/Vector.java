@@ -7,6 +7,7 @@ import common.Util;
 
 import functional.util.FunctionalUtil;
 
+//TODO - SPEC
 public class Vector implements Iterable<Double> {
 
   private Double[] vec;

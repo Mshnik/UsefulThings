@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import functional.impl.Supplier;
 
+//TODO - SPEC
 public class SmartIterator<T> implements Iterator<T> {
 
   private Iterator<T> wrappedIter;

@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+//TODO - SPEC
+//TODO - TEST
 public class BloomFilteredCollection<T> implements Collection<T> {
 
   private BloomFilter<T> filter;

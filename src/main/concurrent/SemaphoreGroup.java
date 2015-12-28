@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
+//TODO - TEST (?)
 /**
  * Represents a group of semaphores identified by distinct strings
  * Supports basic acquire and release operations. Other operations could be added as necessary

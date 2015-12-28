@@ -5,6 +5,7 @@ import functional.impl.Function2;
 
 import java.util.List;
 
+//TODO - SPEC
 public abstract class Sequence {
 
   public final Double initial;

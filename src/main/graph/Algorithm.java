@@ -1,5 +1,6 @@
 package graph;
 
+import common.IDObject;
 import functional.impl.Function2;
 import graph.matching.*;
 
@@ -522,6 +523,58 @@ public class Algorithm {
     }
 
     return new MaxFlow<>(g, source, sink).computeMaxFlow();
+  }
+
+  private static class FlowEdge extends IDObject implements Flowable {
+
+    private int capacity;
+
+    private FlowEdge(int capacity) {
+      this.capacity = capacity;
+    }
+
+    @Override
+    public int getCapacity() {
+      return capacity;
+    }
+  }
+
+  public static <A extends Agent<I>, I> Matching<A, I> maxMatching(Set<A> agents, Set<I> items) {
+    Graph<Object, FlowEdge> g = new Graph<>();
+
+    Object source = "SUPERSOURCE";
+    Object sink = "SUPERSINK";
+
+    g.addVertex(source);
+    g.addVertex(sink);
+
+    for(I i : items) {
+      g.addVertex(i);
+      g.addEdge(i, sink, new FlowEdge(1));
+    }
+    for(A a : agents) {
+      g.addVertex(a);
+      g.addEdge(source, a, new FlowEdge(1));
+      for(I i : a.getAcceptableItems()) {
+        g.addEdge(a, i, new FlowEdge(1));
+      }
+    }
+
+    Flow<FlowEdge> flow = maxFlow(g, source, sink);
+    Matching<A, I> m = new Matching<>();
+    m.addAllA(agents);
+    m.addAllB(items);
+
+    for(A a : agents) {
+      for(I i : a.getAcceptableItems()) {
+        FlowEdge e = g.getConnection(a, i);
+        if(flow._2.get(e) > 0) {
+          m.match(a, i);
+        }
+      }
+    }
+
+    return m;
   }
 
   /**

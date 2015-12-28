@@ -2,8 +2,11 @@ package graph.matching;
 
 import java.util.Set;
 
+//TODO - SPEC
+//TODO - TEST
 public interface Agent<X> {
 
+  //TODO - SPEC
   public Set<X> getAcceptableItems();
 
   /**

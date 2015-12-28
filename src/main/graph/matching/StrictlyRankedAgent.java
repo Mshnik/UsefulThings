@@ -6,8 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+//TODO - SPEC
+//TODO - TEST
 public interface StrictlyRankedAgent<X> extends RankedAgent<X> {
 
+  //TODO - SPEC
   /**
    * Returns an array representing the preferences of this StrictlyRankedAgent.
    * items appear in the array in the order that this prefers them in.
@@ -17,6 +20,7 @@ public interface StrictlyRankedAgent<X> extends RankedAgent<X> {
    */
   public List<X> getStrictPreferences();
 
+  //TODO - SPEC
   /**
    * A helper method to implement RankedAgent.getPreferences, given that
    * getPreferences is written. Allows classes implementing StrictlyRankedAgent
@@ -35,6 +39,7 @@ public interface StrictlyRankedAgent<X> extends RankedAgent<X> {
     return Collections.unmodifiableMap(map);
   }
 
+  //TODO - SPEC
   /**
    * Returns the list of agents that a strictly prefers to x, in order
    * of preference, with the highest ranked item coming first
@@ -49,6 +54,7 @@ public interface StrictlyRankedAgent<X> extends RankedAgent<X> {
     return Collections.unmodifiableList(h);
   }
 
+  //TODO - SPEC
   /**
    * Returns the set of agents that a weakly prefers to x. Will contain x if
    * x is acceptable to a.

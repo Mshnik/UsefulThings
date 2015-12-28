@@ -3,8 +3,11 @@ package graph.matching;
 import java.util.*;
 import java.util.Map.Entry;
 
+//TODO - SPEC
+//TODO - TEST
 public interface RankedAgent<X> extends Agent<X> {
 
+  //TODO - SPEC
   /**
    * Returns an integer value for each X. All
    * X not in the returned map are presumed to have a preference value of
@@ -15,10 +18,12 @@ public interface RankedAgent<X> extends Agent<X> {
    */
   public Map<X, Integer> getPreferences();
 
+  //TODO - SPEC
   default Set<X> getAcceptableItems() {
     return getPreferences().keySet();
   }
 
+  //TODO - SPEC
   /**
    * Returns true iff a prefers x1 to x2, strictly.
    * Returns false if x1.equals(x2). Also returns false
@@ -29,6 +34,7 @@ public interface RankedAgent<X> extends Agent<X> {
     return pref.getOrDefault(x1, Integer.MIN_VALUE) > pref.getOrDefault(x2, Integer.MIN_VALUE);
   }
 
+  //TODO - SPEC
   /**
    * Returns true iff a weakly prefers x1 to x2.
    */
@@ -37,6 +43,7 @@ public interface RankedAgent<X> extends Agent<X> {
     return pref.getOrDefault(x1, Integer.MIN_VALUE) >= pref.getOrDefault(x2, Integer.MIN_VALUE);
   }
 
+  //TODO - SPEC
   /**
    * Returns the set of agents that a strictly prefers to x
    */
@@ -50,6 +57,7 @@ public interface RankedAgent<X> extends Agent<X> {
     return Collections.unmodifiableSet(h);
   }
 
+  //TODO - SPEC
   /**
    * Returns the set of agents that a weakly prefers to x. Will contain x if
    * x is acceptable to a.

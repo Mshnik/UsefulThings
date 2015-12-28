@@ -31,6 +31,21 @@ public class Algorithm {
   private Algorithm() {
   }
 
+  //TODO - SPEC
+  private static class FlowEdge extends IDObject implements Flowable {
+
+    private int capacity;
+
+    private FlowEdge(int capacity) {
+      this.capacity = capacity;
+    }
+
+    @Override
+    public int getCapacity() {
+      return capacity;
+    }
+  }
+
   /**
    * Returns the sum of the weights for the given path in the given graph.
    *
@@ -525,20 +540,10 @@ public class Algorithm {
     return new MaxFlow<>(g, source, sink).computeMaxFlow();
   }
 
-  private static class FlowEdge extends IDObject implements Flowable {
 
-    private int capacity;
 
-    private FlowEdge(int capacity) {
-      this.capacity = capacity;
-    }
-
-    @Override
-    public int getCapacity() {
-      return capacity;
-    }
-  }
-
+  //TODO - SPEC
+  //TODO - TEST
   public static <A extends Agent<I>, I> Matching<A, I> maxMatching(Set<A> agents, Set<I> items) {
     Graph<Object, FlowEdge> g = new Graph<>();
 
@@ -577,6 +582,7 @@ public class Algorithm {
     return m;
   }
 
+  //TODO - TEST
   /**
    * Runs the SerialDictatorship algorithm on the given agents and items.
    * Uses a random ordering over the agents for the priority order.
@@ -591,6 +597,7 @@ public class Algorithm {
     return serialDictator(ordering, items);
   }
 
+  //TODO - TEST
   /**
    * Runs the SerialDictatorship algorithm on the given agents and items.
    *
@@ -621,6 +628,7 @@ public class Algorithm {
     return matching;
   }
 
+  //TODO - TEST
   /**
    * Runs the ttc algorithm on the set of endowedAgents
    *
@@ -704,6 +712,8 @@ public class Algorithm {
     return matching;
   }
 
+  //TODO - SPEC
+  //TODO - TEST
   /** */
   public static <A extends StrictlyRankedAgent<B>, B extends StrictlyRankedAgent<A>> Matching<A, B> stableMarriage(Set<A> proposers, Set<B> proposees) {
 

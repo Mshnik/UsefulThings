@@ -1,9 +1,16 @@
 package graph.matching;
 
+import java.util.Collections;
 import java.util.Set;
 
-//TODO - TEST
+//TODO - SPEC
 public interface Agent<X> {
+
+  /** Return an agent that finds the given set of items acceptable */
+  public static <X> Agent<X> create(Set<X> items) {
+    final Set<X> itemsCpy = Collections.unmodifiableSet(items);
+    return () -> itemsCpy;
+  }
 
   /** Return the set of items that this agent finds acceptable.
    * This Agent prefers all items in this set to

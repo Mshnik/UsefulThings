@@ -6,7 +6,11 @@ import org.junit.Assert;
 
 import java.util.Iterator;
 
-//TODO - SPEC
+/**
+ * JUnitUtil is a holder for helper methods for JUnit testing.
+ * This class essentially improves upon and takes the place of class Assert.
+ * @author Mshnik
+ */
 public class JUnitUtil {
 
   private JUnitUtil() {}
@@ -14,10 +18,14 @@ public class JUnitUtil {
   /** Error term for comparing floats and doubles. If the diff is less than this, they are considered equal */
   private static float ERR_TERM = 0.00001f;
 
+  /** @see Assert#fail().
+   * Redeclaired here so that imports are simplified. */
   public static void fail() {
     Assert.fail();
   }
 
+  /** @see Assert#fail(String)
+   * Redeclaired here so that imports are simplified. */
   public static void fail(String message) {
     Assert.fail(message);
   }
@@ -41,7 +49,7 @@ public class JUnitUtil {
   }
 
   public static void assertEquals(Object expected, Object actual) {
-    assertEquals((String)null, expected, actual);
+    assertEquals(null, expected, actual);
   }
 
 
@@ -50,14 +58,13 @@ public class JUnitUtil {
    */
   public static void assertEquals(String message, Object expected, Object actual) {
     if(expected == null && actual == null) {
-      //Awesome! Nulls match.
       return;
     } else if(expected == null || actual == null) {
       fail(message);
     } else if (expected instanceof Double && actual instanceof Double) {
-      Assert.assertEquals(message, ERR_TERM, (Double)expected, (Double)actual);
+      Assert.assertEquals(message, (Double)expected, (Double)actual, ERR_TERM);
     } else if (expected instanceof Float && actual instanceof Float) {
-      Assert.assertEquals(message, ERR_TERM, (Float)expected, (Float)actual);
+      Assert.assertEquals(message, (Float)expected, (Float)actual, ERR_TERM);
     } else if (expected instanceof Object[] && actual instanceof Object[]) {
       Assert.assertArrayEquals(message, (Object[]) expected, (Object[]) actual);
     } else if (expected instanceof int[] && actual instanceof int[]) {
@@ -76,13 +83,6 @@ public class JUnitUtil {
       Assert.assertArrayEquals(message, (float[]) expected, (float[]) actual, ERR_TERM);
     } else if (expected instanceof double[] && actual instanceof double[]) {
       Assert.assertArrayEquals(message, (double[]) expected, (double[]) actual, ERR_TERM);
-    } else if (expected instanceof Iterator<?> && actual instanceof Iterator<?>) {
-      Iterator<?> i1 = (Iterator<?>)expected;
-      Iterator<?> i2 = (Iterator<?>)actual;
-      while(i1.hasNext() && i2.hasNext()) {
-        assertEquals(message, i1.next(), i2.next());
-      }
-      assertTrue(! i1.hasNext() && ! i2.hasNext());
     } else {
       Assert.assertEquals(message, expected, actual);
     }
@@ -95,43 +95,43 @@ public class JUnitUtil {
 
   /** Returns a Unit that causes an assertion failure with the given message */
   public static Unit failFunc(String message) {
-    Consumer1<String> f = Assert::fail;
+    Consumer1<String> f = JUnitUtil::fail;
     return f.partialApply(message);
   }
 
   /** Returns a Unit that asserts that the given condition is true */
   public static Unit assertTrueFunc(boolean condition) {
-    Consumer1<Boolean> f = Assert::assertTrue;
+    Consumer1<Boolean> f = JUnitUtil::assertTrue;
     return f.partialApply(condition);
   }
 
   /** Returns a Unit that asserts that the given condition is true with the given message */
   public static Unit assertTrueFunc(String message, boolean condition) {
-    Consumer2<String, Boolean> f = Assert::assertTrue;
+    Consumer2<String, Boolean> f = JUnitUtil::assertTrue;
     return f.partialApply(message, condition);
   }
 
   /** Returns a Unit that asserts that the given condition is false */
   public static Unit assertFalseFunc(boolean condition) {
-    Consumer1<Boolean> f = Assert::assertFalse;
+    Consumer1<Boolean> f = JUnitUtil::assertFalse;
     return f.partialApply(condition);
   }
 
   /** Returns a Unit that asserts that the given condition is false with the given message */
   public static Unit assertFalseFunc(String message, boolean condition) {
-    Consumer2<String, Boolean> f = Assert::assertFalse;
+    Consumer2<String, Boolean> f = JUnitUtil::assertFalse;
     return f.partialApply(message, condition);
   }
 
   /** Returns a Unit that asserts that the two objects are equal */
   public static Unit assertEqualsFunc(Object expected, Object actual) {
-    Consumer2<Object, Object> f = Assert::assertEquals;
+    Consumer2<Object, Object> f = JUnitUtil::assertEquals;
     return f.partialApply(expected, actual);
   }
 
   /** Returns a Unit that asserts that the two objects are equal with the given message */
   public static Unit assertEqualsFunc(String message, Object expected, Object actual) {
-    Consumer3<String, Object, Object> f = Assert::assertEquals;
+    Consumer3<String, Object, Object> f = JUnitUtil::assertEquals;
     return f.partialApply(message, expected, actual);
   }
 
@@ -177,25 +177,25 @@ public class JUnitUtil {
 
   /** Returns a Unit that asserts that the condition from the given supplier is true */
   public static Unit callAndAssertTrueFunc(Supplier<Boolean> conditionSupplier) {
-    Consumer1<Boolean> f = Assert::assertTrue;
+    Consumer1<Boolean> f = JUnitUtil::assertTrue;
     return f.lazyApply(conditionSupplier);
   }
 
   /** Returns a Unit that asserts that the given condition is true with the given message */
   public static Unit callAndAssertTrueFunc(String message, Supplier<Boolean> conditionSupplier) {
-    Consumer2<String, Boolean> f = Assert::assertTrue;
+    Consumer2<String, Boolean> f = JUnitUtil::assertTrue;
     return f.partialLazyApply(message, conditionSupplier);
   }
 
   /** Returns a Unit that asserts that the given condition is false */
   public static Unit callAndAssertFalseFunc(Supplier<Boolean> conditionSupplier) {
-    Consumer1<Boolean> f = Assert::assertFalse;
+    Consumer1<Boolean> f = JUnitUtil::assertFalse;
     return f.lazyApply(conditionSupplier);
   }
 
   /** Returns a Unit that asserts that the given condition is false with the given message */
   public static Unit callAndAssertFalseFunc(String message, Supplier<Boolean> conditionSupplier) {
-    Consumer2<String, Boolean> f = Assert::assertFalse;
+    Consumer2<String, Boolean> f = JUnitUtil::assertFalse;
     return f.partialLazyApply(message, conditionSupplier);
   }
 
@@ -207,19 +207,19 @@ public class JUnitUtil {
 
   /** Returns a Unit that asserts that the two objects are equal */
   public static Unit callAndAssertEqualsFunc(Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
-    Consumer2<Object, Object> f = Assert::assertEquals;
+    Consumer2<Object, Object> f = JUnitUtil::assertEquals;
     return f.lazyApply(expectedSupplier, actualSupplier);
   }
 
   /** Returns a Unit that asserts that the two objects are equal with the given message */
   public static Unit callAndAssertEqualsFunc(String message, Object expected, Supplier<Object> actualSupplier) {
-    Consumer3<String, Object, Object> f = Assert::assertEquals;
+    Consumer3<String, Object, Object> f = JUnitUtil::assertEquals;
     return f.partialLazyApply(message, expected, actualSupplier);
   }
 
   /** Returns a Unit that asserts that the two objects are equal with the given message */
   public static Unit callAndAssertEqualsFunc(String message, Supplier<Object> expectedSupplier, Supplier<Object> actualSupplier) {
-    Consumer3<String, Object, Object> f = Assert::assertEquals;
+    Consumer3<String, Object, Object> f = JUnitUtil::assertEquals;
     return f.partialLazyApply(message, expectedSupplier, actualSupplier);
   }
 

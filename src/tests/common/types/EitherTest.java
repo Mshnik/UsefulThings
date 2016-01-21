@@ -59,6 +59,9 @@ public class EitherTest {
     assertFalse(l4.equals(n));
     assertFalse(n.equals(r2));
     assertFalse(r2.equals(n));
+
+    Either<Double, Integer> r3 = Either.createRight(2);
+    assertTrue(r3.equals(r));
   }
 
   @Test

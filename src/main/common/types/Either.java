@@ -8,41 +8,39 @@ import java.util.Objects;
 
 /**
  * A simple SumType implementation. Allows the creation of the Sum Type
- * A + B. Every instance of Either is either (haha.. tomatoes, rocks)
- * an instance of Left, with a value of type A, or an instance of Right,
- * with a value of type B.
- * <br><br>
- * The types and constructors for Left and Right are not exposed.
- * Instead, to construct new instance of Left and Right, the createLeft and createRight
- * methods of class Either should be used.
- * <br><br>
- * The types can be the same, but in that case there isn't much use to using Either.
+ * A + B. Every instance of Either wraps either (haha.. tomatoes, rocks)
+ * an instance of A or an instance of B. Either instances are immutable.
+ * The types A and B can be the same, but in that case there isn't much use to using Either.
  *
  * @param <A> The first type to sum
  * @param <B> The second type to sum
  * @author Mshnik
  */
-public abstract class Either<A, B> {
+public class Either<A, B> {
 
-  private boolean isLeft;
+  private final boolean isLeft;
+  private final A a;
+  private final B b;
 
   /**
    * Constructs a new Either
    *
    * @param isLeft - true if this is a Left, false if this is a Right
    */
-  Either(boolean isLeft) {
+  private Either(boolean isLeft, A a, B b) {
     this.isLeft = isLeft;
+    this.a = a;
+    this.b = b;
   }
 
   /** Creates a Either instance of the given A */
   public static <A, B> Either<A, B> createLeft(A a) {
-    return new Left<>(a);
+    return new Either<>(true, a, null);
   }
 
   /** Creates a Either instance of the given B */
   public static <A, B> Either<A, B> createRight(B b) {
-    return new Right<>(b);
+    return new Either<>(false, null, b);
   }
 
   /** Constructs a new Either, selecting from the two arguments with the given criteria
@@ -123,49 +121,59 @@ public abstract class Either<A, B> {
 
   /**
    * Returns the value of this Either as an an instance of A.
-   * If the wrapped value is an instance of B, returns null.
+   * If the wrapped value is an instance of B, throws a RuntimeException
    */
-  @SuppressWarnings("unchecked")
   public A asLeft() {
-    if (isLeft())
-      return (A) getVal();
+    if (isLeft()) return a;
     throw new RuntimeException();
   }
 
   /**
    * Returns the value of this Either as an an instance of B.
-   * If the wrapped value is an instance of A, returns null.
+   * If the wrapped value is an instance of A, throws a RuntimeException
    */
-  @SuppressWarnings("unchecked")
   public B asRight() {
-    if (!isLeft())
-      return (B) getVal();
+    if (!isLeft()) return b;
     throw new RuntimeException();
   }
 
   /**
    * Returns the Object stored within this Either.
-   * Should have a stricter type bound (A or B) when implemented by subclasses.
    */
-  public abstract Object getVal();
+  public Object getVal() {
+    if(isLeft()) {
+      return asLeft();
+    } else {
+      return asRight();
+    }
+  }
 
   /**
    * Returns the type of the Object stored within this Either
    */
-  public abstract Class<?> getType();
+  public Class<?> getType() {
+    if(isLeft() && asLeft() != null) {
+      return asLeft().getClass();
+    } else if (! isLeft() && asRight() != null) {
+      return asRight().getClass();
+    } else {
+      return null;
+    }
+  }
 
   /**
    * Two Eithers are equal iff:
-   * <br>- They are both Left or both Right, the only two direct subclasses
+   * <br>- They are both left halves or both right halves.
    * <br>- The objects they store are equivalent using Objects.equals.
+   * Note that the two unused sides of the either can differ, and the
+   * Eithers would still be considered equal.
    */
   @Override
   public boolean equals(Object o) {
     if(this == o) return true;
     if(o == null) return false;
     try {
-      @SuppressWarnings("unchecked")
-      Either<A, B> e = (Either<A, B>) o;
+      Either<?, ?> e = (Either<?, ?>) o;
       return (!(isLeft ^ e.isLeft)) && Objects.equals(getVal(), e.getVal());
     } catch (ClassCastException e) {
       return false;

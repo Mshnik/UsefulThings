@@ -129,7 +129,7 @@ public abstract class Either<A, B> {
   public A asLeft() {
     if (isLeft())
       return (A) getVal();
-    return null;
+    throw new RuntimeException();
   }
 
   /**
@@ -140,7 +140,7 @@ public abstract class Either<A, B> {
   public B asRight() {
     if (!isLeft())
       return (B) getVal();
-    return null;
+    throw new RuntimeException();
   }
 
   /**

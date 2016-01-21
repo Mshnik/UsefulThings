@@ -1,5 +1,6 @@
 package common.types;
 
+import functional.impl.ex.UnitEx;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -14,15 +15,15 @@ public class EitherTest {
     assertTrue(l.isLeft());
     assertEquals("Hello", l.getVal());
     assertEquals("Hello", l.asLeft());
-    assertEquals(null, l.asRight());
+    shouldFail((UnitEx) l::asRight, RuntimeException.class);
     assertEquals(String.class, l.getType());
     assertEquals("Hello".hashCode(), l.hashCode());
 
     Either<String, Integer> r = Either.createRight(5);
     assertFalse(r.isLeft());
     assertEquals(5, r.getVal());
-    assertEquals(new Integer(5), r.asRight());
-    assertEquals(null, r.asLeft());
+    assertEquals(5, r.asRight());
+    shouldFail((UnitEx) r::asLeft, RuntimeException.class);
     assertEquals(Integer.class, r.getType());
     assertEquals(5, r.hashCode());
   }

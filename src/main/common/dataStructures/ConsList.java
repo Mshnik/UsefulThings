@@ -2,10 +2,10 @@ package common.dataStructures;
 
 import functional.impl.Predicate1;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * An immutable collection representing a Cons List.
@@ -23,6 +23,7 @@ import java.util.Objects;
  *            are made of the type.
  * @author Mshnik
  */
+//TODO - SPEC
 public class ConsList<E> implements Iterable<E> {
 
   /**
@@ -308,6 +309,14 @@ public class ConsList<E> implements Iterable<E> {
     return tail.indexOf(o, x + 1);
   }
 
+  public Spliterator<E> spliterator() {
+    return new ConsSpliterator<>(this, null);
+  }
+
+  public Stream<E> stream() {
+    return StreamSupport.stream(spliterator(), true);
+  }
+
   /**
    * Helper class for iterating over ConsList
    * Keeps track of a current list element that will be returned by next() calls.
@@ -315,7 +324,7 @@ public class ConsList<E> implements Iterable<E> {
    * @param <E>
    * @author Mshnik
    */
-  public static class ConsIterator<E> implements Iterator<E> {
+  public static class ConsIterator<E> implements Iterator<E>{
 
     private ConsList<E> current; //next element to return when next() is called
 
@@ -345,7 +354,52 @@ public class ConsList<E> implements Iterable<E> {
       current = current.tail;
       return val;
     }
+  }
 
+  public static class ConsSpliterator<E> implements Spliterator<E> {
+
+    private ConsList<E> next;
+    private final ConsList<E> end; //When next==end, this Spliterator is done
+
+    public ConsSpliterator(ConsList<E> first, ConsList<E> last) {
+      this.next = first;
+      this.end = last;
+    }
+
+    @Override
+    public boolean tryAdvance(Consumer<? super E> action) {
+      if(next.isNil() || next == end) {
+        return false;
+      } else {
+        action.accept(next.head);
+        next = next.tail;
+        return true;
+      }
+    }
+
+    @Override
+    public Spliterator<E> trySplit() {
+      if(estimateSize() <= 1) {
+        return null;
+      } else {
+        ConsList<E> first = next;
+        long size = estimateSize();
+        for(int i = 0; i < size / 2; i++) {
+          next = next.tail;
+        }
+        return new ConsSpliterator<>(first, next);
+      }
+    }
+
+    @Override
+    public long estimateSize() {
+      return next.size - (end != null ? end.size : 0);
+    }
+
+    @Override
+    public int characteristics() {
+      return SIZED | IMMUTABLE | CONCURRENT;
+    }
   }
 
 }

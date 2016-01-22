@@ -2,8 +2,7 @@ package common.dataStructures;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -210,6 +209,48 @@ public class ConsTest {
 
     iterator = lst.tail().tail().tail().tail().tail().iterator();
     assertFalse(iterator.hasNext());
+  }
+
+  @Test
+  public void testSpliterator() {
+    lst = lst.cons(5).cons(4).cons(3).cons(2).cons(1).cons(0);
+    Spliterator<Integer> spliterator = lst.spliterator();
+
+    List<Integer> lst1 = new ArrayList<>();
+    for(int i = 0; i < lst.size; i++) {
+      assertEquals(lst.size - i, spliterator.estimateSize());
+      assertEquals(lst.size - i, spliterator.getExactSizeIfKnown());
+      assertTrue(spliterator.tryAdvance(lst1::add));
+    }
+
+    assertEquals(lst.size, lst1.size());
+    assertTrue(lst.containsAll(lst1));
+    assertEquals(0, spliterator.estimateSize());
+    assertEquals(0, spliterator.getExactSizeIfKnown());
+    assertFalse(spliterator.tryAdvance((x) -> {}));
+
+    List<Integer> lst2 = new ArrayList<>();
+    Spliterator<Integer> spliterator2 = lst.spliterator();
+    spliterator2.forEachRemaining(lst2::add);
+    assertEquals(lst.size, lst2.size());
+    assertTrue(lst.containsAll(lst2));
+    assertFalse(spliterator2.tryAdvance((x) -> {}));
+
+    Spliterator<Integer> spliterator3 = lst.spliterator();
+    Spliterator<Integer> spliterator4 = spliterator3.trySplit();
+    assertFalse(spliterator4 == null);
+    assertEquals(3, spliterator3.estimateSize());
+    assertEquals(3, spliterator4.estimateSize());
+
+    List<Integer> lst3 = new ArrayList<>();
+    spliterator3.forEachRemaining(lst3::add);
+    List<Integer> lst4 = new ArrayList<>();
+    spliterator4.forEachRemaining(lst4::add);
+    assertEquals(Arrays.asList(3, 4, 5), lst3);
+    assertEquals(Arrays.asList(0, 1, 2), lst4);
+
+    assertEquals(null, new ConsList<Integer>().spliterator().trySplit());
+    assertEquals(null, new ConsList<Integer>().cons(1).spliterator().trySplit());
   }
 
   @Test

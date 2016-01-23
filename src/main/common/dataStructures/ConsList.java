@@ -231,7 +231,21 @@ public class ConsList<E> implements Iterable<E> {
    */
   @Override
   public Iterator<E> iterator() {
-    return new ConsIterator<E>(this);
+    return new ConsIterator<>(this);
+  }
+
+  /**
+   * Returns a Spliterator over the elements in this ConsList.
+   * The returned Spliterator is sized, immutable, and concurrent
+   */
+  @Override
+  public Spliterator<E> spliterator() {
+    return new ConsSpliterator<>(this, null);
+  }
+
+  /** Returns a stream over the elements in this ConsList. */
+  public Stream<E> stream() {
+    return StreamSupport.stream(spliterator(), true);
   }
 
   /**
@@ -309,14 +323,6 @@ public class ConsList<E> implements Iterable<E> {
     return tail.indexOf(o, x + 1);
   }
 
-  public Spliterator<E> spliterator() {
-    return new ConsSpliterator<>(this, null);
-  }
-
-  public Stream<E> stream() {
-    return StreamSupport.stream(spliterator(), true);
-  }
-
   /**
    * Helper class for iterating over ConsList
    * Keeps track of a current list element that will be returned by next() calls.
@@ -324,7 +330,7 @@ public class ConsList<E> implements Iterable<E> {
    * @param <E>
    * @author Mshnik
    */
-  public static class ConsIterator<E> implements Iterator<E>{
+  static class ConsIterator<E> implements Iterator<E>{
 
     private ConsList<E> current; //next element to return when next() is called
 
@@ -356,7 +362,12 @@ public class ConsList<E> implements Iterable<E> {
     }
   }
 
-  public static class ConsSpliterator<E> implements Spliterator<E> {
+  /** Helper class for spliterating over ConsList
+   *
+   * @param <E>
+   * @author Mshnik
+   */
+  static class ConsSpliterator<E> implements Spliterator<E> {
 
     private ConsList<E> next;
     private final ConsList<E> end; //When next==end, this Spliterator is done
@@ -401,5 +412,4 @@ public class ConsList<E> implements Iterable<E> {
       return SIZED | IMMUTABLE | CONCURRENT;
     }
   }
-
 }

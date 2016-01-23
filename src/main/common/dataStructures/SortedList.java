@@ -90,7 +90,8 @@ public class SortedList<E extends Comparable<E>> extends DeArrList<E> {
     return true;
   }
 
-  /** Adds the given element to the SortedList.
+  /**
+   * Adds the given element to the SortedList.
    * Null values are placed at the front of the list, the rest in sorted order.
    * @param elm - the element to add to the list.
    */

@@ -5,6 +5,7 @@ import functional.impl.Function2;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A simple SumType implementation. Allows the creation of the Sum Type
@@ -135,6 +136,42 @@ public class Either<A, B> {
   public B asRight() {
     if (!isLeft()) return b;
     throw new RuntimeException();
+  }
+
+  /**
+   * Maps this Either to a new Left type. Apply the function if this is truly
+   * a left, keeps this' value if this is a right.
+   */
+  public <C> Either<C,B> mapLeft(Function<A,C> f) {
+    if(isLeft()) {
+      return createLeft(f.apply(asLeft()));
+    } else {
+      return createRight(asRight());
+    }
+  }
+
+  /**
+   * Maps this Either to a new Right type. Apply the function if this is truly
+   * a right, keeps this' value if this is a left.
+   */
+  public <D> Either<A,D> mapRight(Function<B,D> f) {
+    if(isLeft()) {
+      return createLeft(asLeft());
+    } else {
+      return createRight(f.apply(asRight()));
+    }
+  }
+
+  /**
+   * Maps this Either to two new types, applying the function that applies to
+   * the true type of this Either.
+   */
+  public <C,D> Either<C,D> map(Function<A,C> f1, Function<B,D> f2) {
+    if(isLeft()) {
+      return createLeft(f1.apply(asLeft()));
+    } else {
+      return createRight(f2.apply(asRight()));
+    }
   }
 
   /**

@@ -33,7 +33,7 @@ public class UnboundedBufferTest {
   @Test
   public void testGetOnEmpty() {
     UnboundedBuffer<Integer> b = new UnboundedBuffer<>();
-    MethodRunner<Integer> m = new MethodRunner<>(() -> {
+    MethodRunner<Integer> m = MethodRunner.of(() -> {
       try {
         return b.get();
       } catch (InterruptedException e) {

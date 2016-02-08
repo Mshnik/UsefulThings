@@ -35,20 +35,12 @@ public class MethodRunner<T> {
   public static final long DEFAULT_WAIT_TIME = 1000;
   private static final long MILLIS_SLEEP_BETWEEN_UPDATES = 100;
 
-  /** Constructs a new MethodRunner that takes at most DEFAULT_WAIT_TIME ms.
-   * @param methodCall - the method call to make
-   * @throws IllegalArgumentException if methodCall == null
-   */
-  public MethodRunner(SupplierEx<T> methodCall) throws IllegalArgumentException {
-    this(methodCall, DEFAULT_WAIT_TIME);
-  }
-
   /** Construct a new MethodRunner
    * @param methodCall - the method call to make
    * @param millisToWait - the number of milliseconds to wait for methodCall to return
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public MethodRunner(SupplierEx<T> methodCall, long millisToWait) throws IllegalArgumentException {
+  private MethodRunner(SupplierEx<T> methodCall, long millisToWait) throws IllegalArgumentException {
     if(methodCall == null) {
       throw new IllegalArgumentException("Can't create timeout worker on null method call");
     }
@@ -61,13 +53,30 @@ public class MethodRunner<T> {
     this.completionMillis = -1;
   }
 
+  /** Construct a new MethodRunner
+   * @param methodCall - the method call to make
+   * @param millisToWait - the number of milliseconds to wait for methodCall to return
+   * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
+   */
+  public static <T> MethodRunner<T> of(SupplierEx<T> methodCall, long millisToWait) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall, millisToWait);
+  }
+
+  /** Constructs a new MethodRunner that takes at most DEFAULT_WAIT_TIME ms.
+   * @param methodCall - the method call to make
+   * @throws IllegalArgumentException if methodCall == null
+   */
+  public static <T> MethodRunner<T> of(SupplierEx<T> methodCall) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall, DEFAULT_WAIT_TIME);
+  }
+
   /** Construct a new MethodRunner that takes at most DEFAULT_WAIT_TIME ms.
    * @param methodCall - the method call to make
    * @param arg - the argument to give to the method call
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A> MethodRunner(Function1Ex<A, T> methodCall, A arg) throws IllegalArgumentException {
-    this(methodCall.partialApply(arg));
+  public static <T, A> MethodRunner<T> of(Function1Ex<A, T> methodCall, A arg) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall.partialApply(arg), DEFAULT_WAIT_TIME);
   }
 
   /** Construct a new MethodRunner
@@ -76,8 +85,8 @@ public class MethodRunner<T> {
    * @param millisToWait - the number of milliseconds to wait for methodCall to return
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A> MethodRunner(Function1Ex<A, T> methodCall, A arg, long millisToWait) throws IllegalArgumentException {
-    this(methodCall.partialApply(arg), millisToWait);
+  public static <T, A> MethodRunner<T> of(Function1Ex<A, T> methodCall, A arg, long millisToWait) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall.partialApply(arg), millisToWait);
   }
 
   /** Construct a new MethodRunner that takes at most DEFAULT_WAIT_TIME ms.
@@ -86,8 +95,8 @@ public class MethodRunner<T> {
    * @param arg2 - the second argument to give to the method call
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B> MethodRunner(Function2Ex<A, B, T> methodCall, A arg, B arg2) throws IllegalArgumentException {
-    this(methodCall.partialApply(arg, arg2));
+  public static <T, A, B> MethodRunner<T> of(Function2Ex<A, B, T> methodCall, A arg, B arg2) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall.partialApply(arg, arg2), DEFAULT_WAIT_TIME);
   }
 
   /** Construct a new MethodRunner
@@ -97,8 +106,8 @@ public class MethodRunner<T> {
    * @param millisToWait - the number of milliseconds to wait for methodCall to return
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B> MethodRunner(Function2Ex<A, B, T> methodCall, A arg, B arg2, long millisToWait) throws IllegalArgumentException {
-    this(methodCall.partialApply(arg, arg2), millisToWait);
+  public static <T, A, B> MethodRunner<T> of(Function2Ex<A, B, T> methodCall, A arg, B arg2, long millisToWait) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall.partialApply(arg, arg2), millisToWait);
   }
 
   /** Construct a new MethodRunner that takes at most DEFAULT_WAIT_TIME ms.
@@ -108,8 +117,8 @@ public class MethodRunner<T> {
    * @param arg3 - the third argument to give to the method call
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B,C> MethodRunner(Function3Ex<A, B, C, T> methodCall, A arg, B arg2, C arg3) throws IllegalArgumentException {
-    this(methodCall.partialApply(arg, arg2, arg3));
+  public static <T, A, B, C> MethodRunner<T> of(Function3Ex<A, B, C, T> methodCall, A arg, B arg2, C arg3) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall.partialApply(arg, arg2, arg3), DEFAULT_WAIT_TIME);
   }
 
   /** Construct a new MethodRunner
@@ -120,18 +129,22 @@ public class MethodRunner<T> {
    * @param millisToWait - the number of milliseconds to wait for methodCall to return
    * @throws IllegalArgumentException - if methodCall == null, or millisToWait <= 0
    */
-  public <A,B,C> MethodRunner(Function3Ex<A, B, C, T> methodCall, A arg, B arg2, C arg3, long millisToWait) throws IllegalArgumentException {
-    this(methodCall.partialApply(arg, arg2, arg3), millisToWait);
+  public static <T, A, B, C> MethodRunner<T> of(Function3Ex<A, B, C, T> methodCall, A arg, B arg2, C arg3, long millisToWait) throws IllegalArgumentException {
+    return new MethodRunner<T>(methodCall.partialApply(arg, arg2, arg3), millisToWait);
   }
 
   /** Runs the method call for up to {@code millisToWait} milliseconds,
    * then returns the result. If the call was interrupted, null will be returned.
    * This method can be invoked multiple times to make the same method call multiple times,
    * but the result of the first call will be forgotten upon making the second call.
+   * <br/>
+   * If the timeout is reached, the worker thread is stopped (unsafely). Thus, the worker thread
+   * should not perform any inherently unsafe for parking operations (like locking).
    *
    * @return the result if it was computed, the throwable if an exception or error occurred, or null if
    *    the call was terminated due to timeout or if the worker thread was somehow interrupted.
    */
+  @SuppressWarnings("deprecation")
   private Either<Throwable,T> runAndGet() {
     done = false;
     halted = false;

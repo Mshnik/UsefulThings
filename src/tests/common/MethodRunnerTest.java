@@ -11,16 +11,16 @@ public class MethodRunnerTest {
 
   @Test
   public void testConstruction() {
-    Function1Ex<SupplierEx<Object>, MethodRunner<Object>> c = MethodRunner::new;
-    Function2Ex<SupplierEx<Object>, Long, MethodRunner<Object>> c2 = MethodRunner::new;
+    Function1Ex<SupplierEx<Object>, MethodRunner<Object>> c = MethodRunner::of;
+    Function2Ex<SupplierEx<Object>, Long, MethodRunner<Object>> c2 = MethodRunner::of;
     shouldFail(c, null);
     shouldFail(c2, null, -5L);
     shouldFail(c2, null, 100L);
     shouldFail(c2, () -> null, -5L);
 
     try{
-      new MethodRunner<>(() -> "");
-      new MethodRunner<>(() -> null, 5);
+      MethodRunner.of(() -> "");
+      MethodRunner.of(() -> null, 5);
     }catch(IllegalArgumentException e) {
       fail("Valid construction failed");
     }
@@ -28,7 +28,7 @@ public class MethodRunnerTest {
 
   @Test
   public void testValidRunning() {
-    MethodRunner<Integer> mR = new MethodRunner<Integer>(() -> 10);
+    MethodRunner<Integer> mR = MethodRunner.of(() -> 10);
 
     assertEquals(new Integer(10), mR.get().asRight());
     try {
@@ -38,7 +38,7 @@ public class MethodRunnerTest {
     }
     assertTrue(mR.getCompletionMillis() < MethodRunner.DEFAULT_WAIT_TIME);
 
-    MethodRunner<Integer> mR2 = new MethodRunner<>(() -> 15);
+    MethodRunner<Integer> mR2 = MethodRunner.of(() -> 15);
 
     assertEquals(new Integer(15), mR2.get().asRight());
     try {
@@ -56,7 +56,7 @@ public class MethodRunnerTest {
 
   @Test
   public void testExceptionThrown() {
-    MethodRunner<Integer> mR = new MethodRunner<>(MethodRunnerTest::throwsException);
+    MethodRunner<Integer> mR = MethodRunner.of(MethodRunnerTest::throwsException);
     assertEquals("Message here", mR.get().asLeft().getMessage());
 
     try {
@@ -68,7 +68,7 @@ public class MethodRunnerTest {
     assertTrue(mR.getCompletionMillis() < MethodRunner.DEFAULT_WAIT_TIME);
 
 
-    MethodRunner<Integer> mR2 = new MethodRunner<>(MethodRunnerTest::throwsException);
+    MethodRunner<Integer> mR2 = MethodRunner.of(MethodRunnerTest::throwsException);
 
     try {
       mR2.getOrThrow();
@@ -88,7 +88,7 @@ public class MethodRunnerTest {
 
   @Test
   public void testStackOverflow() {
-    MethodRunner<Integer> mR = new MethodRunner<>(MethodRunnerTest::stackOverflows, false);
+    MethodRunner<Integer> mR = MethodRunner.of(MethodRunnerTest::stackOverflows, false);
     assertEquals(StackOverflowError.class, mR.get().asLeft().getClass());
 
     try {
@@ -99,7 +99,7 @@ public class MethodRunnerTest {
     }
     assertTrue(mR.getCompletionMillis() < MethodRunner.DEFAULT_WAIT_TIME);
 
-    MethodRunner<Integer> mR2 = new MethodRunner<>(MethodRunnerTest::stackOverflows, false);
+    MethodRunner<Integer> mR2 = MethodRunner.of(MethodRunnerTest::stackOverflows, false);
 
     try {
       mR2.getOrThrow();
@@ -120,7 +120,7 @@ public class MethodRunnerTest {
   @Test
   public void testInfiniteLoop() {
     final long WAIT_TIME = 500L;
-    MethodRunner<Integer> mR = new MethodRunner<>(MethodRunnerTest::loopForever, WAIT_TIME);
+    MethodRunner<Integer> mR = MethodRunner.of(MethodRunnerTest::loopForever, WAIT_TIME);
     assertEquals(null, mR.get());
     try {
       assertEquals(null, mR.getOrThrow());
@@ -129,7 +129,7 @@ public class MethodRunnerTest {
     }
     assertTrue(mR.getCompletionMillis() >= WAIT_TIME);
 
-    MethodRunner<Integer> mR2 = new MethodRunner<>(MethodRunnerTest::loopForever, WAIT_TIME);
+    MethodRunner<Integer> mR2 = MethodRunner.of(MethodRunnerTest::loopForever, WAIT_TIME);
     try {
       assertEquals(null, mR2.getOrThrow());
     }catch(Throwable t) {

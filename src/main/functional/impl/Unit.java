@@ -11,7 +11,7 @@ public interface Unit extends _0ArgShell, _NonReturnShell, UnitEx, _NonExShell {
 	void apply();
 
   default UnitEx asEx() {
-    return this::apply;
+    return this;
   }
 
 	default Unit discardReturn() {
@@ -37,9 +37,5 @@ public interface Unit extends _0ArgShell, _NonReturnShell, UnitEx, _NonExShell {
       apply();
       next.apply();
     };
-  }
-
-	default Supplier<? extends Unit> asResult() {
-    return () -> this;
   }
 }

@@ -8,11 +8,11 @@ import functional.impl.ex.Function3Ex;
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell<R>, _NonExShell {
+public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell<R>, _NonExShell, Function3Ex<A, B, C, R> {
   R apply(A a, B B, C c);
 
   default Function3Ex<A, B, C, R> asEx() {
-    return this::apply;
+    return this;
   }
 
   default Function2<B, C, R> partialApply(A a) {
@@ -71,7 +71,7 @@ public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell
     return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  default <S> Function3<A, B, C, S> andThen(java.util.function.Function<? super R, ? extends S> next) {
+  default <S> Function3<A, B, C, S> andThen(Function1<? super R, ? extends S> next) {
     Objects.requireNonNull(next);
     return (a, b, c) -> next.apply(apply(a, b, c));
   }
@@ -81,7 +81,7 @@ public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell
   }
 
   default Consumer3<A, B, C> discardReturn() {
-    return (a, b, c) -> apply(a, b, c);
+    return this::apply;
   }
 
   default Function3<A, B, C, R> butFirst(Unit before) {

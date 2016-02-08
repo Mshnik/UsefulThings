@@ -8,7 +8,7 @@ import functional.impl.ex.Function1Ex;
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Function1<A, R> extends java.util.function.Function<A, R>, _1ArgShell<A>, _ReturnShell<R>, _NonExShell {
+public interface Function1<A, R> extends java.util.function.Function<A, R>, _1ArgShell<A>, _ReturnShell<R>, _NonExShell, Function1Ex<A, R> {
   R apply(A a);
 
   default Function1Ex<A, R> asEx() {
@@ -24,15 +24,15 @@ public interface Function1<A, R> extends java.util.function.Function<A, R>, _1Ar
   }
 
   default Consumer1<A> discardReturn() {
-    return (a) -> apply(a);
+    return this::apply;
   }
 
-  default <V> Function1<V, R> compose(java.util.function.Function<? super V, ? extends A> before) {
+  default <V> Function1<V, R> compose(Function1<? super V, ? extends A> before) {
     Objects.requireNonNull(before);
     return (V v) -> apply(before.apply(v));
   }
 
-  default <V> Function1<A, V> andThen(java.util.function.Function<? super R, ? extends V> after) {
+  default <V> Function1<A, V> andThen(Function1<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (a) -> after.apply(apply(a));
   }

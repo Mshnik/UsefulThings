@@ -6,11 +6,11 @@ import functional._NonReturnShell;
 import functional.impl.ex.Consumer2Ex;
 
 @FunctionalInterface
-public interface Consumer2<A, B> extends java.util.function.BiConsumer<A, B>, _2ArgShell<A, B>, _NonReturnShell, _NonExShell {
+public interface Consumer2<A, B> extends java.util.function.BiConsumer<A, B>, _2ArgShell<A, B>, _NonReturnShell, _NonExShell, Consumer2Ex<A, B> {
   void apply(A a, B b);
 
   default Consumer2Ex<A, B> asEx() {
-    return this::apply;
+    return this;
   }
 
   default void accept(A a, B b) {

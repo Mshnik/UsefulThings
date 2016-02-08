@@ -6,11 +6,11 @@ import functional._ReturnShell;
 import functional.impl.ex.SupplierEx;
 
 @FunctionalInterface
-public interface Supplier<R> extends java.util.function.Supplier<R>, _0ArgShell, _ReturnShell<R>, _NonExShell {
+public interface Supplier<R> extends java.util.function.Supplier<R>, _0ArgShell, _ReturnShell<R>, _NonExShell, SupplierEx<R> {
   R apply();
 
   default SupplierEx<R> asEx() {
-    return this::apply;
+    return this;
   }
 
   default R get() {

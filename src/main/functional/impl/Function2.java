@@ -8,11 +8,11 @@ import functional.impl.ex.Function2Ex;
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, R>, _2ArgShell<A, B>, _ReturnShell<R>, _NonExShell {
+public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, R>, _2ArgShell<A, B>, _ReturnShell<R>, _NonExShell, Function2Ex<A, B, R> {
   R apply(A a, B b);
 
   default Function2Ex<A, B, R> asEx() {
-    return this::apply;
+    return this;
   }
 
   default Function1<B, R> partialApply(A a) {
@@ -44,10 +44,10 @@ public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, 
   }
 
   default Consumer2<A, B> discardReturn() {
-    return (a, b) -> apply(a, b);
+    return this::apply;
   }
 
-  default <V> Function2<A, B, V> andThen(java.util.function.Function<? super R, ? extends V> after) {
+  default <V> Function2<A, B, V> andThen(Function1<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (a, b) -> after.apply(apply(a, b));
   }

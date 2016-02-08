@@ -8,7 +8,7 @@ import functional.impl.ex.Consumer3Ex;
 import java.util.Objects;
 
 @FunctionalInterface
-public interface Consumer3<A, B, C> extends _3ArgShell<A, B, C>, _NonReturnShell, _NonExShell {
+public interface Consumer3<A, B, C> extends _3ArgShell<A, B, C>, _NonReturnShell, _NonExShell, Consumer3Ex<A, B, C> {
   void apply(A a, B b, C c);
 
   default Consumer3Ex<A, B, C> asEx() {

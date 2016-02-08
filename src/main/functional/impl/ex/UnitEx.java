@@ -58,9 +58,4 @@ public interface UnitEx extends _ExShell, _0ArgShell, _NonReturnShell {
       next.apply();
     };
   }
-
-  default Supplier<? extends UnitEx> asResult() {
-    return () -> this;
-  }
-
 }

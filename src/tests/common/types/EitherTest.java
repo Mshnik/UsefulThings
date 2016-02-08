@@ -85,18 +85,20 @@ public class EitherTest {
   }
 
   @Test
-  public void testMap() {
+  public void testMapAndReduce() {
     Either<String, Character> e = Either.createLeft("Hello");
     Either<Integer, Integer> e2 = e.map(String::length, Character::getNumericValue);
     Either<Integer, Character> e22 = e.mapLeft(String::length);
     assertEquals(5, e2.asLeft());
     assertEquals(5, e22.asLeft());
+    assertEquals(5, e.reduce(String::length, Character::getNumericValue));
 
     Either<Character, String> e3 = Either.createRight("Hello");
     Either<Integer, Integer> e4 = e3.map(Character::getNumericValue, String::length);
     Either<Character, Integer> e44 = e3.mapRight(String::length);
     assertEquals(5, e4.asRight());
     assertEquals(5, e44.asRight());
+    assertEquals(5, e3.reduce(Character::getNumericValue, String::length));
   }
 
 }

@@ -174,6 +174,16 @@ public class Either<A, B> {
     }
   }
 
+  /** Reduces this Either to a single value of type C by applying the applicable function
+   */
+  public <C> C reduce(Function<A,C> f1, Function<B,C> f2) {
+    if(isLeft()) {
+      return f1.apply(asLeft());
+    } else {
+      return f2.apply(asRight());
+    }
+  }
+
   /**
    * Returns the Object stored within this Either.
    */
@@ -208,13 +218,9 @@ public class Either<A, B> {
   @Override
   public boolean equals(Object o) {
     if(this == o) return true;
-    if(o == null) return false;
-    try {
-      Either<?, ?> e = (Either<?, ?>) o;
-      return (!(isLeft ^ e.isLeft)) && Objects.equals(getVal(), e.getVal());
-    } catch (ClassCastException e) {
-      return false;
-    }
+    if(o == null || ! (o instanceof Either<?, ?>)) return false;
+    Either<?, ?> e = (Either<?, ?>) o;
+    return (!(isLeft ^ e.isLeft)) && Objects.equals(getVal(), e.getVal());
   }
 
   /**

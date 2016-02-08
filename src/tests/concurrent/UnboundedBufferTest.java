@@ -39,7 +39,7 @@ public class UnboundedBufferTest {
       } catch (InterruptedException e) {
         return -1;
       }
-    }, 100);
+    }).withWaitTime(100);
 
     assertEquals(null, m.get());
   }

@@ -1,5 +1,6 @@
 package common;
 
+import functional.impl.Unit;
 import functional.impl.ex.Function1Ex;
 import functional.impl.ex.Function2Ex;
 import functional.impl.ex.SupplierEx;
@@ -12,18 +13,15 @@ public class MethodRunnerTest {
   @Test
   public void testConstruction() {
     Function1Ex<SupplierEx<Object>, MethodRunner<Object>> c = MethodRunner::of;
-    Function2Ex<SupplierEx<Object>, Long, MethodRunner<Object>> c2 = MethodRunner::of;
     shouldFail(c, null);
-    shouldFail(c2, null, -5L);
-    shouldFail(c2, null, 100L);
-    shouldFail(c2, () -> null, -5L);
-
     try{
       MethodRunner.of(() -> "");
-      MethodRunner.of(() -> null, 5);
     }catch(IllegalArgumentException e) {
       fail("Valid construction failed");
     }
+
+    MethodRunner<Object> m = MethodRunner.of(() -> "hello");
+    shouldFail(m::withWaitTime, -5L);
   }
 
   @Test
@@ -120,7 +118,7 @@ public class MethodRunnerTest {
   @Test
   public void testInfiniteLoop() {
     final long WAIT_TIME = 500L;
-    MethodRunner<Integer> mR = MethodRunner.of(MethodRunnerTest::loopForever, WAIT_TIME);
+    MethodRunner<Integer> mR = MethodRunner.of(MethodRunnerTest::loopForever).withWaitTime(WAIT_TIME);
     assertEquals(null, mR.get());
     try {
       assertEquals(null, mR.getOrThrow());
@@ -129,7 +127,7 @@ public class MethodRunnerTest {
     }
     assertTrue(mR.getCompletionMillis() >= WAIT_TIME);
 
-    MethodRunner<Integer> mR2 = MethodRunner.of(MethodRunnerTest::loopForever, WAIT_TIME);
+    MethodRunner<Integer> mR2 = MethodRunner.of(MethodRunnerTest::loopForever).withWaitTime(WAIT_TIME);
     try {
       assertEquals(null, mR2.getOrThrow());
     }catch(Throwable t) {
@@ -137,5 +135,22 @@ public class MethodRunnerTest {
     }
     assertEquals(null, mR2.get());
     assertTrue(mR2.getCompletionMillis() >= WAIT_TIME);
+  }
+
+  private static class MutableClass {
+    int x;
+  }
+
+  @Test
+  public void testAbortHandler() {
+    final long WAIT_TIME = 100L;
+    MutableClass m = new MutableClass();
+    Unit abortHandler = () -> {m.x++;};
+    MethodRunner<Integer> mr = MethodRunner.of(MethodRunnerTest::loopForever).withWaitTime(WAIT_TIME).withAbortHandler(abortHandler);
+    mr.get();
+    assertEquals(1, m.x);
+
+    mr.get();
+    assertEquals(1, m.x);
   }
 }

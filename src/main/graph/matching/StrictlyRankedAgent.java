@@ -1,16 +1,13 @@
 package graph.matching;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //TODO - SPEC
 public interface StrictlyRankedAgent<X> extends RankedAgent<X> {
 
   /** Return a StrictlyRankedAgent with the given map of preferences */
   public static <X> StrictlyRankedAgent<X> create(List<X> items) {
-    final List<X> itemsCpy = Collections.unmodifiableList(items);
+    final List<X> itemsCpy = Collections.unmodifiableList(new ArrayList<>(items));
     return () -> itemsCpy;
   }
 

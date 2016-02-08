@@ -8,7 +8,7 @@ public interface RankedAgent<X> extends Agent<X> {
 
   /** Return a RankedAgent with the given map of preferences */
   public static <X> RankedAgent<X> create(Map<X, Integer> items) {
-    final Map<X, Integer> itemsCpy = Collections.unmodifiableMap(items);
+    final Map<X, Integer> itemsCpy = Collections.unmodifiableMap(new HashMap<>(items));
     return () -> itemsCpy;
   }
 

@@ -1,6 +1,7 @@
 package graph.matching;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 //TODO - SPEC
@@ -8,7 +9,7 @@ public interface Agent<X> {
 
   /** Return an agent that finds the given set of items acceptable */
   public static <X> Agent<X> create(Set<X> items) {
-    final Set<X> itemsCpy = Collections.unmodifiableSet(items);
+    final Set<X> itemsCpy = Collections.unmodifiableSet(new HashSet<>(items));
     return () -> itemsCpy;
   }
 

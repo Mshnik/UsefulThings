@@ -83,11 +83,11 @@ public interface Consumer3<A, B, C> extends _3ArgShell<A, B, C>, _NonReturnShell
     return this;
   }
 
-  default Consumer3<A, B, C> andThen(Consumer3<? super A, ? super B, ? super C> after) {
+  default Consumer3<A, B, C> andThen(Unit after) {
     Objects.requireNonNull(after);
     return (a, b, c) -> {
       apply(a, b, c);
-      after.apply(a, b, c);
+      after.apply();
     };
   }
 

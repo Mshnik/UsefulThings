@@ -66,9 +66,25 @@ public interface Function2Ex<A, B, R> extends _ExShell, _2ArgShell<A, B>, _Retur
     return this::apply;
   }
 
-  default <V> Function2Ex<A, B, V> andThen(Function1Ex<? super R, ? extends V> after) {
+  default <V> Function2Ex<A, B, V> compose(Function1Ex<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (a, b) -> after.apply(apply(a, b));
+  }
+
+  default Function2Ex<A, B, R> andThen(UnitEx after) {
+    return (a, b) -> {
+      R r = apply(a, b);
+      after.apply();
+      return r;
+    };
+  }
+
+  default Function2Ex<A, B, R> andThen(Unit after) {
+    return (a, b) -> {
+      R r = apply(a, b);
+      after.apply();
+      return r;
+    };
   }
 
   default Function2Ex<A, B, R> butFirst(UnitEx before) {

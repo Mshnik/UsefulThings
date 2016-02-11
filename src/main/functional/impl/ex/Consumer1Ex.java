@@ -37,6 +37,13 @@ public interface Consumer1Ex<A> extends _ExShell, _NonReturnShell, _1ArgShell<A>
 		return this;
 	}
 
+  default Consumer1Ex<A> andThen(Unit after) {
+    return (a) -> {
+      apply(a);
+      after.apply();
+    };
+  }
+
 	default Consumer1Ex<A> butFirst(Unit before) {
 		return (a) -> {
 			before.apply();

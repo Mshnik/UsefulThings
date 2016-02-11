@@ -71,7 +71,7 @@ public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell
     return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  default <S> Function3<A, B, C, S> andThen(Function1<? super R, ? extends S> next) {
+  default <S> Function3<A, B, C, S> compose(Function1<? super R, ? extends S> next) {
     Objects.requireNonNull(next);
     return (a, b, c) -> next.apply(apply(a, b, c));
   }
@@ -82,6 +82,14 @@ public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell
 
   default Consumer3<A, B, C> discardReturn() {
     return this::apply;
+  }
+
+  default Function3<A, B, C, R> andThen(Unit after) {
+    return (a, b, c) -> {
+      R r = apply(a,b,c);
+      after.apply();
+      return r;
+    };
   }
 
   default Function3<A, B, C, R> butFirst(Unit before) {

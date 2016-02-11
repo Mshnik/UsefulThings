@@ -21,6 +21,14 @@ public interface Supplier<R> extends java.util.function.Supplier<R>, _0ArgShell,
     return () -> apply();
   }
 
+  default Supplier<R> andThen(Unit after) {
+    return () -> {
+      R r = apply();
+      after.apply();
+      return r;
+    };
+  }
+
   default Supplier<R> butFirst(Unit before) {
     return () -> {
       before.apply();

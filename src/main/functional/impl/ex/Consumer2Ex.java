@@ -58,6 +58,13 @@ public interface Consumer2Ex<A, B> extends _ExShell, _2ArgShell<A, B>, _NonRetur
     return this;
   }
 
+  default Consumer2Ex<A, B> andThen(Unit after) {
+    return (a, b) -> {
+      apply(a, b);
+      after.apply();
+    };
+  }
+
   default Consumer2Ex<A, B> butFirst(Unit before) {
     return (a, b) -> {
       before.apply();

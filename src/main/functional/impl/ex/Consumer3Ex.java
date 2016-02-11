@@ -89,11 +89,18 @@ public interface Consumer3Ex<A, B, C> extends _ExShell, _3ArgShell<A, B, C>, _No
     return this;
   }
 
-  default Consumer3Ex<A, B, C> andThen(Consumer3Ex<? super A, ? super B, ? super C> after) {
+  default Consumer3Ex<A, B, C> compose(Consumer3Ex<? super A, ? super B, ? super C> after) {
     Objects.requireNonNull(after);
     return (a, b, c) -> {
       apply(a, b, c);
       after.apply(a, b, c);
+    };
+  }
+
+  default Consumer3Ex<A, B, C> andThen(Unit after) {
+    return (a, b, c) -> {
+      apply(a, b, c);
+      after.apply();
     };
   }
 

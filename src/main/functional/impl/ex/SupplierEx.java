@@ -43,6 +43,14 @@ public interface SupplierEx<R> extends _ExShell, _0ArgShell, _ReturnShell<R> {
     return this::apply;
   }
 
+  default SupplierEx<R> andThen(Unit after) {
+    return () -> {
+      R r = apply();
+      after.apply();
+      return r;
+    };
+  }
+
   default SupplierEx<R> butFirst(Unit before) {
     return () -> {
       before.apply();

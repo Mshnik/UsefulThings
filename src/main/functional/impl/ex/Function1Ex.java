@@ -52,9 +52,20 @@ public interface Function1Ex<A, R> extends _ExShell, _1ArgShell<A>, _ReturnShell
     return (V v) -> apply(before.apply(v));
   }
 
-  default <V> Function1Ex<A, V> andThen(Function1Ex<? super R, ? extends V> after) {
-    Objects.requireNonNull(after);
-    return (a) -> after.apply(apply(a));
+  default Function1Ex<A, R> andThen(UnitEx after) {
+    return (a) -> {
+      R r = apply(a);
+      after.apply();
+      return r;
+    };
+  }
+
+  default Function1Ex<A, R> andThen(Unit after) {
+    return (a) -> {
+      R r = apply(a);
+      after.apply();
+      return r;
+    };
   }
 
   default Function1Ex<A, R> butFirst(UnitEx before) {

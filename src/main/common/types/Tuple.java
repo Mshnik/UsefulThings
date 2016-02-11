@@ -196,7 +196,7 @@ public abstract class Tuple implements Cloneable, Iterable<Object>, Serializable
   }
 
   /** Return true iff this tuple contains all of the values in the given collection */
-  public boolean containsAll(Collection<?> col) {
+  public boolean containsAll(Iterable<?> col) {
     for(Object o : col) {
       if(! contains(o)) return false;
     }

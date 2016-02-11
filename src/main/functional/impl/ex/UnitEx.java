@@ -58,4 +58,11 @@ public interface UnitEx extends _ExShell, _0ArgShell, _NonReturnShell {
       next.apply();
     };
   }
+
+  default UnitEx andThen(Unit next) {
+    return () -> {
+      apply();
+      next.apply();
+    };
+  }
 }

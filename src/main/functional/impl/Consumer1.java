@@ -29,6 +29,13 @@ public interface Consumer1<A> extends java.util.function.Consumer<A>, _1ArgShell
 		return this;
 	}
 
+  default Consumer1<A> andThen(Unit after) {
+    return (a) -> {
+      apply(a);
+      after.apply();
+    };
+  }
+
 	default Consumer1<A> butFirst(Unit before) {
 		return (a) -> {
 			before.apply();

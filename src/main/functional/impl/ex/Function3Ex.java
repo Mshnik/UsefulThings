@@ -87,7 +87,7 @@ public interface Function3Ex<A, B, C, R> extends _ExShell, _3ArgShell<A, B, C>, 
     return lazyApply(aSupplier).lazyApply(bSupplier).lazyApply(cSupplier);
   }
 
-  default <S> Function3Ex<A, B, C, S> andThen(java.util.function.Function<? super R, ? extends S> next) {
+  default <S> Function3Ex<A, B, C, S> compose(java.util.function.Function<? super R, ? extends S> next) {
     Objects.requireNonNull(next);
     return (a, b, c) -> next.apply(apply(a, b, c));
   }
@@ -98,6 +98,14 @@ public interface Function3Ex<A, B, C, R> extends _ExShell, _3ArgShell<A, B, C>, 
 
   default Consumer3Ex<A, B, C> discardReturn() {
     return this::apply;
+  }
+
+  default Function3Ex<A, B, C, R> andThen(Unit after) {
+    return (a, b, c) -> {
+      R r = apply(a, b, c);
+      after.apply();
+      return r;
+    };
   }
 
   default Function3Ex<A, B, C, R> butFirst(Unit before) {

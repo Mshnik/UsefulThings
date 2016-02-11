@@ -26,6 +26,10 @@ public class ScannerUtils {
     return new Scanner(System.in);
   }
 
+  public static <T> T get(Class<T> clazz, Scanner s) {
+    return get(clazz, s, "", "", (t) -> true);
+  }
+
   public static <T> T get(Class<T> clazz, Scanner s, String prompt, String failMessage) {
     return get(clazz, s, prompt, failMessage, (t) -> true);
   }

@@ -47,9 +47,17 @@ public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, 
     return this::apply;
   }
 
-  default <V> Function2<A, B, V> andThen(Function1<? super R, ? extends V> after) {
+  default <V> Function2<A, B, V> compose(Function1<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (a, b) -> after.apply(apply(a, b));
+  }
+
+  default Function2<A, B, R> andThen(Unit after) {
+    return (a, b) -> {
+      R r = apply(a,b);
+      after.apply();
+      return r;
+    };
   }
 
   default Function2<A, B, R> butFirst(Unit before) {

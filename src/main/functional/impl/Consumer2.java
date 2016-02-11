@@ -49,6 +49,13 @@ public interface Consumer2<A, B> extends java.util.function.BiConsumer<A, B>, _2
     return this;
   }
 
+  default Consumer2<A, B> andThen(Unit after) {
+    return (a, b) -> {
+      apply(a, b);
+      after.apply();
+    };
+  }
+
   default Consumer2<A, B> butFirst(Unit before) {
     return (a, b) -> {
       before.apply();

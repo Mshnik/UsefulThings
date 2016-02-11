@@ -32,9 +32,12 @@ public interface Function1<A, R> extends java.util.function.Function<A, R>, _1Ar
     return (V v) -> apply(before.apply(v));
   }
 
-  default <V> Function1<A, V> andThen(Function1<? super R, ? extends V> after) {
-    Objects.requireNonNull(after);
-    return (a) -> after.apply(apply(a));
+  default Function1<A, R> andThen(Unit after) {
+    return (a) -> {
+      R r = apply(a);
+      after.apply();
+      return r;
+    };
   }
 
   default Function1<A, R> butFirst(Unit before) {

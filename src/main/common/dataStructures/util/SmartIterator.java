@@ -9,6 +9,7 @@ import functional.impl.Supplier;
 public class SmartIterator<T> implements Iterator<T> {
 
   private Iterator<T> wrappedIter;
+  private int nextCount;
   private int expectedModCount;
   private Supplier<Integer> modCountSupplier;
 
@@ -20,6 +21,7 @@ public class SmartIterator<T> implements Iterator<T> {
     wrappedIter = iter;
     modCountSupplier = getExpectedModCount;
     expectedModCount = getExpectedModCount.apply();
+    nextCount = 0;
   }
 
   @Override
@@ -41,4 +43,7 @@ public class SmartIterator<T> implements Iterator<T> {
     expectedModCount = modCountSupplier.apply();
   }
 
+  public int getNextCount() {
+    return nextCount;
+  }
 }

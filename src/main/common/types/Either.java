@@ -220,7 +220,7 @@ public class Either<A, B> {
     if(this == o) return true;
     if(o == null || ! (o instanceof Either<?, ?>)) return false;
     Either<?, ?> e = (Either<?, ?>) o;
-    return (!(isLeft ^ e.isLeft)) && Objects.equals(getVal(), e.getVal());
+    return (isLeft == e.isLeft) && Objects.equals(getVal(), e.getVal());
   }
 
   /**

@@ -32,6 +32,10 @@ public class Either<A, B> {
     this.isLeft = isLeft;
     this.a = a;
     this.b = b;
+
+    if(a != null && b != null || isLeft && b != null || !isLeft && a != null) {
+      throw new IllegalArgumentException("Illegal Either Construction " + this);
+    }
   }
 
   /** Creates a Either instance of the given A */

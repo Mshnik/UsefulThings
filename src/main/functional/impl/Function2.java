@@ -1,5 +1,6 @@
 package functional.impl;
 
+import common.types.Tuple2;
 import functional._2ArgShell;
 import functional._NonExShell;
 import functional._ReturnShell;
@@ -10,6 +11,10 @@ import java.util.Objects;
 @FunctionalInterface
 public interface Function2<A, B, R> extends java.util.function.BiFunction<A, B, R>, _2ArgShell<A, B>, _ReturnShell<R>, _NonExShell, Function2Ex<A, B, R> {
   R apply(A a, B b);
+
+  default R apply(Tuple2<A,B> t) {
+    return apply(t._1, t._2);
+  }
 
   default Function2Ex<A, B, R> asEx() {
     return this;

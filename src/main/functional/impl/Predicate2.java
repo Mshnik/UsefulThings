@@ -7,8 +7,6 @@ import functional.impl.ex.Function2Ex;
 import java.util.Objects;
 
 public interface Predicate2<A, B> extends java.util.function.BiPredicate<A, B>, Function2<A, B, Boolean>, _ReturnShell<Boolean>, _NonExShell {
-  Boolean apply(A a, B b);
-
   default Function2Ex<A, B, Boolean> asEx() {
     return this::apply;
   }

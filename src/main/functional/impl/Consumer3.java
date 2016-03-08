@@ -1,5 +1,6 @@
 package functional.impl;
 
+import common.types.Tuple3;
 import functional._3ArgShell;
 import functional._NonExShell;
 import functional._NonReturnShell;
@@ -10,6 +11,10 @@ import java.util.Objects;
 @FunctionalInterface
 public interface Consumer3<A, B, C> extends _3ArgShell<A, B, C>, _NonReturnShell, _NonExShell, Consumer3Ex<A, B, C> {
   void apply(A a, B b, C c);
+
+  default void apply(Tuple3<A,B,C> t) {
+    apply(t._1, t._2, t._3);
+  }
 
   default Consumer3Ex<A, B, C> asEx() {
     return this::apply;

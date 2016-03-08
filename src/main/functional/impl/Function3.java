@@ -1,5 +1,6 @@
 package functional.impl;
 
+import common.types.Tuple3;
 import functional._3ArgShell;
 import functional._NonExShell;
 import functional._ReturnShell;
@@ -10,6 +11,10 @@ import java.util.Objects;
 @FunctionalInterface
 public interface Function3<A, B, C, R> extends _3ArgShell<A, B, C>, _ReturnShell<R>, _NonExShell, Function3Ex<A, B, C, R> {
   R apply(A a, B B, C c);
+
+  default R apply(Tuple3<A,B,C> t) {
+    return apply(t._1, t._2, t._3);
+  }
 
   default Function3Ex<A, B, C, R> asEx() {
     return this;

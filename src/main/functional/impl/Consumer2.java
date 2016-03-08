@@ -1,5 +1,6 @@
 package functional.impl;
 
+import common.types.Tuple2;
 import functional._2ArgShell;
 import functional._NonExShell;
 import functional._NonReturnShell;
@@ -8,6 +9,10 @@ import functional.impl.ex.Consumer2Ex;
 @FunctionalInterface
 public interface Consumer2<A, B> extends java.util.function.BiConsumer<A, B>, _2ArgShell<A, B>, _NonReturnShell, _NonExShell, Consumer2Ex<A, B> {
   void apply(A a, B b);
+
+  default void apply(Tuple2<A,B> t) {
+    apply(t._1, t._2);
+  }
 
   default Consumer2Ex<A, B> asEx() {
     return this;

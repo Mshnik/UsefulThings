@@ -13,7 +13,7 @@ public class ThreadMaster<R> {
 
   private AtomicInteger nextSlaveID;
   private Supplier<R> methodCall;
-  private Map<Integer, Either<Throwable, R>> results;
+  private Map<Integer, Either<R, Throwable>> results;
 
   private AtomicInteger workersStarted;
   private AtomicInteger workersFinished;
@@ -42,11 +42,11 @@ public class ThreadMaster<R> {
     }
 
     public void run() {
-      Either<Throwable, R> result = null;
+      Either<R, Throwable> result = null;
       try {
-        result = Either.createRight(methodCall.apply());
+        result = Either.createLeft(methodCall.apply());
       } catch(Throwable t) {
-        result = Either.createLeft(t);
+        result = Either.createRight(t);
       } finally {
         synchronized (workersDoneCondition) {
           results.put(id, result);
@@ -154,16 +154,16 @@ public class ThreadMaster<R> {
     }
   }
 
-  public Map<Integer, Either<Throwable, R>> getResults() {
+  public Map<Integer, Either<R, Throwable>> getResults() {
     return new HashMap<>(results);
   }
 
-  public Either<Throwable, R> getResult(int id) {
+  public Either<R, Throwable> getResult(int id) {
     return results.get(id);
   }
 
-  public <X> X reduceResults(X initial, Function2<X, Either<Throwable, R>, X> f) {
-    for(Either<Throwable, R> e : results.values()) {
+  public <X> X reduceResults(X initial, Function2<X, Either<R, Throwable>, X> f) {
+    for(Either<R, Throwable> e : results.values()) {
       initial = f.apply(initial, e);
     }
     return initial;

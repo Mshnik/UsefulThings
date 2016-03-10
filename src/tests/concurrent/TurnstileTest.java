@@ -45,7 +45,7 @@ public class TurnstileTest {
 
     int id = master.spawnWorker(method.partialApply(t, finishCount));
     master.waitForWorkers();
-    assertEquals(1, master.getResult(id).asRight());
+    assertEquals(1, master.getResult(id).asLeft());
   }
 
   @Test
@@ -60,7 +60,7 @@ public class TurnstileTest {
     }
     master.waitForWorkers();
     for(int i = 0; i < id.length; i++) {
-      assertEquals(id.length, master.getResult(id[i]).asRight());
+      assertEquals(id.length, master.getResult(id[i]).asLeft());
     }
   }
 
@@ -72,7 +72,7 @@ public class TurnstileTest {
 
     int id = master.spawnWorker(method2.partialApply(t, finishCount));
     master.waitForWorkers();
-    assertEquals("12345", master.getResult(id).asRight());
+    assertEquals("12345", master.getResult(id).asLeft());
   }
 
   @Test
@@ -87,7 +87,7 @@ public class TurnstileTest {
     }
     master.waitForWorkers();
     for(int i = 0; i < id.length; i++) {
-      assertEquals("510152025", master.getResult(id[i]).asRight());
+      assertEquals("510152025", master.getResult(id[i]).asLeft());
     }
   }
 

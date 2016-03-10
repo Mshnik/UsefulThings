@@ -15,12 +15,12 @@ public class ThreadMasterTest {
     ThreadMaster<Integer> t = new ThreadMaster<>();
     int id = t.spawnWorker(() -> 5);
     t.waitForWorker(id);
-    assertEquals(5, t.getResult(id).asRight());
+    assertEquals(5, t.getResult(id).asLeft());
 
     int id2 = t.spawnWorker(() -> 6);
     t.waitForWorkers();
-    assertEquals(5, t.getResult(id).asRight());
-    assertEquals(6, t.getResult(id2).asRight());
+    assertEquals(5, t.getResult(id).asLeft());
+    assertEquals(6, t.getResult(id2).asLeft());
   }
 
   @Test
@@ -28,7 +28,7 @@ public class ThreadMasterTest {
     ThreadMaster<Integer> t = new ThreadMaster<>(() -> 5);
     int id = t.spawnWorker();
     t.waitForWorker(id);
-    assertEquals(5, t.getResult(id).asRight());
+    assertEquals(5, t.getResult(id).asLeft());
   }
 
   @Test
@@ -50,7 +50,7 @@ public class ThreadMasterTest {
 
     t.waitForWorkers();
     for(int i = 0; i < arrSize; i++) {
-      assertEquals(vals[i], t.getResult(ids[i]).asRight());
+      assertEquals(vals[i], t.getResult(ids[i]).asLeft());
     }
   }
 
@@ -62,7 +62,7 @@ public class ThreadMasterTest {
       t.spawnWorker(f.partialApply(i));
     }
     t.waitForWorkers();
-    assertEquals(15, t.reduceResults(0, (a,b) -> a+b.asRight()));
+    assertEquals(15, t.reduceResults(0, (a,b) -> a+b.asLeft()));
   }
 
   @Test

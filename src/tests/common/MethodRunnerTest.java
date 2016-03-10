@@ -1,14 +1,13 @@
 package common;
 
 import functional.impl.Unit;
+import functional.impl.ex.Consumer1Ex;
 import functional.impl.ex.Function1Ex;
-import functional.impl.ex.Function2Ex;
 import functional.impl.ex.SupplierEx;
 import org.junit.Test;
 import static common.JUnitUtil.*;
 
 public class MethodRunnerTest {
-
 
   @Test
   public void testConstruction() {
@@ -28,7 +27,7 @@ public class MethodRunnerTest {
   public void testValidRunning() {
     MethodRunner<Integer> mR = MethodRunner.of(() -> 10);
 
-    assertEquals(new Integer(10), mR.get().asRight());
+    assertEquals(new Integer(10), mR.get().asLeft());
     try {
       assertEquals(new Integer(10), mR.getOrThrow());
     }catch(Throwable t) {
@@ -38,7 +37,7 @@ public class MethodRunnerTest {
 
     MethodRunner<Integer> mR2 = MethodRunner.of(() -> 15);
 
-    assertEquals(new Integer(15), mR2.get().asRight());
+    assertEquals(new Integer(15), mR2.get().asLeft());
     try {
       assertEquals(new Integer(15), mR2.getOrThrow());
     }catch(Throwable t) {
@@ -55,7 +54,7 @@ public class MethodRunnerTest {
   @Test
   public void testExceptionThrown() {
     MethodRunner<Integer> mR = MethodRunner.of(MethodRunnerTest::throwsException);
-    assertEquals("Message here", mR.get().asLeft().getMessage());
+    assertEquals("Message here", mR.get().asRight().getMessage());
 
     try {
       mR.getOrThrow();
@@ -74,7 +73,7 @@ public class MethodRunnerTest {
     } catch(Throwable t) {
       //Good
     }
-    assertEquals("Message here", mR2.get().asLeft().getMessage());
+    assertEquals("Message here", mR2.get().asRight().getMessage());
     assertTrue(mR2.getCompletionMillis() < MethodRunner.DEFAULT_WAIT_TIME);
 
   }
@@ -87,7 +86,7 @@ public class MethodRunnerTest {
   @Test
   public void testStackOverflow() {
     MethodRunner<Integer> mR = MethodRunner.of(MethodRunnerTest::stackOverflows, false);
-    assertEquals(StackOverflowError.class, mR.get().asLeft().getClass());
+    assertEquals(StackOverflowError.class, mR.get().asRight().getClass());
 
     try {
       mR.getOrThrow();
@@ -105,7 +104,7 @@ public class MethodRunnerTest {
     } catch(Throwable t) {
       //Good
     }
-    assertEquals(StackOverflowError.class, mR2.get().asLeft().getClass());
+    assertEquals(StackOverflowError.class, mR2.get().asRight().getClass());
     assertTrue(mR2.getCompletionMillis() < MethodRunner.DEFAULT_WAIT_TIME);
   }
 
@@ -139,6 +138,20 @@ public class MethodRunnerTest {
 
   private static class MutableClass {
     int x;
+  }
+
+  private static void incMutable(MutableClass m) {
+    m.x++;
+  }
+
+  @Test
+  public void testVoidMethod() {
+    Consumer1Ex<MutableClass> u = MethodRunnerTest::incMutable;
+    MutableClass m = new MutableClass();
+    MethodRunner<Void> mr = MethodRunner.of(u.partialApply(m));
+    mr.get();
+
+    assertEquals(1, m.x);
   }
 
   @Test

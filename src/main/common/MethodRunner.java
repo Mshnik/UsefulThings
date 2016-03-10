@@ -136,7 +136,7 @@ public class MethodRunner<T> {
    *    the call was terminated due to timeout or if the worker thread was somehow interrupted.
    */
   @SuppressWarnings("deprecation")
-  private Either<Throwable,T> runAndGet() {
+  private Either<T, Throwable> runAndGet() {
     done = false;
     halted = false;
     result = null;
@@ -166,7 +166,7 @@ public class MethodRunner<T> {
       return null;
     }
 
-    return Either.selectNonNull(throwable, result);
+    return Either.selectNonNull(result, throwable);
   }
 
   /** If his method call has not been run, calls runAndGet() to compute and return it.
@@ -176,13 +176,13 @@ public class MethodRunner<T> {
    * @return the result if it was computed, the throwable if an exception or error occurred, or null if
    *    the call was terminated due to timeout
    */
-  public Either<Throwable,T> get() {
+  public Either<T,Throwable> get() {
     if (!done) {
       return runAndGet();
     } else if (halted) {
       return null;
     } else {
-      return Either.selectNonNull(throwable, result);
+      return Either.selectNonNull(result, throwable);
     }
   }
 
@@ -197,10 +197,10 @@ public class MethodRunner<T> {
    */
   public T getOrThrow() throws Throwable {
     if (!done) {
-      Either<Throwable, T> e = runAndGet();
+      Either<T, Throwable> e = runAndGet();
       if (e == null) return null;
-      else if (e.isLeft()) throw e.asLeft();
-      else return e.asRight();
+      else if (e.isLeft()) return e.asLeft();
+      else throw e.asRight();
     } else if (halted) {
       return null;
     } else {

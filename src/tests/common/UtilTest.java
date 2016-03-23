@@ -1,11 +1,11 @@
 package common;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.junit.Test;
+
+import static common.JUnitUtil.*;
 
 public class UtilTest {
 
@@ -51,8 +51,8 @@ public class UtilTest {
     assertEquals(f.length, f2.length);
     assertEquals(f.length, f3.length);
     for (int x = 0; x < s.length; x++) {
-      assertEquals(f[x], f2[x].floatValue(), 0.00001);
-      assertEquals(f[x], f3[x], 0.00001);
+      assertEquals(f[x], f2[x].floatValue());
+      assertEquals(f[x], f3[x]);
     }
 
 
@@ -63,8 +63,8 @@ public class UtilTest {
     assertEquals(d.length, d2.length);
     assertEquals(d.length, d3.length);
     for (int x = 0; x < s.length; x++) {
-      assertEquals(d[x], d2[x].doubleValue(), 0.00001);
-      assertEquals(d[x], d3[x], 0.00001);
+      assertEquals(d[x], d2[x].doubleValue());
+      assertEquals(d[x], d3[x]);
     }
 
     char[] c = {1, 2, 3, 4, 'a', 'b', '.', Character.MAX_VALUE, Character.MIN_VALUE};

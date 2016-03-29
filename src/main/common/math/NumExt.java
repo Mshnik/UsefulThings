@@ -16,16 +16,17 @@ public abstract class NumExt<T extends Number> {
     val = t;
   }
 
-  public static NumExt<Integer> wrap(Integer t) {
-    return new IntExt(t);
-  }
-
-  public static NumExt<Float> wrap(Float t) {
-    return new FloatExt(t);
-  }
-
-  public static NumExt<Double> wrap(Double t) {
-    return new DoubleExt(t);
+  @SuppressWarnings("unchecked")
+  public static <T extends Number> NumExt<T> wrap(T t) {
+    if (t instanceof Integer) {
+      return (NumExt<T>) new IntExt((Integer)t);
+    } else if (t instanceof Double) {
+      return (NumExt<T>) new DoubleExt((Double)t);
+    } else if (t instanceof Float) {
+      return (NumExt<T>) new FloatExt((Float) t);
+    } else {
+      throw new UnsupportedOperationException("Unknown numerical type " + t.getClass());
+    }
   }
 
   public T asNumber() {

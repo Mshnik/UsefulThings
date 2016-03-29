@@ -31,6 +31,8 @@ import java.util.function.Predicate;
  *  rebuilding clears it out correctly though. This doesn't end up affecting anything
  *  because the logger is smart about duplicates, but it's weird and should be fixed
  *
+ * //TODO - Test
+ *
  * @author Mshnik
  */
 public class Logger {

@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TupleTest {
 
@@ -157,6 +159,26 @@ public class TupleTest {
     for(int i = 0; i < tupleArr.length - 1; i++) {
       t = t.and(arrs[i+1][arrs[i+1].length - 1]);
       assertEquals(tupleArr[i+1], t);
+    }
+  }
+
+  @Test
+  public void testZip() {
+    List<Integer> lst1 = Arrays.asList(1,2,3);
+    List<String> lst2 = Arrays.asList("A","B","C","D","E","F");
+
+    List<Tuple2<Integer, String>> lst3 = Tuple.zip(lst1.stream(), lst2.stream()).collect(Collectors.toList());
+
+    assertEquals(Math.max(lst1.size(), lst2.size()), lst3.size());
+
+    for(int i = 0; i < lst1.size(); i++) {
+      assertEquals(lst1.get(i), lst3.get(i)._1);
+      assertEquals(lst2.get(i), lst3.get(i)._2);
+    }
+
+    for(int i = lst1.size(); i < lst3.size(); i++) {
+      assertEquals(null, lst3.get(i)._1);
+      assertEquals(lst2.get(i), lst3.get(i)._2);
     }
   }
 }

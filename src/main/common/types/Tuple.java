@@ -1,10 +1,11 @@
 package common.types;
 
 import common.Util;
-import common.dataStructures.DeArrList;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * An abstract parent of all tuples, a simple Product Type implementation.
@@ -207,25 +208,39 @@ public abstract class Tuple implements Cloneable, Iterable<Object>, Serializable
    * Zips lst and lst2 together. If either list is longer, the extra
    * elements are in tuples with null values.
    *
-   * @param lst  - the first list to zip
-   * @param lst2 - the second list to zip
-   * @return - a zipped list of tuples. Some tuples may have a null value
-   * if the two input lists are of unequal size, but no tuple will have both null values.
+   * @param s1  - the first stream to zip
+   * @param s2 - the second stream to zip
+   * @return - a zipped stream of tuples.
    */
-  public static <T, U> List<Tuple2<T, U>> zip(List<T> lst, List<U> lst2) {
-    DeArrList<Tuple2<T, U>> zLst = new DeArrList<>();
-    Iterator<T> i = lst.iterator();
-    Iterator<U> i2 = lst2.iterator();
-    while (i.hasNext() && i2.hasNext()) {
-      zLst.add(Tuple.of(i.next(), i2.next()));
-    }
-    while (i.hasNext()) {
-      zLst.add(Tuple.of(i.next(), null));
-    }
-    while (i2.hasNext()) {
-      zLst.add(Tuple.of(null, i2.next()));
-    }
-    return zLst;
-  }
+  public static <T, U> Stream<Tuple2<T, U>> zip(Stream<T> s1, Stream<U> s2) {
+    Spliterator<T> aSpliterator = Objects.requireNonNull(s1).spliterator();
+    Spliterator<U> bSpliterator = Objects.requireNonNull(s2).spliterator();
 
+    // Zipping looses DISTINCT and SORTED characteristics
+    int characteristics = aSpliterator.characteristics() & bSpliterator.characteristics() &
+        ~(Spliterator.DISTINCT | Spliterator.SORTED);
+
+    long zipSize = ((characteristics & Spliterator.SIZED) != 0)
+        ? Math.min(aSpliterator.getExactSizeIfKnown(), bSpliterator.getExactSizeIfKnown())
+        : -1;
+
+    Iterator<T> aIterator = Spliterators.iterator(aSpliterator);
+    Iterator<U> bIterator = Spliterators.iterator(bSpliterator);
+    Iterator<Tuple2<T,U>> cIterator = new Iterator<Tuple2<T,U>>() {
+      @Override
+      public boolean hasNext() {
+        return aIterator.hasNext() || bIterator.hasNext();
+      }
+
+      @Override
+      public Tuple2<T,U> next() {
+        T t = aIterator.hasNext() ? aIterator.next() : null;
+        U u = bIterator.hasNext() ? bIterator.next() : null;
+        return of(t, u);
+      }
+    };
+
+    Spliterator<Tuple2<T,U>> split = Spliterators.spliterator(cIterator, zipSize, characteristics);
+    return (s1.isParallel() || s2.isParallel()) ? StreamSupport.stream(split, true) : StreamSupport.stream(split, false);
+  }
 }

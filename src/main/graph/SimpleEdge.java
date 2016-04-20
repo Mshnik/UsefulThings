@@ -21,14 +21,14 @@ public class SimpleEdge extends IDObject implements Flowable, Weighted, Cloneabl
   private String name;
 
   /**
-   * Constructs a new SimpleVertex instance. As instances are only constructed
-   * within the a SimpleGraph instance, this constructor is package protected.
+   * Constructs a new SimpleVertex instance.
    * The name of this SimpleVertex is set to the empty string, and the weight
    * and capacity are set to 0
    */
-  SimpleEdge() {
-    weight = 0;
-    capacity = 0;
+  public SimpleEdge(int weight, int capacity) {
+    if (capacity < 0) throw new IllegalArgumentException("Can't set capacity to negative int");
+    this.weight = weight;
+    this.capacity = capacity;
     name = "";
   }
 
@@ -50,23 +50,6 @@ public class SimpleEdge extends IDObject implements Flowable, Weighted, Cloneabl
   public SimpleEdge clone() {
     SimpleEdge e = new SimpleEdge(getID(), weight, capacity, name);
     return e;
-  }
-
-  /**
-   * Sets the weight of this edge to w
-   */
-  public void setWeight(int w) {
-    weight = w;
-  }
-
-  /**
-   * Sets the capacity of this edge to c. Must be a non-negative number
-   *
-   * @throws IllegalArgumentException if c &lt; 0
-   */
-  public void setCapacity(int c) throws IllegalArgumentException {
-    if (c < 0) throw new IllegalArgumentException("Can't set capacity to negative int");
-    capacity = c;
   }
 
   /**
@@ -99,7 +82,7 @@ public class SimpleEdge extends IDObject implements Flowable, Weighted, Cloneabl
    */
   public void setName(String n) {
     if (n == null) throw new IllegalArgumentException("Can't set name to null");
-    name = null;
+    name = n;
   }
 
   /**

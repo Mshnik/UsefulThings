@@ -53,7 +53,6 @@ public class SimpleGraph extends Graph<SimpleVertex, SimpleEdge> {
 	}
 
 	/** Returns a copy of this SimpleGraph.
-	 *  @see SimpleGraph(Graph g)
 	 */
 	@Override
 	public SimpleGraph clone(){
@@ -107,7 +106,7 @@ public class SimpleGraph extends Graph<SimpleVertex, SimpleEdge> {
 	 */
 	public int addEdge(SimpleVertex source, SimpleVertex sink) 
 			throws NotInCollectionException{
-		SimpleEdge e = new SimpleEdge();
+		SimpleEdge e = new SimpleEdge(0,0);
 		boolean added = addEdge(source, sink, e);
 		return added ? e.getID() : -1;
 	}

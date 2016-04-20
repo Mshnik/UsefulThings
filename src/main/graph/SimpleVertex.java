@@ -16,11 +16,10 @@ public class SimpleVertex extends IDObject implements Cloneable {
   private String name;
 
   /**
-   * Constructs a new SimpleVertex instance. As instances are only constructed
-   * within the a SimpleGraph instance, this constructor is package protected.
+   * Constructs a new SimpleVertex instance.
    * The name of this SimpleVertex is set to the empty string.
    */
-  SimpleVertex() {
+  public SimpleVertex() {
     super();
     name = "";
   }
@@ -55,7 +54,7 @@ public class SimpleVertex extends IDObject implements Cloneable {
    */
   public void setName(String n) {
     if (n == null) throw new IllegalArgumentException("Can't set name to null");
-    name = null;
+    name = n;
   }
 
   /**

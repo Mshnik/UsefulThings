@@ -15,8 +15,8 @@ import common.dataStructures.NotInCollectionException;
  */
 public class SimpleGraph extends Graph<SimpleVertex, SimpleEdge> {
 
-	private HashMap<Integer, SimpleVertex> idToVertex;
-	private HashMap<Integer, SimpleEdge> idToEdge;
+  private HashMap<Integer, SimpleVertex> idToVertex;
+  private HashMap<Integer, SimpleEdge> idToEdge;
 
 	/** Constructs a new (empty) directed SimpleGraph */
 	public SimpleGraph(){
@@ -104,7 +104,7 @@ public class SimpleGraph extends Graph<SimpleVertex, SimpleEdge> {
 	 * or -1 if they were already connected
 	 * @throws NotInCollectionException - if source or sink are not vertices in this graph
 	 */
-	public int addEdge(SimpleVertex source, SimpleVertex sink) 
+	public int addEdge(int source, int sink)
 			throws NotInCollectionException{
 		return addEdge(source, sink, 0, 0);
 	}
@@ -112,18 +112,18 @@ public class SimpleGraph extends Graph<SimpleVertex, SimpleEdge> {
 	/** Adds a new Edge to the graph, connecting source to sink.
 	 * If source and sink are already connected by an existing edge,
 	 * does nothing instead.
-	 * @param source - the source of the new edge
-	 * @param sink - the sink of the new edge.
+	 * @param source - the id of the source of the new edge
+	 * @param sink - the id of the sink of the new edge.
    * @param weight - the weight of the edge to be created
    * @param capacity - the capacity of the edge to be created
 	 * @return the ID of the created edge if source and sink weren't connected before,
 	 * or -1 if they were already connected
 	 * @throws NotInCollectionException - if source or sink are not vertices in this graph
 	 */
-	public int addEdge(SimpleVertex source, SimpleVertex sink, int weight, int capacity)
+	public int addEdge(int source, int sink, int weight, int capacity)
 			throws NotInCollectionException{
 		SimpleEdge e = new SimpleEdge(weight,capacity);
-		boolean added = addEdge(source, sink, e);
+		boolean added = addEdge(getVertex(source), getVertex(sink), e);
 		return added ? e.getID() : -1;
 	}
 

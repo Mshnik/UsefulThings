@@ -34,6 +34,11 @@ public class CapacityLimitedVertex extends IDObject implements Flowable, Cloneab
   }
 
   @Override
+  public CapacityLimitedVertex clone() {
+    return new CapacityLimitedVertex(getCapacity());
+  }
+
+  @Override
   public int getCapacity() {
     return edge.getCapacity();
   }

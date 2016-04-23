@@ -106,10 +106,36 @@ public class SimpleGraph extends Graph<SimpleVertex, SimpleEdge> {
 	 */
 	public int addEdge(SimpleVertex source, SimpleVertex sink) 
 			throws NotInCollectionException{
-		SimpleEdge e = new SimpleEdge(0,0);
+		return addEdge(source, sink, 0, 0);
+	}
+
+	/** Adds a new Edge to the graph, connecting source to sink.
+	 * If source and sink are already connected by an existing edge,
+	 * does nothing instead.
+	 * @param source - the source of the new edge
+	 * @param sink - the sink of the new edge.
+   * @param weight - the weight of the edge to be created
+   * @param capacity - the capacity of the edge to be created
+	 * @return the ID of the created edge if source and sink weren't connected before,
+	 * or -1 if they were already connected
+	 * @throws NotInCollectionException - if source or sink are not vertices in this graph
+	 */
+	public int addEdge(SimpleVertex source, SimpleVertex sink, int weight, int capacity)
+			throws NotInCollectionException{
+		SimpleEdge e = new SimpleEdge(weight,capacity);
 		boolean added = addEdge(source, sink, e);
 		return added ? e.getID() : -1;
 	}
+
+  /** Returns the SimpleVertex with the given id, null if none */
+  public SimpleVertex getVertex(int id) {
+    return idToVertex.get(id);
+  }
+
+  /** Returns the SimpleEdge with the given id, null if none */
+  public SimpleEdge getEdge(int id) {
+    return idToEdge.get(id);
+  }
 
 	/** Removes this vertices (And all of the edges going in and out of it) from the graph.
 	 * Returns true if the vertex was removed this way, false if there was no vertex to remove.

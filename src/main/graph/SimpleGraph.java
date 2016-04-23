@@ -137,6 +137,11 @@ public class SimpleGraph extends Graph<SimpleVertex, SimpleEdge> {
     return idToEdge.get(id);
   }
 
+  /** Returns true iff the source is connected to the sink */
+  public boolean isConnected(int source, int sink) {
+    return isConnected(getVertex(source), getVertex(sink));
+  }
+
 	/** Removes this vertices (And all of the edges going in and out of it) from the graph.
 	 * Returns true if the vertex was removed this way, false if there was no vertex to remove.
 	 */

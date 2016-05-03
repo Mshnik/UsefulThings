@@ -1,15 +1,6 @@
 package grid;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import common.Util;
 import common.dataStructures.ConsList;
@@ -31,6 +22,8 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
 
   protected final Object[] vals;
   protected final int[] bounds;
+
+  protected int modCount;
 
   /**
    * The dimensionality of this Grid - how many coordinates a location has.
@@ -62,6 +55,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
     this.bounds = Arrays.copyOf(bounds, bounds.length);
     vals = recCreateArrays(0);
     size = 0;
+    modCount = 0;
   }
 
   /**
@@ -284,6 +278,8 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
    */
   public boolean add(T t) {
     if (get(t.getLocation()) == t) return false;
+
+    modCount++;
     if (!containsAt(t.getLocation()))
       size++;
     recSetTile(vals, 0, t.getLocation(), t);
@@ -316,6 +312,7 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
     if (t == t2) {
       recSetTile(vals, 0, t.getLocation(), null);
       size--;
+      modCount++;
       return true;
     }
     return false;
@@ -527,6 +524,18 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
     private boolean next;
 
     /**
+     * The element T most recently returned by next().
+     * null until next is called
+     */
+    private T elm;
+
+    /** True if elm has been removed, false otherwise */
+    private boolean elmRemoved;
+
+    /** The expected mod count, for checking for concurrent modification */
+    private int expectedModCount;
+
+    /**
      * Constructs a GridIterator
      */
     public GridIterator() {
@@ -535,10 +544,16 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
         pos[i] = 0;
       }
       next = dimension > 0 && size > 0;
+      elm = null;
+      elmRemoved = false;
+      expectedModCount = modCount;
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean hasNext() throws ConcurrentModificationException {
+      if (modCount != expectedModCount) {
+        throw new ConcurrentModificationException();
+      }
       return next;
     }
 
@@ -548,12 +563,13 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
         if (!recInc(dimension - 1))
           throw new NoSuchElementException();
       }
-      T t = get(pos);
+      elm = get(pos);
       next = recInc(dimension - 1);
       while (next && !containsAt(pos)) {
         next = recInc(dimension - 1);
       }
-      return t;
+      elmRemoved = false;
+      return elm;
     }
 
     /**
@@ -578,8 +594,11 @@ public class Grid<T extends Tile> implements Collection<T>, Cloneable {
      */
     @Override
     public void remove() {
-      T t = next();
-      Grid.this.remove(t);
+      if (! elmRemoved) {
+        Grid.this.remove(elm);
+        expectedModCount++;
+        elmRemoved = true;
+      }
     }
 
   }

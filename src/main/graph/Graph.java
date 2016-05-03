@@ -1,12 +1,7 @@
 package graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Supplier;
 
 import common.dataStructures.NotInCollectionException;
 import common.types.Tuple3;
@@ -307,6 +302,64 @@ public class Graph<V, E> implements Cloneable {
   private boolean directed;
   private HashMap<V, Vertex> vertices;
   private HashMap<E, Edge> edges;
+
+  /**
+   * Constructs a new graph from the given adjacency list
+   * Uses the edgeCreator to create new edges for each connection
+   * @param directed
+   * @param adjacencyList
+   * @param edgeCreator
+   * @param <V>
+   * @param <E>
+   * @return
+   */
+  public static <V,E> Graph<V,E> ofAdjacencyList(boolean directed, Map<V, List<V>> adjacencyList, Supplier<E> edgeCreator) {
+    Graph<V,E> g = new Graph<>(directed);
+    for(V v : adjacencyList.keySet()) {
+      g.addVertex(v);
+    }
+
+    for(V v : adjacencyList.keySet()) {
+      for(V v2 : adjacencyList.get(v)) {
+        g.addEdge(v, v2, edgeCreator.get());
+      }
+    }
+    return g;
+  }
+
+  /**
+   * Constructs a new graph from the given adjacency matrix
+   * Uses the edgeCreator to create new edges.
+   * The list of vertices should implement randomAccess for quick access during creation.
+   * @param directed
+   * @param vertexOrdering
+   * @param connectionMatrix
+   * @param edgeCreator
+   * @param <V>
+   * @param <E>
+   * @return
+   */
+  public static <V,E> Graph<V,E> ofAdjacencyMatrix(boolean directed, List<V> vertexOrdering,
+                                                   boolean[][] connectionMatrix, Supplier<E> edgeCreator) {
+
+    assert vertexOrdering.size() == connectionMatrix.length;
+    assert vertexOrdering instanceof RandomAccess;
+
+    Graph<V,E> g = new Graph<>();
+    for(V v : vertexOrdering) {
+      g.addVertex(v);
+    }
+
+    for(int i = 0; i < connectionMatrix.length; i++) {
+      for(int j = 0; j < connectionMatrix[i].length; j++) {
+        if (connectionMatrix[i][j]) {
+          g.addEdge(vertexOrdering.get(i), vertexOrdering.get(j), edgeCreator.get());
+        }
+      }
+    }
+
+    return g;
+  }
 
   /**
    * Constructs a new graph that contains no vertices or edges

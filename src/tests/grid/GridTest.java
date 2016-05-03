@@ -2,13 +2,10 @@ package grid;
 
 import static common.JUnitUtil.*;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import functional.impl.Consumer1;
 import functional.impl.ex.Consumer1Ex;
+import functional.impl.ex.SupplierEx;
 import org.junit.Test;
 
 public class GridTest {
@@ -17,7 +14,7 @@ public class GridTest {
     private final Integer[] loc;
     public final int val;
 
-    public IntTile(Integer[] loc, int v) {
+    public IntTile(int v, Integer... loc) {
       this.loc = loc;
       this.val = v;
     }
@@ -68,7 +65,7 @@ public class GridTest {
     Grid<IntTile> g = new Grid<>(10, 10);
     checkInvariants(g);
 
-    IntTile t = new IntTile(new Integer[]{0, 0}, 2);
+    IntTile t = new IntTile(2, new Integer[]{0, 0});
     boolean ok = g.add(t);
 
     checkInvariants(g);
@@ -83,7 +80,7 @@ public class GridTest {
     assertTrue(g.contains(t));
     assertEquals(1, g.size());
 
-    IntTile t2 = new IntTile(new Integer[]{0, 1}, 4);
+    IntTile t2 = new IntTile(4, new Integer[]{0, 1});
     ok = g.add(t2);
 
     checkInvariants(g);
@@ -93,7 +90,7 @@ public class GridTest {
     assertEquals(2, g.size());
 
     //Overwrite previous tile
-    IntTile t3 = new IntTile(new Integer[]{0, 0}, 5);
+    IntTile t3 = new IntTile(5, new Integer[]{0, 0});
     ok = g.add(t3);
 
     checkInvariants(g);
@@ -103,7 +100,7 @@ public class GridTest {
     assertTrue(g.contains(t2));
     assertEquals(2, g.size());
 
-    shouldFail(g::add, ArrayIndexOutOfBoundsException.class, new IntTile(new Integer[]{11, 5}, 2));
+    shouldFail(g::add, ArrayIndexOutOfBoundsException.class, new IntTile(2, new Integer[]{11, 5}));
     checkInvariants(g);
     assertEquals(2, g.size());
   }
@@ -112,9 +109,9 @@ public class GridTest {
   public void testRemove() {
     Grid<IntTile> g = new Grid<>(10, 10);
 
-    IntTile t = new IntTile(new Integer[]{0, 0}, 3);
+    IntTile t = new IntTile(3, new Integer[]{0, 0});
     g.add(t);
-    g.add(new IntTile(new Integer[]{0, 1}, 4));
+    g.add(new IntTile(4, new Integer[]{0, 1}));
 
     checkInvariants(g);
     assertEquals(2, g.size());
@@ -135,10 +132,10 @@ public class GridTest {
   public void testConversion() {
     Grid<IntTile> g = new Grid<>(10, 10);
 
-    IntTile t = new IntTile(new Integer[]{0, 0}, 1);
-    IntTile t2 = new IntTile(new Integer[]{0, 1}, 2);
-    IntTile t3 = new IntTile(new Integer[]{1, 0}, 3);
-    IntTile t4 = new IntTile(new Integer[]{1, 1}, 4);
+    IntTile t = new IntTile(1, new Integer[]{0, 0});
+    IntTile t2 = new IntTile(2, new Integer[]{0, 1});
+    IntTile t3 = new IntTile(3, new Integer[]{1, 0});
+    IntTile t4 = new IntTile(4, new Integer[]{1, 1});
 
     g.add(t);
     g.add(t2);
@@ -169,7 +166,7 @@ public class GridTest {
     assertTrue(!g.equals(g3));
     assertTrue(g.hashCode() != g3.hashCode());
 
-    IntTile t = new IntTile(new Integer[]{0, 0}, 2);
+    IntTile t = new IntTile(2, new Integer[]{0, 0});
     g.add(t);
 
     assertTrue(!g.equals(g2));
@@ -192,26 +189,57 @@ public class GridTest {
   public void testGet() {
     Grid<IntTile> g = new Grid<>(5, 5);
     Integer[] loc = {0, 0};
-    IntTile t = new IntTile(loc, 1);
+    IntTile t = new IntTile(1, loc);
     g.add(t);
 
     assertEquals(t, g.get(loc));
     assertEquals(g.get(loc), g.getSafe(loc));
     assertEquals(1, g.get(loc).val);
 
-    IntTile t2 = new IntTile(loc, 2);
+    IntTile t2 = new IntTile(2, loc);
     g.add(t2);
     assertEquals(t2, g.get(loc));
     assertEquals(g.get(loc), g.getSafe(loc));
     assertEquals(2, g.get(loc).val);
 
     Integer[] loc2 = {0, 1};
-    IntTile t3 = new IntTile(loc2, 3);
+    IntTile t3 = new IntTile(3, loc2);
     g.add(t3);
     assertEquals(t3, g.getFrom(t2, loc2));
 
     shouldFail((Consumer1Ex<Integer[]>) g::get,  ArrayIndexOutOfBoundsException.class, new Integer[]{-1, 0});
 
-    assertEquals(null, g.getSafe(new Integer[]{-1, 0}));
+    assertEquals(null, g.getSafe(-1, 0));
+  }
+
+  @Test
+  public void testIteration() {
+    Grid<IntTile> g = new Grid<>(5, 5);
+    g.add(new IntTile(0, 0,0));
+    g.add(new IntTile(1,0,2));
+    g.add(new IntTile(2,1,1));
+
+    int i = 0;
+    for(IntTile t : g) {
+      assertEquals(i, t.val);
+      i++;
+    }
+
+    Iterator<IntTile> iter = g.iterator();
+    assertTrue(iter.hasNext());
+    g.add(new IntTile(3,2,2));
+    shouldFail(iter::hasNext, ConcurrentModificationException.class);
+
+    iter = g.iterator();
+    int size = g.size();
+    while(iter.hasNext()) {
+      iter.next();
+      iter.remove();
+      size--;
+      assertEquals(size, g.size());
+      iter.remove();
+      assertEquals(size, g.size());
+    }
+
   }
 }

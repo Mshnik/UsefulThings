@@ -3,6 +3,7 @@ package common.math;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 //TODO - SPEC
 /**
@@ -38,6 +39,10 @@ public abstract class NumExt<T extends Number> {
     } else {
       throw new UnsupportedOperationException("Unsupported numerical type " + t.getClass());
     }
+  }
+
+  public Stream<T> toStream() {
+    return Stream.of(val);
   }
 
   public T asNumber() {

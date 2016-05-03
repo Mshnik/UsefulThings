@@ -1,9 +1,6 @@
 package common.dataStructures;
 
-import java.util.AbstractList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
+import java.util.*;
 
 import common.Util;
 import common.dataStructures.util.SmartIterator;
@@ -32,7 +29,7 @@ import common.dataStructures.util.SmartIterator;
  *
  * @author Mshnik
  */
-public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E> {
+public class DeArrList<E> extends AbstractList<E> implements Cloneable, Deque<E>, RandomAccess {
 
   //start will never equal end. ReArray whenever this would become the case.
   private int start; //inclusive

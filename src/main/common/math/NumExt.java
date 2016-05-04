@@ -32,10 +32,10 @@ public abstract class NumExt<T extends Number> {
       return (NumExt<T>) new ShortExt((Short) t);
     } else if (t instanceof Byte)  {
       return (NumExt<T>) new ByteExt((Byte) t);
-    } else if (t instanceof BigInteger)  {
-      return (NumExt<T>) new BigIntExt((BigInteger) t);
-    } else if (t instanceof BigDecimal)  {
-      return (NumExt<T>) new BigDecimalExt((BigDecimal) t);
+//    } else if (t instanceof BigInteger)  {
+//      return (NumExt<T>) new BigIntExt((BigInteger) t);
+//    } else if (t instanceof BigDecimal)  {
+//      return (NumExt<T>) new BigDecimalExt((BigDecimal) t);
     } else {
       throw new UnsupportedOperationException("Unsupported numerical type " + t.getClass());
     }
@@ -65,30 +65,270 @@ public abstract class NumExt<T extends Number> {
     return val.doubleValue();
   }
 
-  public abstract NumExt<T> apply(Function<T,T> f);
-  public abstract NumExt<T> add(T t2);
-  public abstract NumExt<T> subtract(T t2);
-  public abstract NumExt<T> multiply(T t2);
-  public abstract NumExt<T> divide(T t2);
+//  public NumExt<T> add(NumExt<T> t2) {
+//    return add(t2.val);
+//  }
+//  public NumExt<T> subtract(NumExt<T> t2) {
+//    return subtract(t2.val);
+//  }
+//  public NumExt<T> multiply(NumExt<T> t2) {
+//    return multiply(t2.val);
+//  }
+//  public NumExt<T> divide(NumExt<T> t2) {
+//    return divide(t2.val);
+//  }
 
-  public static <T extends Number> T apply(T t1, Function<T, T> f) {
-    return wrap(t1).apply(f).asNumber();
+  public <U extends Number> NumExt<U> apply(Function<T,U> f) {
+    return wrap(f.apply(val));
   }
 
-  public static <T extends Number> T add(T t1, T t2) {
-    return wrap(t1).add(t2).asNumber();
+  public abstract NumExt<?> add(Byte t2);
+  public abstract NumExt<?> subtract(Byte t2);
+  public abstract NumExt<?> multiply(Byte t2);
+  public abstract NumExt<?> divide(Byte t2);
+
+  public abstract NumExt<?> add(Short t2);
+  public abstract NumExt<?> subtract(Short t2);
+  public abstract NumExt<?> multiply(Short t2);
+  public abstract NumExt<?> divide(Short t2);
+
+  public abstract NumExt<?> add(Integer t2);
+  public abstract NumExt<?> subtract(Integer t2);
+  public abstract NumExt<?> multiply(Integer t2);
+  public abstract NumExt<?> divide(Integer t2);
+
+  public abstract NumExt<?> add(Long t2);
+  public abstract NumExt<?> subtract(Long t2);
+  public abstract NumExt<?> multiply(Long t2);
+  public abstract NumExt<?> divide(Long t2);
+
+  public abstract NumExt<?> add(Float t2);
+  public abstract NumExt<?> subtract(Float t2);
+  public abstract NumExt<?> multiply(Float t2);
+  public abstract NumExt<?> divide(Float t2);
+
+  public abstract NumExt<?> add(Double t2);
+  public abstract NumExt<?> subtract(Double t2);
+  public abstract NumExt<?> multiply(Double t2);
+  public abstract NumExt<?> divide(Double t2);
+
+//  public abstract NumExt<?> add(BigInteger t2);
+//  public abstract NumExt<?> subtract(BigInteger t2);
+//  public abstract NumExt<?> multiply(BigInteger t2);
+//  public abstract NumExt<?> divide(BigInteger t2);
+//
+//  public abstract NumExt<?> add(BigDecimal t2);
+//  public abstract NumExt<?> subtract(BigDecimal t2);
+//  public abstract NumExt<?> multiply(BigDecimal t2);
+//  public abstract NumExt<?> divide(BigDecimal t2);
+
+
+  private static class ByteExt extends NumExt<Byte> {
+
+    private ByteExt(Byte val) {
+      super(val);
+    }
+
+    public NumExt<Byte> add(Byte t2) {
+      return wrap((byte)(val + t2));
+    }
+
+    public NumExt<Byte> subtract(Byte t2) {
+      return wrap((byte)(val - t2));
+    }
+
+    public NumExt<Byte> multiply(Byte t2) {
+      return wrap((byte)(val * t2));
+    }
+
+    public NumExt<Byte> divide(Byte t2) {
+      return wrap((byte)(val / t2));
+    }
+
+    public NumExt<Short> add(Short t2) {
+      return wrap((short)(val + t2));
+    }
+
+    public NumExt<Short> subtract(Short t2) {
+      return wrap((short)(val - t2));
+    }
+
+    public NumExt<Short> multiply(Short t2) {
+      return wrap((short)(val * t2));
+    }
+
+    public NumExt<Short> divide(Short t2) {
+      return wrap((short)(val / t2));
+    }
+
+    public NumExt<Integer> add(Integer t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Integer> subtract(Integer t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Integer> multiply(Integer t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Integer> divide(Integer t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Long> add(Long t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Long> subtract(Long t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Long> multiply(Long t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Long> divide(Long t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Float> add(Float t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Float> subtract(Float t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Float t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Float t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Double> add(Double t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Double> subtract(Double t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Double> multiply(Double t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Double> divide(Double t2) {
+      return wrap(val / t2);
+    }
+
   }
 
-  public static <T extends Number> T subtract(T t1, T t2) {
-    return wrap(t1).subtract(t2).asNumber();
-  }
+  private static class ShortExt extends NumExt<Short> {
 
-  public static <T extends Number> T multiply(T t1, T t2) {
-    return wrap(t1).multiply(t2).asNumber();
-  }
+    private ShortExt(Short val) {
+      super(val);
+    }
 
-  public static <T extends Number> T divide(T t1, T t2) {
-    return wrap(t1).divide(t2).asNumber();
+    public NumExt<Short> add(Byte t2) {
+      return wrap((short)(val + t2));
+    }
+
+    public NumExt<Short> subtract(Byte t2) {
+      return wrap((short)(val - t2));
+    }
+
+    public NumExt<Short> multiply(Byte t2) {
+      return wrap((short)(val * t2));
+    }
+
+    public NumExt<Short> divide(Byte t2) {
+      return wrap((short)(val / t2));
+    }
+
+    public NumExt<Short> add(Short t2) {
+      return wrap((short)(val + t2));
+    }
+
+    public NumExt<Short> subtract(Short t2) {
+      return wrap((short)(val - t2));
+    }
+
+    public NumExt<Short> multiply(Short t2) {
+      return wrap((short)(val * t2));
+    }
+
+    public NumExt<Short> divide(Short t2) {
+      return wrap((short)(val / t2));
+    }
+
+    public NumExt<Integer> add(Integer t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Integer> subtract(Integer t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Integer> multiply(Integer t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Integer> divide(Integer t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Long> add(Long t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Long> subtract(Long t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Long> multiply(Long t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Long> divide(Long t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Float> add(Float t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Float> subtract(Float t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Float t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Float t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Double> add(Double t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Double> subtract(Double t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Double> multiply(Double t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Double> divide(Double t2) {
+      return wrap(val / t2);
+    }
+
   }
 
   private static class IntExt extends NumExt<Integer> {
@@ -97,213 +337,412 @@ public abstract class NumExt<T extends Number> {
       super(val);
     }
 
-    public NumExt<Integer> apply(Function<Integer, Integer> f) {
-      return wrap(f.apply(val));
+    public NumExt<Integer> add(Byte t2) {
+      return wrap(val + t2);
     }
 
-    public NumExt<Integer> add(Integer i) {
-      return wrap(val + i);
+    public NumExt<Integer> subtract(Byte t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<Integer> subtract(Integer i) {
-      return wrap(val - i);
+    public NumExt<Integer> multiply(Byte t2) {
+      return wrap(val * t2);
     }
 
-    public NumExt<Integer> multiply(Integer i) {
-      return wrap(val * i);
+    public NumExt<Integer> divide(Byte t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<Integer> divide(Integer i) {
-      return wrap(val / i);
+    public NumExt<Integer> add(Short t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Integer> subtract(Short t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Integer> multiply(Short t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Integer> divide(Short t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Integer> add(Integer t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Integer> subtract(Integer t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Integer> multiply(Integer t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Integer> divide(Integer t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Long> add(Long t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Long> subtract(Long t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Long> multiply(Long t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Long> divide(Long t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Float> add(Float t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Float> subtract(Float t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Float t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Float t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Double> add(Double t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Double> subtract(Double t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Double> multiply(Double t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Double> divide(Double t2) {
+      return wrap(val / t2);
     }
 
   }
+
   private static class LongExt extends NumExt<Long> {
 
     private LongExt(Long val) {
       super(val);
     }
 
-    public NumExt<Long> apply(Function<Long, Long> f) {
-      return wrap(f.apply(val));
+    public NumExt<Long> add(Byte t2) {
+      return wrap(val + t2);
     }
 
-    public NumExt<Long> add(Long i) {
-      return wrap(val + i);
+    public NumExt<Long> subtract(Byte t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<Long> subtract(Long i) {
-      return wrap(val - i);
+    public NumExt<Long> multiply(Byte t2) {
+      return wrap(val * t2);
     }
 
-    public NumExt<Long> multiply(Long i) {
-      return wrap(val * i);
+    public NumExt<Long> divide(Byte t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<Long> divide(Long i) {
-      return wrap(val / i);
+    public NumExt<Long> add(Short t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Long> subtract(Short t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Long> multiply(Short t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Long> divide(Short t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Long> add(Integer t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Long> subtract(Integer t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Long> multiply(Integer t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Long> divide(Integer t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Long> add(Long t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Long> subtract(Long t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Long> multiply(Long t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Long> divide(Long t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Float> add(Float t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Float> subtract(Float t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Float t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Float t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Double> add(Double t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Double> subtract(Double t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Double> multiply(Double t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Double> divide(Double t2) {
+      return wrap(val / t2);
     }
 
   }
+
   private static class FloatExt extends NumExt<Float> {
 
     private FloatExt(Float val) {
       super(val);
     }
 
-    public NumExt<Float> apply(Function<Float, Float> f) {
-      return wrap(f.apply(val));
+    public NumExt<Float> add(Byte t2) {
+      return wrap(val + t2);
     }
 
-    public NumExt<Float> add(Float i) {
-      return wrap(val + i);
+    public NumExt<Float> subtract(Byte t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<Float> subtract(Float i) {
-      return wrap(val - i);
+    public NumExt<Float> multiply(Byte t2) {
+      return wrap(val * t2);
     }
 
-    public NumExt<Float> multiply(Float i) {
-      return wrap(val * i);
+    public NumExt<Float> divide(Byte t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<Float> divide(Float i) {
-      return wrap(val / i);
+    public NumExt<Float> add(Short t2) {
+      return wrap(val + t2);
     }
+
+    public NumExt<Float> subtract(Short t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Short t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Short t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Float> add(Integer t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Float> subtract(Integer t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Integer t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Integer t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Float> add(Long t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Float> subtract(Long t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Long t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Long t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Float> add(Float t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Float> subtract(Float t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Float> multiply(Float t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Float> divide(Float t2) {
+      return wrap(val / t2);
+    }
+
+    public NumExt<Double> add(Double t2) {
+      return wrap(val + t2);
+    }
+
+    public NumExt<Double> subtract(Double t2) {
+      return wrap(val - t2);
+    }
+
+    public NumExt<Double> multiply(Double t2) {
+      return wrap(val * t2);
+    }
+
+    public NumExt<Double> divide(Double t2) {
+      return wrap(val / t2);
+    }
+
   }
+
   private static class DoubleExt extends NumExt<Double> {
 
     private DoubleExt(Double val) {
       super(val);
     }
 
-    public NumExt<Double> apply(Function<Double, Double> f) {
-      return wrap(f.apply(val));
+    public NumExt<Double> add(Byte t2) {
+      return wrap(val + t2);
     }
 
-    public NumExt<Double> add(Double i) {
-      return wrap(val + i);
+    public NumExt<Double> subtract(Byte t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<Double> subtract(Double i) {
-      return wrap(val - i);
+    public NumExt<Double> multiply(Byte t2) {
+      return wrap(val * t2);
     }
 
-    public NumExt<Double> multiply(Double i) {
-      return wrap(val * i);
+    public NumExt<Double> divide(Byte t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<Double> divide(Double i) {
-      return wrap(val / i);
+    public NumExt<Double> add(Short t2) {
+      return wrap(val + t2);
     }
 
-  }
-  private static class ShortExt extends NumExt<Short> {
-
-    private ShortExt(Short val) {
-      super(val);
+    public NumExt<Double> subtract(Short t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<Short> apply(Function<Short, Short> f) {
-      return wrap(f.apply(val));
+    public NumExt<Double> multiply(Short t2) {
+      return wrap(val * t2);
     }
 
-    public NumExt<Short> add(Short i) {
-      return wrap((short)(val + i));
+    public NumExt<Double> divide(Short t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<Short> subtract(Short i) {
-      return wrap((short)(val - i));
+    public NumExt<Double> add(Integer t2) {
+      return wrap(val + t2);
     }
 
-    public NumExt<Short> multiply(Short i) {
-      return wrap((short)(val * i));
+    public NumExt<Double> subtract(Integer t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<Short> divide(Short i) {
-      return wrap((short)(val / i));
+    public NumExt<Double> multiply(Integer t2) {
+      return wrap(val * t2);
     }
 
-  }
-  private static class ByteExt extends NumExt<Byte> {
-
-    private ByteExt(Byte val) {
-      super(val);
+    public NumExt<Double> divide(Integer t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<Byte> apply(Function<Byte, Byte> f) {
-      return wrap(f.apply(val));
+    public NumExt<Double> add(Long t2) {
+      return wrap(val + t2);
     }
 
-    public NumExt<Byte> add(Byte i) {
-      return wrap((byte)(val + i));
+    public NumExt<Double> subtract(Long t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<Byte> subtract(Byte i) {
-      return wrap((byte)(val - i));
+    public NumExt<Double> multiply(Long t2) {
+      return wrap(val * t2);
     }
 
-    public NumExt<Byte> multiply(Byte i) {
-      return wrap((byte)(val * i));
+    public NumExt<Double> divide(Long t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<Byte> divide(Byte i) {
-      return wrap((byte)(val / i));
+    public NumExt<Double> add(Float t2) {
+      return wrap(val + t2);
     }
 
-  }
-
-  private static class BigIntExt extends NumExt<BigInteger> {
-
-    private BigIntExt(BigInteger val) {
-      super(val);
+    public NumExt<Double> subtract(Float t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<BigInteger> apply(Function<BigInteger, BigInteger> f) {
-      return wrap(f.apply(val));
+    public NumExt<Double> multiply(Float t2) {
+      return wrap(val * t2);
     }
 
-    public NumExt<BigInteger> add(BigInteger i) {
-      return wrap(val.add(i));
+    public NumExt<Double> divide(Float t2) {
+      return wrap(val / t2);
     }
 
-    public NumExt<BigInteger> subtract(BigInteger i) {
-      return wrap(val.subtract(i));
+    public NumExt<Double> add(Double t2) {
+      return wrap(val + t2);
     }
 
-    public NumExt<BigInteger> multiply(BigInteger i) {
-      return wrap(val.multiply(i));
+    public NumExt<Double> subtract(Double t2) {
+      return wrap(val - t2);
     }
 
-    public NumExt<BigInteger> divide(BigInteger i) {
-      return wrap(val.divide(i));
+    public NumExt<Double> multiply(Double t2) {
+      return wrap(val * t2);
     }
 
-  }
-  private static class BigDecimalExt extends NumExt<BigDecimal> {
-
-    private BigDecimalExt(BigDecimal val) {
-      super(val);
-    }
-
-    public NumExt<BigDecimal> apply(Function<BigDecimal, BigDecimal> f) {
-      return wrap(f.apply(val));
-    }
-
-    public NumExt<BigDecimal> add(BigDecimal i) {
-      return wrap(val.add(i));
-    }
-
-    public NumExt<BigDecimal> subtract(BigDecimal i) {
-      return wrap(val.subtract(i));
-    }
-
-    public NumExt<BigDecimal> multiply(BigDecimal i) {
-      return wrap(val.multiply(i));
-    }
-
-    public NumExt<BigDecimal> divide(BigDecimal i) {
-      return wrap(val.divide(i));
+    public NumExt<Double> divide(Double t2) {
+      return wrap(val / t2);
     }
 
   }

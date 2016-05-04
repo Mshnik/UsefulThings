@@ -1,10 +1,7 @@
 package common.dataStructures;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import common.types.Tuple;
 import common.types.Tuple2;
@@ -47,6 +44,20 @@ public class HashMap2<K1, K2, V> extends HashMap<Tuple2<K1, K2>, V> {
    */
   public V get(K1 k1, K2 k2) {
     return get(Tuple.of(k1, k2));
+  }
+
+  /**
+   * Returns the list of v associated with the given key 1, null if none
+   */
+  public List<V> getAll1(K1 k1) {
+    return keySet().stream().filter(t -> k1.equals(t._1)).map(this::get).collect(Collectors.toList());
+  }
+
+  /**
+   * Returns the list of v associated with the given key 1, null if none
+   */
+  public List<V> getAll2(K2 k2) {
+    return keySet().stream().filter(t -> k2.equals(t._2)).map(this::get).collect(Collectors.toList());
   }
 
   /**

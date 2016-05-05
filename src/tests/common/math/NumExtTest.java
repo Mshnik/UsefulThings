@@ -47,14 +47,6 @@ public class NumExtTest {
     assertEquals((byte)5, n6.asNumber());
     testIs5(n6);
 
-    NumExt<BigInteger> n7 = wrap(new BigInteger("5"));
-    assertEquals(new BigInteger("5"), n7.asNumber());
-    testIs5(n7);
-
-    NumExt<BigDecimal> n8 = wrap(new BigDecimal("5.0"));
-    assertEquals(new BigDecimal("5.0"), n8.asNumber());
-    testIs5(n8);
-
   }
 
   @Test
@@ -82,9 +74,6 @@ public class NumExtTest {
   public void testFunctionAndStream() {
     NumExt<Double> n = wrap(5).apply((x) -> x*2.0);
     assertEquals(10.0, n.asNumber());
-
-    NumExt<Integer> n2 = wrap(new BigInteger("5")).apply(BigInteger::intValue);
-    assertEquals(5, n2.asNumber());
 
     Stream<Number> s = Stream.of(1,1,1,0.5,0.5);
     //Number n3 = s.map(NumExt::wrap).reduce(NumExt.wrap(0.0), (a, b) -> a.add(b)).get().asNumber();

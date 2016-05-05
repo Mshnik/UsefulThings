@@ -18,27 +18,43 @@ public abstract class NumExt<T extends Number> {
     val = t;
   }
 
+  /** Applies and returns the correct function by the type of n
+   * @param n - the numerical argument to the function
+   * @param byteFunc - the funtion to apply if n is a Byte
+   * @param shortFunc - the function to apply if n is a Short
+   * @param intFunc - the function to apply if n is an Integer
+   * @param longFunc - the funtion to apply if n is a Long
+   * @param floatFunc - the function to apply if n is a Float
+   * @param doubleFunc - the function to apply if n is a Double
+   * @param <R> - the return type of the functions
+   * @return - the return of the selected function
+   * @throws UnsupportedOperationException - if n is not one of the above types
+   */
+  private static <R> R applyByNumType(Number n,
+                                      Function<Byte, R> byteFunc, Function<Short, R> shortFunc,
+                                      Function<Integer, R> intFunc, Function<Long, R> longFunc,
+                                      Function<Float, R> floatFunc, Function<Double, R> doubleFunc)
+                                        throws UnsupportedOperationException {
+    if (n instanceof Integer) {
+      return intFunc.apply((Integer)n);
+    } else if (n instanceof Double) {
+      return doubleFunc.apply((Double)n);
+    } else if (n instanceof Long) {
+      return longFunc.apply((Long)n);
+    } else if (n instanceof Float) {
+      return floatFunc.apply((Float)n);
+    } else if (n instanceof Short)  {
+      return shortFunc.apply((Short)n);
+    } else if (n instanceof Byte)  {
+      return byteFunc.apply((Byte)n);
+    } else {
+      throw new UnsupportedOperationException("Unsupported Numerical Type " + n.getClass());
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public static <T extends Number> NumExt<T> wrap(T t) {
-    if (t instanceof Integer) {
-      return (NumExt<T>) new IntExt((Integer)t);
-    } else if (t instanceof Double) {
-      return (NumExt<T>) new DoubleExt((Double)t);
-    } else if (t instanceof Long) {
-      return (NumExt<T>) new LongExt((Long)t);
-    } else if (t instanceof Float) {
-      return (NumExt<T>) new FloatExt((Float) t);
-    } else if (t instanceof Short)  {
-      return (NumExt<T>) new ShortExt((Short) t);
-    } else if (t instanceof Byte)  {
-      return (NumExt<T>) new ByteExt((Byte) t);
-//    } else if (t instanceof BigInteger)  {
-//      return (NumExt<T>) new BigIntExt((BigInteger) t);
-//    } else if (t instanceof BigDecimal)  {
-//      return (NumExt<T>) new BigDecimalExt((BigDecimal) t);
-    } else {
-      throw new UnsupportedOperationException("Unsupported numerical type " + t.getClass());
-    }
+    return (NumExt<T>)applyByNumType(t, ByteExt::new, ShortExt::new, IntExt::new, LongExt::new, FloatExt::new, DoubleExt::new);
   }
 
   public Stream<T> toStream() {
@@ -80,6 +96,41 @@ public abstract class NumExt<T extends Number> {
 
   public <U extends Number> NumExt<U> apply(Function<T,U> f) {
     return wrap(f.apply(val));
+  }
+
+  public NumExt<?> add(NumExt<?> n) {
+    return add(n.val);
+  }
+
+  public NumExt<?> subtract(NumExt<?> n) {
+    return subtract(n.val);
+  }
+
+  public NumExt<?> multiply(NumExt<?> n) {
+    return multiply(n.val);
+  }
+
+  public NumExt<?> divide(NumExt<?> n) {
+    return divide(n.val);
+  }
+
+  public NumExt<?> add(Number n) {
+    return applyByNumType(n, this::add, this::add, this::add, this::add, this::add, this::add);
+  }
+
+  public NumExt<?> subtract(Number n) {
+    return applyByNumType(n, this::subtract, this::subtract, this::subtract,
+                             this::subtract, this::subtract, this::subtract);
+  }
+
+  public NumExt<?> multiply(Number n) {
+    return applyByNumType(n, this::multiply, this::multiply, this::multiply,
+                             this::multiply, this::multiply, this::multiply);
+  }
+
+  public NumExt<?> divide(Number n) {
+    return applyByNumType(n, this::divide, this::divide, this::divide,
+                             this::divide, this::divide, this::divide);
   }
 
   public abstract NumExt<?> add(Byte t2);

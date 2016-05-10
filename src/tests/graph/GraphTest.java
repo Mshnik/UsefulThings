@@ -410,6 +410,9 @@ public class GraphTest {
   public void testUnmodifiableGraph() {
     Graph<String, Integer> unmodifiableG = g.unmodifiableGraph();
 
+    assertEquals(null, g.unmodifiableGraph().vertices);
+    assertEquals(null, g.unmodifiableGraph().edges);
+
     assertEquals(g.isDirected(), unmodifiableG.isDirected());
     assertEquals(g.vertexSet(), unmodifiableG.vertexSet());
     assertEquals(g.edgeSet(), unmodifiableG.edgeSet());

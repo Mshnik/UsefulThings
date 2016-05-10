@@ -9,7 +9,7 @@ import org.junit.Test;
 public class DeArrListStressTest {
 
   private static final int BIG_VAL = 100000;
-  private static final float TOLERANCE = 1.1f;
+  private static final float TOLERANCE = 1.5f;
 
   @Test
   public void testArrayListsPrepend() {

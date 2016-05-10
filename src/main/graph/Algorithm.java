@@ -4,15 +4,7 @@ import common.IDObject;
 import functional.impl.Function2;
 import graph.matching.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import common.Util;
 import common.types.Tuple2;
@@ -28,8 +20,7 @@ public class Algorithm {
   /**
    * Prevent construction on class Algorithm
    */
-  private Algorithm() {
-  }
+  private Algorithm() {}
 
   //TODO - SPEC
   private static class FlowEdge extends IDObject implements Flowable {
@@ -53,7 +44,7 @@ public class Algorithm {
    * @throws NotInCollectionException if the path makes an illegal jump -
    * there is no such edge to travel
    */
-  public static <V, E extends Weighted> int sumPathWeight(Graph<V, E> g, LinkedList<V> path)
+  public static <V, E extends Weighted> int sumPathWeight(Graph<V, E> g, List<V> path)
       throws NotInCollectionException {
     if (path == null || path.size() < 2) return 0;
 
@@ -108,7 +99,7 @@ public class Algorithm {
    * @throws NotInCollectionException if start or goal aren't contained in the graph
    * @throws  RuntimeException if any edges have negative weights.
    */
-  public static <V, E extends Weighted> LinkedList<V> shortestPath(Graph<V, E> g, V start, V goal)
+  public static <V, E extends Weighted> List<V> shortestPath(Graph<V, E> g, V start, V goal)
       throws NotInCollectionException, RuntimeException {
     return shortestPath(g, start, goal, (a,b) -> 0);
   }
@@ -121,13 +112,13 @@ public class Algorithm {
    * @param heuristic - a guess of the shortest path length from the first arg to the second.
    *                      for simple shortest path, ie Dijkstra, just pass in (v1,v2) -> 0, (thus essentially unused)
    *                      Can't ever return a value more than the true shortest path length, or results may be incorrect.
+   *                      (Path returned may not be shortest path).
    * @return - the path as a list, where return[0] is start and return[last] is goal.
-   *              returns null if start or goal isn't in g, or there is no such path.
    * @throws NotInCollectionException if start or goal aren't contained in the graph
    * @throws  RuntimeException if any edges have negative weights, or the heuristic returned a distance shorter than the
    *            true path length for any path.
    */
-  public static <V, E extends Weighted> LinkedList<V> shortestPath(Graph<V, E> g, V start, V goal, Function2<V, V, Integer> heuristic)
+  public static <V, E extends Weighted> List<V> shortestPath(Graph<V, E> g, V start, V goal, Function2<V, V, Integer> heuristic)
       throws NotInCollectionException, RuntimeException {
     if (!g.containsVertex(start) || !g.containsVertex(goal))
       throw new NotInCollectionException("Can't tun dijkstra's algorithm", start, goal);

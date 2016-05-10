@@ -96,6 +96,12 @@ public class Graph<V, E> implements Cloneable {
     private UnmodifiableGraph(Graph<V, E> g) {
       if (g == null) throw new IllegalArgumentException("Can't View Null Graph");
       graph = g;
+
+      //Make sure this Unmodifiable can't personally store vertices or edges.
+      //This will cause an NPE if these are ever accessed, which would imply
+      //that some method in graph wasn't overridden in UnmodifiableGraph
+      this.vertices = null;
+      this.edges = null;
     }
 
     @Override
@@ -300,8 +306,9 @@ public class Graph<V, E> implements Cloneable {
   }
 
   private boolean directed;
-  private HashMap<V, Vertex> vertices;
-  private HashMap<E, Edge> edges;
+  protected HashMap<V, Vertex> vertices;
+  protected HashMap<E, Edge> edges;
+  protected UnmodifiableGraph unmodifiableGraph;
 
   /**
    * Constructs a new graph from the given adjacency list
@@ -370,6 +377,7 @@ public class Graph<V, E> implements Cloneable {
     vertices = new HashMap<>();
     edges = new HashMap<>();
     this.directed = directed;
+    unmodifiableGraph = null;
   }
 
   /**
@@ -421,7 +429,10 @@ public class Graph<V, E> implements Cloneable {
    * Returns a new Graph that is an unmodifiable view of this.
    */
   public Graph<V, E> unmodifiableGraph() {
-    return new UnmodifiableGraph(this);
+    if (unmodifiableGraph == null) {
+      unmodifiableGraph = new UnmodifiableGraph(this);
+    }
+    return unmodifiableGraph;
   }
 
   /**

@@ -4,9 +4,7 @@ import common.dataStructures.NotInCollectionException;
 import functional.impl.Function2;
 import org.junit.Test;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static common.JUnitUtil.*;
 import static common.JUnitUtil.assertFalse;
@@ -86,6 +84,38 @@ public class AlgorithmTest {
     g.removeEdge(5);
     g.addEdge("E", "A", 5);
     assertFalse(Algorithm.isBipartite(g));
+  }
+
+  @Test
+  public void testMinimumSpanningTree() {
+    Graph<Character, SuperEdge> g = new Graph<>(false);
+    g.addVertex('A');
+    g.addVertex('B');
+    g.addVertex('C');
+    g.addVertex('D');
+
+    g.addEdge('A', 'B', new SuperEdge("ab", 5));
+    g.addEdge('B', 'C', new SuperEdge("bc", 10));
+    g.addEdge('C', 'D', new SuperEdge("cd", 15));
+
+    Set<SuperEdge> edgeSet = new HashSet<>();
+    edgeSet.add(g.getConnection('A', 'B'));
+    edgeSet.add(g.getConnection('B', 'C'));
+    edgeSet.add(g.getConnection('C', 'D'));
+
+    assertEquals(edgeSet, Algorithm.minimumSpanningTree(g));
+
+    g.addEdge('A', 'C', new SuperEdge("ac", 4));
+
+    edgeSet.remove(g.getConnection('B', 'C'));
+    edgeSet.add(g.getConnection('A', 'C'));
+    assertEquals(edgeSet, Algorithm.minimumSpanningTree(g));
+
+    g.addEdge('A','D', new SuperEdge("ad", 20));
+    assertEquals(edgeSet, Algorithm.minimumSpanningTree(g));
+
+    g.addVertex('E');
+    assertEquals(edgeSet, Algorithm.minimumSpanningTree(g));
   }
 
   @Test

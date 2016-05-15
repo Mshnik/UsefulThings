@@ -1,6 +1,7 @@
 package graph;
 
 import common.IDObject;
+import common.dataStructures.DeArrList;
 import functional.impl.Function2;
 import graph.matching.*;
 
@@ -87,6 +88,49 @@ public class Algorithm {
       }
     }
     return g2;
+  }
+
+  /**
+   * Returns a spanning tree on the given graph.
+   * The returned set will be a spanning tree (reach every vertex in g, but not form cycles in g)
+   * and have minimal total weight.
+   *
+   * If g is not connected, the fullest tree will be constructed, though it will not be spanning
+   *
+   * Ties between equivalently weighted edges in g are broken arbitrarily.
+   *
+   * @param g - the graph to find a spanning tree on
+   * @param <V> - the vertex type in the graph
+   * @param <E> - the edge type in the graph
+   * @return - a spanning tree, in the form of a set of edges
+   */
+  public static <V, E extends Weighted> Set<E> minimumSpanningTree(Graph<V, E> g) {
+    if (g.isDirected()) {
+      throw new UnsupportedOperationException("Spanning tree on directed graphs not yet supported");
+    } else {
+
+      //Use Kruskal's algorithm for undirected graphs.
+
+      //Get edges, sort by  min to max weight
+      List<E> edges = new DeArrList<>(g.edgeSet());
+      Collections.sort(edges, (a,b) -> a.getWeight() - b.getWeight());
+
+      UnionFind<V> verticesConnected = new UnionFind<>();
+      verticesConnected.addAll(g.vertexSet());
+
+      HashSet<E> set = new HashSet<>();
+
+      while (! verticesConnected.isEntirelyConnected() && edges.size() > 0){
+        E next = edges.remove(0);
+        List<V> vertices = g.verticesOf(next);
+        if (! verticesConnected.isUnion(vertices.get(0), vertices.get(1))) {
+          set.add(next);
+          verticesConnected.union(vertices.get(0), vertices.get(1));
+        }
+      }
+
+      return set;
+    }
   }
 
   /**

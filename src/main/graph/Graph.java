@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import common.dataStructures.NotInCollectionException;
+import common.types.Tuple;
+import common.types.Tuple2;
 import common.types.Tuple3;
 
 /**
@@ -279,7 +281,7 @@ public class Graph<V, E> implements Cloneable {
     }
 
     @Override
-    public List<V> verticesOf(E e) {
+    public Tuple2<V, V> verticesOf(E e) {
       return graph.verticesOf(e);
     }
 
@@ -791,14 +793,11 @@ public class Graph<V, E> implements Cloneable {
    *
    * @throws NotInCollectionException if e is not in this graph
    */
-  public List<V> verticesOf(E e) throws NotInCollectionException {
+  public Tuple2<V, V> verticesOf(E e) throws NotInCollectionException {
     if (!edges.containsKey(e))
       throw new NotInCollectionException("Can't get verticies of", e);
     Edge edge = edges.get(e);
-    List<V> a = new ArrayList<V>(2);
-    a.add(edge.getSource().v);
-    a.add(edge.getSink().v);
-    return Collections.unmodifiableList(a);
+    return Tuple.of(edge.getSource().v, edge.getSink().v);
   }
 
   /**

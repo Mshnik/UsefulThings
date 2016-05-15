@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import common.dataStructures.NotInCollectionException;
 
+import common.types.Tuple;
 import functional.impl.Function2;
 import org.junit.Before;
 import org.junit.Test;
@@ -319,24 +320,15 @@ public class GraphTest {
   }
 
   @Test
-  public void testVertexSet() {
-    ArrayList<String> lst = new ArrayList<>();
-    lst.add("A");
-    lst.add("B");
-    assertEquals(lst, g.verticesOf(1));
-    assertEquals(lst, gU.verticesOf(1));
+  public void testVertexTuple() {
+    assertEquals(Tuple.of("A","B"), g.verticesOf(1));
+    assertEquals(Tuple.of("A","B"), gU.verticesOf(1));
 
-    lst.clear();
-    lst.add("A");
-    lst.add("C");
-    assertEquals(lst, g.verticesOf(2));
-    assertEquals(lst, gU.verticesOf(2));
+    assertEquals(Tuple.of("A","C"), g.verticesOf(2));
+    assertEquals(Tuple.of("A","C"), gU.verticesOf(2));
 
-    lst.clear();
-    lst.add("C");
-    lst.add("C");
-    assertEquals(lst, g.verticesOf(3));
-    assertEquals(lst, gU.verticesOf(3));
+    assertEquals(Tuple.of("C","C"), g.verticesOf(3));
+    assertEquals(Tuple.of("C","C"), gU.verticesOf(3));
   }
 
   @Test

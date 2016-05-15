@@ -122,10 +122,10 @@ public class Algorithm {
 
       while (! verticesConnected.isEntirelyConnected() && edges.size() > 0){
         E next = edges.remove(0);
-        List<V> vertices = g.verticesOf(next);
-        if (! verticesConnected.isUnion(vertices.get(0), vertices.get(1))) {
+        Tuple2<V, V> vertices = g.verticesOf(next);
+        if (! verticesConnected.isUnion(vertices._1, vertices._2)) {
           set.add(next);
-          verticesConnected.union(vertices.get(0), vertices.get(1));
+          verticesConnected.union(vertices._1, vertices._2);
         }
       }
 

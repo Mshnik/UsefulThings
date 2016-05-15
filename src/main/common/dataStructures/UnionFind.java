@@ -1,5 +1,6 @@
 package common.dataStructures;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,10 +45,17 @@ public class UnionFind<E> {
    */
   private HashMap<E, Node<E>> elms;
 
+  /** The maximum size of a union in this UnionFind. Because elements can't be removed
+   * from a UnionFind, only the value of the maximal union size has to be stored,
+   * and updated when a new union becomes maximal
+   */
+  private int maxUnionSize;
+
   /**
    * Constructs an empty UnionFind data structure
    */
   public UnionFind() {
+    this.maxUnionSize = 0;
     this.elms = new HashMap<E, Node<E>>();
   }
 
@@ -73,14 +81,32 @@ public class UnionFind<E> {
     if (elms.containsKey(e))
       return false;
     elms.put(e, new Node<E>(e));
+    if (maxUnionSize == 0) {
+      maxUnionSize = 1;
+    }
     return true;
+  }
+
+  /**
+   * Adds the given elements to this union find, if not already present.
+   * For each addition performed, places the new element in its own union with size 1.
+   *
+   * @param c - the collection of elements to add
+   * @return - true if the UnionFind was altered as a result of this operation.
+   */
+  public boolean addAll(Collection<? extends E> c) {
+    boolean changed = false;
+    for(E e : c) {
+      changed = add(e) | changed;
+    }
+    return changed;
   }
 
   /**
    * Returns a set of the elements contained in this UnionFind
    */
   public Set<E> toElmSet() {
-    return new HashSet<E>(elms.keySet());
+    return new HashSet<>(elms.keySet());
   }
 
   /**
@@ -136,6 +162,16 @@ public class UnionFind<E> {
     return val;
   }
 
+  /** Returns the size of this UnionFind - the number of elements contained in this UnionFind */
+  public int size() {
+    return elms.size();
+  }
+
+  /** Returns true iff this UnionFind is empty - if it contains 0 elements */
+  public boolean isEmpty() {
+    return size() == 0;
+  }
+
   /**
    * Returns the size of the union that elm is contained in. Runs in O(1)
    * amortized time. (O(logN) in worst case).
@@ -146,6 +182,24 @@ public class UnionFind<E> {
     if (!elms.containsKey(elm))
       throw new NotInCollectionException("Can't get size of ", elm);
     return elms.get(find(elm)).size;
+  }
+
+  /** Returns the maximum size of a union within this UnionFind.
+   * Returns 0 iff this is empty, otherwise returns some value >= 1
+   * If maxSize returns 1, all elements are disconnected. If it returns the same result
+   * as size(), all elements are connected.
+   * @return the maximum size of a union within this UnionFind
+   */
+  public int maxUnionSize() {
+    return maxUnionSize;
+  }
+
+  /** Returns true iff this UnionFind is entirely connected - every element is connected to
+   * every other element within this UnionFind.
+   * Will return true for an empty UnionFind. (Max Union = 0, size = 0)
+   */
+  public boolean isEntirelyConnected() {
+    return maxUnionSize() == size();
   }
 
   /**
@@ -169,10 +223,12 @@ public class UnionFind<E> {
     if (p1.size < p2.size) {
       p1.parent = p2;
       p2.size += p1.size;
+      maxUnionSize = Math.max(maxUnionSize, p2.size);
       return p2.val;
     } else {
       p2.parent = p1;
       p1.size += p2.size;
+      maxUnionSize = Math.max(maxUnionSize, p1.size);
       return p1.val;
     }
   }

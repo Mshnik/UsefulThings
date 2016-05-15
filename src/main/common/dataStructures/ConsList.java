@@ -23,7 +23,6 @@ import java.util.stream.StreamSupport;
  *            are made of the type.
  * @author Mshnik
  */
-//TODO - SPEC
 public class ConsList<E> implements Iterable<E> {
 
   /**

@@ -79,4 +79,53 @@ public class UnionFindTest {
     assertTrue(a.isUnion("B", "C"));
   }
 
+  @Test
+  public void testSize() {
+    UnionFind<String> a = new UnionFind<>();
+    assertEquals(0, a.size());
+    assertTrue(a.isEmpty());
+
+    a.add("A");
+    assertEquals(1, a.size());
+    assertFalse(a.isEmpty());
+
+    a.add("B");
+    assertEquals(2, a.size());
+
+    a.add("A");
+    assertEquals(2, a.size());
+  }
+
+  @Test
+  public void testMaxUnionSize() {
+    UnionFind<String> a = new UnionFind<>();
+    assertEquals(0, a.maxUnionSize());
+    assertTrue(a.isEntirelyConnected());
+
+    a.add("A");
+    assertEquals(1, a.maxUnionSize());
+    assertTrue(a.isEntirelyConnected());
+
+    a.add("B");
+    assertEquals(1, a.maxUnionSize());
+    assertFalse(a.isEntirelyConnected());
+
+    a.union("A", "B");
+    assertEquals(2, a.maxUnionSize());
+    assertTrue(a.isEntirelyConnected());
+
+    a.add("C");
+    assertEquals(2, a.maxUnionSize());
+    assertFalse(a.isEntirelyConnected());
+
+    a.add("D");
+    a.add("E");
+    a.union("D","E");
+    a.union("C","E");
+    assertEquals(3, a.maxUnionSize());
+    assertFalse(a.isEntirelyConnected());
+    a.union("D", "B");
+    assertEquals(5, a.maxUnionSize());
+    assertTrue(a.isEntirelyConnected());
+  }
 }

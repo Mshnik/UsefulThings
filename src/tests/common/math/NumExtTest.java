@@ -4,6 +4,11 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static common.JUnitUtil.*;
@@ -78,6 +83,77 @@ public class NumExtTest {
     Stream<Number> s = Stream.of(1,1,1,0.5,0.5);
     Number n3 = s.map(NumExt::wrap).reduce(NumExt.wrap(0.0), NumExt::add).getVal();
     assertEquals(4.0, n3);
+  }
+
+  @Test
+  public void testNegation() {
+    assertEquals(-5, wrap(5).negate().asInt());
+    assertEquals(0, wrap(0).negate().asInt());
+    assertEquals(5, wrap(5).negate().negate().asInt());
+  }
+
+  @Test
+  public void testIsZero() {
+    assertTrue(wrap(0).isZero());
+    assertTrue(wrap(0.0f).isZero());
+    assertTrue(wrap(0.0).isZero());
+    assertTrue(wrap(0L).isZero());
+    assertTrue(wrap((short)0).isZero());
+    assertTrue(wrap((byte)0).isZero());
+
+    assertFalse(wrap((short)1).isZero());
+    assertFalse(wrap((byte)1).isZero());
+    assertFalse(wrap(1).isZero());
+    assertFalse(wrap(-1).isZero());
+    assertFalse(wrap(1L).isZero());
+    assertFalse(wrap(-1L).isZero());
+    assertFalse(wrap(0.5f).isZero());
+    assertFalse(wrap(-0.5f).isZero());
+    assertFalse(wrap(0.5).isZero());
+    assertFalse(wrap(-0.5).isZero());
+  }
+
+  @Test
+  public void testEqualityAndHashcode() {
+    assertFalse(wrap(0).equals(null));
+
+    NumExt n = wrap(0);
+    assertEquals(n, n);
+
+    List<Number> lst = Arrays.asList((byte)5, (short)5, 5, 5L, 5.0f, 5.0);
+    for(Number n2 : lst) {
+      assertFalse(wrap(n2).add(n2).equals(wrap(n2)));
+      for(Number n3 : lst) {
+        assertTrue(wrap(n2).equals(wrap(n3)));
+        assertEquals(wrap(n2).hashCode(), wrap(n3).hashCode());
+      }
+    }
+  }
+
+  @Test
+  public void testComparison() {
+    List<Number> lst = Arrays.asList(18L, (byte)2, 7.0, 12.0, 6.0f, (byte)13, 8, 9L, (short)3, 10.0f, 4, 5L, 11.0);
+    List<NumExt> lst2 = lst.stream().map(NumExt::wrap).collect(Collectors.toList());
+
+    Collections.sort(lst2);
+
+    Iterator<NumExt> iter1 = lst2.iterator();
+    Iterator<NumExt> iter2 = lst2.iterator();
+    iter2.next();
+
+    while(iter2.hasNext()) {
+      NumExt n1 = iter1.next();
+      NumExt n2 = iter2.next();
+
+      assertEquals(-1, n1.compareTo(n2));
+      assertEquals(1, n2.compareTo(n1));
+    }
+
+    assertEquals(0, wrap(5).compareTo(wrap(5)));
+    assertEquals(0, wrap(5L).compareTo(wrap(5)));
+    assertEquals(0, wrap(5.0f).compareTo(wrap(5)));
+    assertEquals(0, wrap((byte)5).compareTo(wrap(5)));
+    assertEquals(0, wrap((short)5).compareTo(wrap(5)));
   }
 
 }

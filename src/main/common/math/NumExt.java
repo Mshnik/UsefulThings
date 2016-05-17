@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 /**
  * @author Mshnik
  */
-public abstract class NumExt {
+public abstract class NumExt implements Comparable<NumExt> {
 
   /** Applies and returns the correct function by the type of n
    * @param n - the numerical argument to the function
@@ -50,6 +50,42 @@ public abstract class NumExt {
   }
 
   public abstract Number getVal();
+
+  public abstract NumExt negate();
+
+  public String toString() {
+    return getVal().toString();
+  }
+
+  public boolean equals(NumExt n1) {
+    return this == n1 || n1 != null && Math.abs(n1.asDouble() - asDouble()) == 0.0;
+  }
+
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (! (o instanceof NumExt)) return false;
+
+    NumExt n = (NumExt)o;
+    return equals(n);
+  }
+
+  public int hashCode() {
+    return asInt();
+  }
+
+  public int compareTo(Number n) {
+    return compareTo(wrap(n));
+  }
+
+  public int compareTo(NumExt n) {
+    if (equals(n)) return 0;
+    else if (asDouble() < n.asDouble()) return -1;
+    else return 1;
+  }
+
+  public boolean isZero() {
+    return equals(wrap(0));
+  }
 
   public <X extends Number> X getAs(Class<X> clazz) {
     return clazz.cast(getVal());
@@ -155,6 +191,10 @@ public abstract class NumExt {
 
     public Number getVal() {
       return val;
+    }
+
+    public NumExt negate() {
+      return wrap(-val);
     }
 
     public NumExt add(Byte t2) {
@@ -268,6 +308,10 @@ public abstract class NumExt {
       return val;
     }
 
+    public NumExt negate() {
+      return wrap(-val);
+    }
+
     public NumExt add(Byte t2) {
       return wrap((short)(val + t2));
     }
@@ -377,6 +421,10 @@ public abstract class NumExt {
 
     public Number getVal() {
       return val;
+    }
+
+    public NumExt negate() {
+      return wrap(-val);
     }
 
     public NumExt add(Byte t2) {
@@ -490,6 +538,10 @@ public abstract class NumExt {
       return val;
     }
 
+    public NumExt negate() {
+      return wrap(-val);
+    }
+
     public NumExt add(Byte t2) {
       return wrap(val + t2);
     }
@@ -601,6 +653,10 @@ public abstract class NumExt {
       return val;
     }
 
+    public NumExt negate() {
+      return wrap(-val);
+    }
+
     public NumExt add(Byte t2) {
       return wrap(val + t2);
     }
@@ -710,6 +766,10 @@ public abstract class NumExt {
 
     public Number getVal() {
       return val;
+    }
+
+    public NumExt negate() {
+      return wrap(-val);
     }
 
     public NumExt add(Byte t2) {

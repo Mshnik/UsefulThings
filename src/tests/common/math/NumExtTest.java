@@ -2,8 +2,6 @@ package common.math;
 
 import org.junit.Test;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -20,10 +18,10 @@ import static common.math.NumExt.wrap;
 public class NumExtTest {
 
   private void testIs5(NumExt n) {
-    assertEquals(5, n.asInt());
-    assertEquals(5.0f, n.asFloat());
-    assertEquals(5.0, n.asDouble());
-    assertEquals(5L, n.asLong());
+    assertEquals(5, n.intValue());
+    assertEquals(5.0f, n.floatValue());
+    assertEquals(5.0, n.doubleValue());
+    assertEquals(5L, n.longValue());
   }
 
   @Test
@@ -87,9 +85,9 @@ public class NumExtTest {
 
   @Test
   public void testNegation() {
-    assertEquals(-5, wrap(5).negate().asInt());
-    assertEquals(0, wrap(0).negate().asInt());
-    assertEquals(5, wrap(5).negate().negate().asInt());
+    assertEquals(-5, wrap(5).negate().intValue());
+    assertEquals(0, wrap(0).negate().intValue());
+    assertEquals(5, wrap(5).negate().negate().intValue());
   }
 
   @Test

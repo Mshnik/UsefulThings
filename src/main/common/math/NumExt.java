@@ -1,7 +1,5 @@
 package common.math;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -9,10 +7,11 @@ import java.util.stream.Stream;
 /**
  * @author Mshnik
  */
-public abstract class NumExt implements Comparable<NumExt> {
+public abstract class NumExt extends Number implements Comparable<Number> {
 
   /** Applies and returns the correct function by the type of n
    * @param n - the numerical argument to the function
+   * @param numExtFunc - the function to apply if n is already a NumExt
    * @param byteFunc - the funtion to apply if n is a Byte
    * @param shortFunc - the function to apply if n is a Short
    * @param intFunc - the function to apply if n is an Integer
@@ -24,11 +23,14 @@ public abstract class NumExt implements Comparable<NumExt> {
    * @throws UnsupportedOperationException - if n is not one of the above types
    */
   private static <R> R applyByNumType(Number n,
+                                      Function<NumExt, R> numExtFunc,
                                       Function<Byte, R> byteFunc, Function<Short, R> shortFunc,
                                       Function<Integer, R> intFunc, Function<Long, R> longFunc,
                                       Function<Float, R> floatFunc, Function<Double, R> doubleFunc)
       throws UnsupportedOperationException {
-    if (n instanceof Integer) {
+    if (n instanceof NumExt) {
+      return numExtFunc.apply((NumExt)n);
+    } else if (n instanceof Integer) {
       return intFunc.apply((Integer)n);
     } else if (n instanceof Double) {
       return doubleFunc.apply((Double)n);
@@ -46,7 +48,7 @@ public abstract class NumExt implements Comparable<NumExt> {
   }
 
   public static NumExt wrap(Number t) {
-    return applyByNumType(t, ByteExt::new, ShortExt::new, IntExt::new, LongExt::new, FloatExt::new, DoubleExt::new);
+    return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new, LongExt::new, FloatExt::new, DoubleExt::new);
   }
 
   public abstract Number getVal();
@@ -58,7 +60,7 @@ public abstract class NumExt implements Comparable<NumExt> {
   }
 
   public boolean equals(NumExt n1) {
-    return this == n1 || n1 != null && Math.abs(n1.asDouble() - asDouble()) == 0.0;
+    return this == n1 || n1 != null && Math.abs(n1.doubleValue() - doubleValue()) == 0.0;
   }
 
   public boolean equals(Object o) {
@@ -70,7 +72,7 @@ public abstract class NumExt implements Comparable<NumExt> {
   }
 
   public int hashCode() {
-    return asInt();
+    return intValue();
   }
 
   public int compareTo(Number n) {
@@ -79,7 +81,7 @@ public abstract class NumExt implements Comparable<NumExt> {
 
   public int compareTo(NumExt n) {
     if (equals(n)) return 0;
-    else if (asDouble() < n.asDouble()) return -1;
+    else if (doubleValue() < n.doubleValue()) return -1;
     else return 1;
   }
 
@@ -95,19 +97,19 @@ public abstract class NumExt implements Comparable<NumExt> {
     return Stream.of(getVal());
   }
 
-  public int asInt() {
+  public int intValue() {
     return getVal().intValue();
   }
 
-  public long asLong() {
+  public long longValue() {
     return getVal().longValue();
   }
 
-  public float asFloat() {
+  public float floatValue() {
     return getVal().floatValue();
   }
 
-  public double asDouble() {
+  public double doubleValue() {
     return getVal().doubleValue();
   }
 
@@ -132,21 +134,21 @@ public abstract class NumExt implements Comparable<NumExt> {
   }
 
   public NumExt add(Number n) {
-    return applyByNumType(n, this::add, this::add, this::add, this::add, this::add, this::add);
+    return applyByNumType(n, this::add, this::add, this::add, this::add, this::add, this::add, this::add);
   }
 
   public NumExt subtract(Number n) {
-    return applyByNumType(n, this::subtract, this::subtract, this::subtract,
+    return applyByNumType(n, this::subtract, this::subtract, this::subtract, this::subtract,
         this::subtract, this::subtract, this::subtract);
   }
 
   public NumExt multiply(Number n) {
-    return applyByNumType(n, this::multiply, this::multiply, this::multiply,
+    return applyByNumType(n, this::multiply, this::multiply, this::multiply, this::multiply,
         this::multiply, this::multiply, this::multiply);
   }
 
   public NumExt divide(Number n) {
-    return applyByNumType(n, this::divide, this::divide, this::divide,
+    return applyByNumType(n, this::divide, this::divide, this::divide, this::divide,
         this::divide, this::divide, this::divide);
   }
 

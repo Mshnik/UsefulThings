@@ -24,21 +24,21 @@ public class Rational<T extends Number> extends Number {
 
   @Override
   public int intValue() {
-    return wrap(numerator).divide(denominator).asInt();
+    return wrap(numerator).divide(denominator).intValue();
   }
 
   @Override
   public long longValue() {
-    return wrap(numerator).divide(denominator).asLong();
+    return wrap(numerator).divide(denominator).longValue();
   }
 
   @Override
   public float floatValue() {
-    return wrap(numerator).divide(denominator).asFloat();
+    return wrap(numerator).divide(denominator).floatValue();
   }
 
   @Override
   public double doubleValue() {
-    return wrap(numerator).divide(denominator).asDouble();
+    return wrap(numerator).divide(denominator).doubleValue();
   }
 }

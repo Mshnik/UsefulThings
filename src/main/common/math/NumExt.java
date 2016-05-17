@@ -9,13 +9,18 @@ import java.util.stream.Stream;
  */
 public abstract class NumExt extends Number implements Comparable<Number> {
 
+  public static final NumExt ZERO = wrap(0);
+  public static final NumExt ONE = wrap(1);
+  public static final NumExt NEG_ONE = wrap(-1);
+
+
   /** Applies and returns the correct function by the type of n
    * @param n - the numerical argument to the function
    * @param numExtFunc - the function to apply if n is already a NumExt
-   * @param byteFunc - the funtion to apply if n is a Byte
+   * @param byteFunc - the function to apply if n is a Byte
    * @param shortFunc - the function to apply if n is a Short
    * @param intFunc - the function to apply if n is an Integer
-   * @param longFunc - the funtion to apply if n is a Long
+   * @param longFunc - the function to apply if n is a Long
    * @param floatFunc - the function to apply if n is a Float
    * @param doubleFunc - the function to apply if n is a Double
    * @param <R> - the return type of the functions
@@ -75,12 +80,14 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     return intValue();
   }
 
-  public int compareTo(Number n) {
-    return compareTo(wrap(n));
+  public int signum() {
+    if (equals(wrap(0))) return 0;
+    else if (doubleValue() < 0) return -1;
+    else return 0;
   }
 
-  public int compareTo(NumExt n) {
-    if (equals(n)) return 0;
+  public int compareTo(Number n) {
+    if (equals(wrap(n))) return 0;
     else if (doubleValue() < n.doubleValue()) return -1;
     else return 1;
   }

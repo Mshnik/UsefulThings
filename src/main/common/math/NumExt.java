@@ -13,7 +13,6 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public static final NumExt ONE = wrap(1);
   public static final NumExt NEG_ONE = wrap(-1);
 
-
   /** Applies and returns the correct function by the type of n
    * @param n - the numerical argument to the function
    * @param numExtFunc - the function to apply if n is already a NumExt
@@ -56,45 +55,14 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new, LongExt::new, FloatExt::new, DoubleExt::new);
   }
 
-  public abstract Number getVal();
-
-  public abstract NumExt negate();
-
   public String toString() {
     return getVal().toString();
   }
 
-  public boolean equals(NumExt n1) {
-    return this == n1 || n1 != null && Math.abs(n1.doubleValue() - doubleValue()) == 0.0;
-  }
+  //region Getters
+  //-----------------------------------------------------------------------------------------------
 
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (! (o instanceof NumExt)) return false;
-
-    NumExt n = (NumExt)o;
-    return equals(n);
-  }
-
-  public int hashCode() {
-    return intValue();
-  }
-
-  public int signum() {
-    if (equals(wrap(0))) return 0;
-    else if (doubleValue() < 0) return -1;
-    else return 0;
-  }
-
-  public int compareTo(Number n) {
-    if (equals(wrap(n))) return 0;
-    else if (doubleValue() < n.doubleValue()) return -1;
-    else return 1;
-  }
-
-  public boolean isZero() {
-    return equals(wrap(0));
-  }
+  public abstract Number getVal();
 
   public <X extends Number> X getAs(Class<X> clazz) {
     return clazz.cast(getVal());
@@ -120,44 +88,72 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     return getVal().doubleValue();
   }
 
+  public double fractionalValue() {
+    return doubleValue() - intValue();
+  }
+
+  public abstract boolean isInteger();
+
+  public int hashCode() {
+    return intValue();
+  }
+
+  public int signum() {
+    if (equals(wrap(0))) return 0;
+    else if (doubleValue() < 0) return -1;
+    else return 0;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  //endregion
+
+  //region Mutators
+  //-----------------------------------------------------------------------------------------------
+
   public NumExt apply(Function<Number,Number> f) {
     return wrap(f.apply(getVal()));
   }
 
-  public NumExt add(NumExt n) {
-    return add(n.getVal());
+  public NumExt asInt() {
+    return wrap(intValue());
   }
 
-  public NumExt subtract(NumExt n) {
-    return subtract(n.getVal());
-  }
+  //endregion
 
-  public NumExt multiply(NumExt n) {
-    return multiply(n.getVal());
-  }
+  //region Arithmetic
+  //-----------------------------------------------------------------------------------------------
 
-  public NumExt divide(NumExt n) {
-    return divide(n.getVal());
+  public abstract NumExt negate();
+
+  public NumExt mod(Number n) {
+    NumExt wholePart = divide(n).asInt().multiply(n);
+    if (signum() >= 0) {
+      return subtract(wholePart);
+    } else {
+      return add(wholePart).add(n);
+    }
   }
 
   public NumExt add(Number n) {
-    return applyByNumType(n, this::add, this::add, this::add, this::add, this::add, this::add, this::add);
+    return applyByNumType(n, x -> add(x.getVal()), this::add, this::add, this::add, this::add, this::add, this::add);
   }
 
   public NumExt subtract(Number n) {
-    return applyByNumType(n, this::subtract, this::subtract, this::subtract, this::subtract,
+    return applyByNumType(n, x -> subtract(x.getVal()), this::subtract, this::subtract, this::subtract,
         this::subtract, this::subtract, this::subtract);
   }
 
   public NumExt multiply(Number n) {
-    return applyByNumType(n, this::multiply, this::multiply, this::multiply, this::multiply,
+    return applyByNumType(n, x -> x.multiply(x.getVal()), this::multiply, this::multiply, this::multiply,
         this::multiply, this::multiply, this::multiply);
   }
 
   public NumExt divide(Number n) {
-    return applyByNumType(n, this::divide, this::divide, this::divide, this::divide,
+    return applyByNumType(n, x -> x.divide(x.getVal()), this::divide, this::divide, this::divide,
         this::divide, this::divide, this::divide);
   }
+
+  //region Arithmetic-Stubs
 
   public abstract NumExt add(Byte t2);
   public abstract NumExt subtract(Byte t2);
@@ -189,6 +185,47 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public abstract NumExt multiply(Double t2);
   public abstract NumExt divide(Double t2);
 
+  //endregion
+
+  public NumExt abs() {
+    if (signum() >= 0) return this;
+    else return negate();
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  //endregion
+
+  //region Comparison
+  //-----------------------------------------------------------------------------------------------
+
+  public boolean equals(NumExt n1) {
+    return this == n1 || n1 != null && Math.abs(n1.doubleValue() - doubleValue()) == 0.0;
+  }
+
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (! (o instanceof NumExt)) return false;
+
+    NumExt n = (NumExt)o;
+    return equals(n);
+  }
+
+  public int compareTo(Number n) {
+    if (equals(wrap(n))) return 0;
+    else if (doubleValue() < n.doubleValue()) return -1;
+    else return 1;
+  }
+
+  public boolean isZero() {
+    return equals(wrap(0));
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  //endregion
+
+  //region Implementations
+  //-----------------------------------------------------------------------------------------------
+
   private static class ByteExt extends NumExt {
 
     private byte val;
@@ -200,6 +237,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
     public Number getVal() {
       return val;
+    }
+
+    public boolean isInteger() {
+      return true;
     }
 
     public NumExt negate() {
@@ -317,6 +358,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
       return val;
     }
 
+    public boolean isInteger() {
+      return true;
+    }
+
     public NumExt negate() {
       return wrap(-val);
     }
@@ -430,6 +475,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
     public Number getVal() {
       return val;
+    }
+
+    public boolean isInteger() {
+      return true;
     }
 
     public NumExt negate() {
@@ -547,6 +596,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
       return val;
     }
 
+    public boolean isInteger() {
+      return true;
+    }
+
     public NumExt negate() {
       return wrap(-val);
     }
@@ -660,6 +713,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
     public Number getVal() {
       return val;
+    }
+
+    public boolean isInteger() {
+      return false;
     }
 
     public NumExt negate() {
@@ -777,6 +834,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
       return val;
     }
 
+    public boolean isInteger() {
+      return false;
+    }
+
     public NumExt negate() {
       return wrap(-val);
     }
@@ -878,4 +939,6 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     }
   }
 
+  //-----------------------------------------------------------------------------------------------
+  //endregion
 }

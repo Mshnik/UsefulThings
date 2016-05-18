@@ -22,6 +22,8 @@ public class NumExtTest {
     assertEquals(5.0f, n.floatValue());
     assertEquals(5.0, n.doubleValue());
     assertEquals(5L, n.longValue());
+    assertEquals((short)5, n.shortValue());
+    assertEquals((byte)5, n.byteValue());
   }
 
   @Test
@@ -71,6 +73,10 @@ public class NumExtTest {
     assertEquals(2.5f, n2.getVal());
     n2 = n2.multiply(2.0f);
     assertEquals(5.0f, n2.getVal());
+
+    testIs5(wrap(15).mod(10));
+    testIs5(wrap(12).mod(7));
+    testIs5(wrap(-1).mod(6));
   }
 
   @Test
@@ -88,6 +94,17 @@ public class NumExtTest {
     assertEquals(-5, wrap(5).negate().intValue());
     assertEquals(0, wrap(0).negate().intValue());
     assertEquals(5, wrap(5).negate().negate().intValue());
+  }
+
+  @Test
+  public void testIsInt() {
+    assertTrue(wrap(1).isInteger());
+    assertTrue(wrap((short)1).isInteger());
+    assertTrue(wrap((byte)1).isInteger());
+    assertTrue(wrap(1L).isInteger());
+
+    assertFalse(wrap(1.0f).isInteger());
+    assertFalse(wrap(1.0).isInteger());
   }
 
   @Test

@@ -2,6 +2,7 @@ package common.math;
 
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -30,18 +31,22 @@ public class NumExtTest {
   public void testWrapping() {
     NumExt n = wrap(5);
     assertEquals(5, n.getVal());
+    assertEquals("5", n.toString());
     testIs5(n);
 
     NumExt n2 = wrap(5.0f);
     assertEquals(5.0f, n2.getVal());
+    assertEquals("5.0", n2.toString());
     testIs5(n2);
 
     NumExt n3 = wrap(5.0);
     assertEquals(5.0, n3.getVal());
+    assertEquals("5.0", n3.toString());
     testIs5(n3);
 
     NumExt n4 = wrap(5L);
     assertEquals(5L, n4.getVal());
+    assertEquals("5", n4.toString());
     testIs5(n4);
 
     NumExt n5 = wrap((short)5);
@@ -52,6 +57,7 @@ public class NumExtTest {
     assertEquals((byte)5, n6.getVal());
     testIs5(n6);
 
+    shouldFail(NumExt::wrap, new BigInteger("123"));
   }
 
   @Test
@@ -77,12 +83,16 @@ public class NumExtTest {
     testIs5(wrap(15).mod(10));
     testIs5(wrap(12).mod(7));
     testIs5(wrap(-1).mod(6));
+
+    assertEquals(0, wrap(1).divide(4).asInt().intValue());
   }
 
   @Test
   public void testFunctionAndStream() {
     NumExt n = wrap(5).apply(x -> x.doubleValue()*2.0);
     assertEquals(10.0, n.getVal());
+
+    assertEquals(Arrays.asList(1), wrap(1).toStream().collect(Collectors.toList()));
 
     Stream<Number> s = Stream.of(1,1,1,0.5,0.5);
     Number n3 = s.map(NumExt::wrap).reduce(NumExt.wrap(0.0), NumExt::add).getVal();
@@ -105,6 +115,45 @@ public class NumExtTest {
 
     assertFalse(wrap(1.0f).isInteger());
     assertFalse(wrap(1.0).isInteger());
+  }
+
+  @Test
+  public void testFractionalValue() {
+    assertEquals(0.0, wrap(1).fractionalValue());
+    assertEquals(0.0, wrap(1).add(1).fractionalValue());
+    assertEquals(0.0, wrap(1.5).add(1.5).fractionalValue());
+    assertEquals(0.0, wrap(-1).fractionalValue());
+
+    assertEquals(0.2, wrap(0.2).fractionalValue());
+    assertEquals(0.2, wrap(1.2).fractionalValue());
+  }
+
+  @Test
+  public void testAbs() {
+    assertEquals(5, wrap(5).abs().getVal());
+    assertEquals(5, wrap(-5).abs().getVal());
+
+    assertEquals(0.0, wrap(0.0).abs().getVal());
+    assertEquals(0.0, wrap(-0.0).abs().getVal());
+  }
+
+  @Test
+  public void testGCD() {
+    assertEquals(1, wrap(5).gcd(1).intValue());
+    assertEquals(1, wrap(3).gcd(7).intValue());
+    assertEquals(2, wrap(10).gcd(4).intValue());
+    assertEquals(2, wrap(4).gcd(10).intValue());
+    assertEquals(5, wrap(5).gcd(0).intValue());
+
+    assertEquals(1, wrap(-5).gcd(1).intValue());
+    assertEquals(1, wrap(-3).gcd(7).intValue());
+    assertEquals(2, wrap(-10).gcd(4).intValue());
+    assertEquals(2, wrap(-4).gcd(10).intValue());
+    assertEquals(5, wrap(-5).gcd(0).intValue());
+
+    assertEquals(0, wrap(3.5).gcd(2).intValue());
+    assertEquals(0.5, wrap(3.5).gcd(1.5).doubleValue());
+    assertEquals(0.4, wrap(-1.6).gcd(2).doubleValue());
   }
 
   @Test
@@ -139,7 +188,7 @@ public class NumExtTest {
     for(Number n2 : lst) {
       assertFalse(wrap(n2).add(n2).equals(wrap(n2)));
       for(Number n3 : lst) {
-        assertTrue(wrap(n2).equals(wrap(n3)));
+        assertTrue(wrap(n2).equals((Object)wrap(n3)));
         assertEquals(wrap(n2).hashCode(), wrap(n3).hashCode());
       }
     }

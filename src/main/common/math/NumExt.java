@@ -3,8 +3,8 @@ package common.math;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-//TODO - SPEC
 /**
+ * //TODO - SPEC
  * @author Mshnik
  */
 public abstract class NumExt extends Number implements Comparable<Number> {
@@ -12,6 +12,17 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public static final NumExt ZERO = wrap(0);
   public static final NumExt ONE = wrap(1);
   public static final NumExt NEG_ONE = wrap(-1);
+
+  public static NumExt wrap(Number t) {
+    return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new, LongExt::new, FloatExt::new, DoubleExt::new);
+  }
+
+  //region Util
+  //-----------------------------------------------------------------------------------------------
+
+  public String toString() {
+    return getVal().toString();
+  }
 
   /** Applies and returns the correct function by the type of n
    * @param n - the numerical argument to the function
@@ -51,13 +62,8 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     }
   }
 
-  public static NumExt wrap(Number t) {
-    return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new, LongExt::new, FloatExt::new, DoubleExt::new);
-  }
-
-  public String toString() {
-    return getVal().toString();
-  }
+  //-----------------------------------------------------------------------------------------------
+  //endregion
 
   //region Getters
   //-----------------------------------------------------------------------------------------------
@@ -125,15 +131,6 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
   public abstract NumExt negate();
 
-  public NumExt mod(Number n) {
-    NumExt wholePart = divide(n).asInt().multiply(n);
-    if (signum() >= 0) {
-      return subtract(wholePart);
-    } else {
-      return add(wholePart).add(n);
-    }
-  }
-
   public NumExt add(Number n) {
     return applyByNumType(n, x -> add(x.getVal()), this::add, this::add, this::add, this::add, this::add, this::add);
   }
@@ -144,13 +141,41 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   }
 
   public NumExt multiply(Number n) {
-    return applyByNumType(n, x -> x.multiply(x.getVal()), this::multiply, this::multiply, this::multiply,
+    return applyByNumType(n, x -> multiply(x.getVal()), this::multiply, this::multiply, this::multiply,
         this::multiply, this::multiply, this::multiply);
   }
 
   public NumExt divide(Number n) {
-    return applyByNumType(n, x -> x.divide(x.getVal()), this::divide, this::divide, this::divide,
+    return applyByNumType(n, x -> divide(x.getVal()), this::divide, this::divide, this::divide,
         this::divide, this::divide, this::divide);
+  }
+
+  public NumExt abs() {
+    if (signum() >= 0) return this;
+    else return negate();
+  }
+
+  public NumExt mod(Number n) {
+    NumExt wholePart = divide(n).asInt().multiply(n);
+    if (signum() >= 0) {
+      return subtract(wholePart);
+    } else {
+      return add(wholePart).add(n);
+    }
+  }
+
+  public NumExt gcd(Number n) {
+    return abs().gcd(wrap(n).abs());
+  }
+
+  private NumExt gcd(NumExt n) {
+    if (isZero(0.0000001)) return n;
+    if (n.isZero(0.0000001)) return this;
+
+    NumExt q = divide(n).asInt();
+    NumExt r = mod(n);
+
+    return n.gcd(r);
   }
 
   //region Arithmetic-Stubs
@@ -187,11 +212,6 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
   //endregion
 
-  public NumExt abs() {
-    if (signum() >= 0) return this;
-    else return negate();
-  }
-
   //-----------------------------------------------------------------------------------------------
   //endregion
 
@@ -218,6 +238,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
   public boolean isZero() {
     return equals(wrap(0));
+  }
+
+  public boolean isZero(double tolerance) {
+    return abs().compareTo(tolerance) < 0;
   }
 
   //-----------------------------------------------------------------------------------------------

@@ -1,8 +1,5 @@
 package common.math;
 
-import common.types.Tuple;
-import common.types.Tuple2;
-
 import static common.math.NumExt.*;
 
 /**
@@ -35,9 +32,9 @@ public class Rational extends Number implements Comparable<Rational>{
     }
 
     //Get numerator and denominator into lowest terms
-    //TODO
+    NumExt gcd = numWrap.gcd(denomWrap);
 
-    return new Rational(numWrap,denomWrap);
+    return new Rational(numWrap.divide(gcd),denomWrap.divide(gcd));
   }
 
   public static Rational of(Number n) {

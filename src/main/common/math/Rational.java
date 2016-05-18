@@ -12,14 +12,18 @@ public class Rational extends NumExt implements Comparable<Number>{
   private final NumExt numWrap;
   private final NumExt denomWrap;
 
+  //region Construction
+  //-----------------------------------------------------------------------------------------------
+
+
   private Rational(NumExt numerator, NumExt denominator)  {
     this.numWrap = numerator;
     this.denomWrap = denominator;
   }
 
   public static Rational wrap(Number numerator, Number denominator) throws IllegalArgumentException{
-    NumExt numWrap = wrap(numerator);
-    NumExt denomWrap = wrap(denominator);
+    NumExt numWrap = NumExt.wrap(numerator);
+    NumExt denomWrap = NumExt.wrap(denominator);
 
     //Check for zero, make sure sign is in numerator
     if (denomWrap.isZero()) {
@@ -35,13 +39,87 @@ public class Rational extends NumExt implements Comparable<Number>{
     return new Rational(numWrap.divide(gcd),denomWrap.divide(gcd));
   }
 
-  public static Rational wrapNum(Number n) {
+  public static Rational wrap(Number n) {
     return NumExt.applyByNumType(n, x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),
                                     x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),x->x);
   }
 
+  //-----------------------------------------------------------------------------------------------
+  //endregion
+
+  //region Getters
+  //-----------------------------------------------------------------------------------------------
+
+  public int hashCode() {
+    return numWrap.hashCode() + (denomWrap.hashCode() << 16);
+  }
+
+  public NumExt getNumerator() {
+    return numWrap;
+  }
+
+  public NumExt getDenominator() {
+    return denomWrap;
+  }
+
+  @Override
+  public Number getVal() {
+    return doubleValue();
+  }
+
+  @Override
+  public int intValue() {
+    return numWrap.divide(denomWrap).intValue();
+  }
+
+  @Override
+  public long longValue() {
+    return numWrap.divide(denomWrap).longValue();
+  }
+
+  @Override
+  public float floatValue() {
+    return numWrap.asFloat().divide(denomWrap).floatValue();
+  }
+
+  @Override
+  public double doubleValue() {
+    return numWrap.asDouble().divide(denomWrap).doubleValue();
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  //endregion
+
+  //region Arithmetic
+  //-----------------------------------------------------------------------------------------------
+
+
+  public Rational invert() {
+    return Rational.wrap(denomWrap, numWrap);
+  }
+
   public Rational negate() {
     return Rational.wrap(numWrap.negate(), denomWrap);
+  }
+
+  public int signum() {
+    return numWrap.signum();
+  }
+
+  public Rational add(Rational r) {
+    return wrap(numWrap.multiply(r.denomWrap).add(r.numWrap.multiply(denomWrap)), denomWrap.multiply(r.denomWrap));
+  }
+
+  public Rational multiply(Rational r) {
+    return wrap(numWrap.multiply(r.numWrap), denomWrap.multiply(r.denomWrap));
+  }
+
+  public Rational subtract(Rational r) {
+    return wrap(numWrap.multiply(r.denomWrap).subtract(r.numWrap.multiply(denomWrap)), denomWrap.multiply(r.denomWrap));
+  }
+
+  public Rational divide(Rational r) {
+    return wrap(numWrap.multiply(r.denomWrap), denomWrap.multiply(r.numWrap));
   }
 
   @Override
@@ -164,32 +242,19 @@ public class Rational extends NumExt implements Comparable<Number>{
     return divide(Rational.wrap(t2,1));
   }
 
+  //-----------------------------------------------------------------------------------------------
+  //endregion
+
+  //region Comparison
+  //-----------------------------------------------------------------------------------------------
+
   public boolean isZero() {
     return numWrap.isZero();
   }
 
-  public int signum() {
-    return numWrap.signum();
-  }
-
-  public Rational invert() {
-    return Rational.wrap(denomWrap, numWrap);
-  }
-
-  public Rational add(Rational r) {
-    return wrap(numWrap.multiply(r.denomWrap).add(r.numWrap.multiply(denomWrap)), denomWrap.multiply(r.denomWrap));
-  }
-
-  public Rational multiply(Rational r) {
-    return wrap(numWrap.multiply(r.numWrap), denomWrap.multiply(r.denomWrap));
-  }
-
-  public Rational subtract(Rational r) {
-    return wrap(numWrap.multiply(r.denomWrap).subtract(r.numWrap.multiply(denomWrap)), denomWrap.multiply(r.denomWrap));
-  }
-
-  public Rational divide(Rational r) {
-    return wrap(numWrap.multiply(r.denomWrap), denomWrap.multiply(r.numWrap));
+  @Override
+  public boolean isInteger() {
+    return false;
   }
 
   public boolean equals(Object o) {
@@ -200,46 +265,10 @@ public class Rational extends NumExt implements Comparable<Number>{
     return r.numWrap.equals(numWrap) && r.denomWrap.equals(denomWrap);
   }
 
-  public int hashCode() {
-    return numWrap.hashCode() + (denomWrap.hashCode() << 16);
-  }
-
-  @Override
-  public int compareTo(Number o) {
-    return subtract(o).signum();
-  }
-
-  @Override
-  public int intValue() {
-    return numWrap.divide(denomWrap).intValue();
-  }
-
-  @Override
-  public long longValue() {
-    return numWrap.divide(denomWrap).longValue();
-  }
-
-  @Override
-  public float floatValue() {
-    return numWrap.divide(denomWrap).floatValue();
-  }
-
-  @Override
-  public double doubleValue() {
-    return numWrap.divide(denomWrap).doubleValue();
-  }
-
-  @Override
-  public boolean isInteger() {
-    return false;
-  }
+  //-----------------------------------------------------------------------------------------------
+  //endregion
 
   public String toString() {
     return numWrap.toString() + "/" + denomWrap.toString();
-  }
-
-  @Override
-  public Number getVal() {
-    return doubleValue();
   }
 }

@@ -13,10 +13,16 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public static final NumExt ONE = wrap(1);
   public static final NumExt NEG_ONE = wrap(-1);
 
+  //region Creation
+  //-----------------------------------------------------------------------------------------------
+
   public static NumExt wrap(Number t) {
     return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new,
                           LongExt::new, FloatExt::new, DoubleExt::new, Rational::wrap);
   }
+
+  //-----------------------------------------------------------------------------------------------
+  //endregion
 
   //region Util
   //-----------------------------------------------------------------------------------------------
@@ -112,7 +118,7 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public int signum() {
     if (equals(wrap(0))) return 0;
     else if (doubleValue() < 0) return -1;
-    else return 0;
+    else return 1;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -125,8 +131,24 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     return wrap(f.apply(getVal()));
   }
 
+  public NumExt asByte() {
+    return wrap(byteValue());
+  }
+
+  public NumExt asShort() {
+    return wrap(shortValue());
+  }
+
   public NumExt asInt() {
     return wrap(intValue());
+  }
+
+  public NumExt asFloat() {
+    return wrap(floatValue());
+  }
+
+  public NumExt asDouble() {
+    return wrap(doubleValue());
   }
 
   //endregion
@@ -252,9 +274,7 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   }
 
   public int compareTo(Number n) {
-    if (equals(wrap(n))) return 0;
-    else if (doubleValue() < n.doubleValue()) return -1;
-    else return 1;
+    return subtract(n).signum();
   }
 
   public boolean isZero() {

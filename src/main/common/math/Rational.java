@@ -1,13 +1,16 @@
 package common.math;
 
+import common.types.Tuple;
+import common.types.Tuple2;
+
 /**
  * @author Mshnik
  */
 public class Rational extends NumExt implements Comparable<Number>{
 
-  public static final Rational ZERO = Rational.wrap(0, 1);
-  public static final Rational ONE = Rational.wrap(1,1);
-  public static final Rational NEG_ONE = Rational.wrap(-1,1);
+  public static final Rational ZERO = new Rational(NumExt.ZERO, NumExt.ONE);
+  public static final Rational ONE = new Rational(NumExt.ONE, NumExt.ONE);
+  public static final Rational NEG_ONE = new Rational(NumExt.NEG_ONE, NumExt.ONE);
 
   private final NumExt numWrap;
   private final NumExt denomWrap;
@@ -21,13 +24,18 @@ public class Rational extends NumExt implements Comparable<Number>{
     this.denomWrap = denominator;
   }
 
-  public static Rational wrap(Number numerator, Number denominator) throws IllegalArgumentException{
+  public static Rational wrap(Number numerator, Number denominator) throws ArithmeticException{
     NumExt numWrap = NumExt.wrap(numerator);
     NumExt denomWrap = NumExt.wrap(denominator);
 
-    //Check for zero, make sure sign is in numerator
+    //Check for numerator zero
+    if (numWrap.equals(NumExt.ZERO)) {
+      return ZERO;
+    }
+
+    //Check for illegal zero, make sure sign is in numerator
     if (denomWrap.isZero()) {
-      throw new IllegalArgumentException("Zero denominator");
+      throw new ArithmeticException("Zero denominator");
     } else if (denomWrap.signum() < 0) {
       numWrap = numWrap.negate();
       denomWrap = denomWrap.negate();
@@ -35,13 +43,26 @@ public class Rational extends NumExt implements Comparable<Number>{
 
     //Get numerator and denominator into lowest terms
     NumExt gcd = numWrap.gcd(denomWrap);
+    numWrap = numWrap.divide(gcd);
+    denomWrap = denomWrap.divide(gcd);
 
-    return new Rational(numWrap.divide(gcd),denomWrap.divide(gcd));
+    //Check if we can return a constant instead of creating new Rational
+    if (denomWrap.equals(NumExt.ONE) && numWrap.equals(NumExt.ONE)) {
+      return ONE;
+    } else if (denomWrap.equals(NumExt.ONE) && numWrap.equals(NumExt.NEG_ONE)) {
+      return NEG_ONE;
+    } else {
+      return new Rational(numWrap,denomWrap);
+    }
   }
 
   public static Rational wrap(Number n) {
     return NumExt.applyByNumType(n, x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),
                                     x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),x->x);
+  }
+
+  public static Rational wrap(Tuple2<? extends Number, ? extends Number> t) {
+    return wrap(t._1, t._2);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -267,6 +288,10 @@ public class Rational extends NumExt implements Comparable<Number>{
 
   //-----------------------------------------------------------------------------------------------
   //endregion
+
+  public Tuple2<NumExt, NumExt> toTuple() {
+    return Tuple.of(numWrap, denomWrap);
+  }
 
   public String toString() {
     return numWrap.toString() + "/" + denomWrap.toString();

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static common.JUnitUtil.*;
-import static common.math.NumExt.wrap;
+import static common.math.NumExt.*;
 
 /**
  * @author Mshnik
@@ -59,6 +59,19 @@ public class NumExtTest {
 
     shouldFail(NumExt::wrap, new BigInteger("123"));
   }
+
+
+  //TODO - use this test once differently typed constants are ok
+//  @Test
+//  public void testUseConstants() {
+//    assertTrue(ZERO == wrap(0));
+//    assertTrue(ONE == wrap(1));
+//    assertTrue(NEG_ONE == wrap(-1));
+//
+//    assertTrue(ZERO == wrap(0.0));
+//    assertTrue(ONE == wrap(1.0));
+//    assertTrue(NEG_ONE == wrap(-1.0));
+//  }
 
   @Test
   public void testArithmetic() {
@@ -113,8 +126,8 @@ public class NumExtTest {
     assertTrue(wrap((byte)1).isInteger());
     assertTrue(wrap(1L).isInteger());
 
-    assertFalse(wrap(1.0f).isInteger());
-    assertFalse(wrap(1.0).isInteger());
+    assertFalse(wrap(5.5f).isInteger());
+    assertFalse(wrap(5.5).isInteger());
   }
 
   @Test

@@ -9,16 +9,17 @@ import java.util.stream.Stream;
  */
 public abstract class NumExt extends Number implements Comparable<Number> {
 
-  public static final NumExt ZERO = wrap(0);
-  public static final NumExt ONE = wrap(1);
-  public static final NumExt NEG_ONE = wrap(-1);
+  public static final NumExt ZERO = new IntExt(0);
+  public static final NumExt ONE = new IntExt(1);
+  public static final NumExt NEG_ONE = new IntExt(-1);
 
   //region Creation
   //-----------------------------------------------------------------------------------------------
 
   public static NumExt wrap(Number t) {
-    return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new,
-                          LongExt::new, FloatExt::new, DoubleExt::new, Rational::wrap);
+
+      return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new,
+          LongExt::new, FloatExt::new, DoubleExt::new, Rational::wrap);
   }
 
   //-----------------------------------------------------------------------------------------------

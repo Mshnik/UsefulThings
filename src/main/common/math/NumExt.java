@@ -14,7 +14,8 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public static final NumExt NEG_ONE = wrap(-1);
 
   public static NumExt wrap(Number t) {
-    return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new, LongExt::new, FloatExt::new, DoubleExt::new);
+    return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new,
+                          LongExt::new, FloatExt::new, DoubleExt::new, Rational::wrap);
   }
 
   //region Util
@@ -24,7 +25,7 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     return getVal().toString();
   }
 
-  /** Applies and returns the correct function by the type of n
+  /** Applies and returns the correct function by the type wrap n
    * @param n - the numerical argument to the function
    * @param numExtFunc - the function to apply if n is already a NumExt
    * @param byteFunc - the function to apply if n is a Byte
@@ -33,17 +34,21 @@ public abstract class NumExt extends Number implements Comparable<Number> {
    * @param longFunc - the function to apply if n is a Long
    * @param floatFunc - the function to apply if n is a Float
    * @param doubleFunc - the function to apply if n is a Double
-   * @param <R> - the return type of the functions
-   * @return - the return of the selected function
-   * @throws UnsupportedOperationException - if n is not one of the above types
+   * @param rationalFunc - the function to apply if n is a Rational
+   * @param <R> - the return type wrap the functions
+   * @return - the return wrap the selected function
+   * @throws UnsupportedOperationException - if n is not one wrap the above types
    */
-  private static <R> R applyByNumType(Number n,
+   static <R> R applyByNumType(Number n,
                                       Function<NumExt, R> numExtFunc,
                                       Function<Byte, R> byteFunc, Function<Short, R> shortFunc,
                                       Function<Integer, R> intFunc, Function<Long, R> longFunc,
-                                      Function<Float, R> floatFunc, Function<Double, R> doubleFunc)
+                                      Function<Float, R> floatFunc, Function<Double, R> doubleFunc,
+                                      Function<Rational, R> rationalFunc)
       throws UnsupportedOperationException {
-    if (n instanceof NumExt) {
+    if (n instanceof Rational){
+      return rationalFunc.apply((Rational)n);
+    } else if (n instanceof NumExt) {
       return numExtFunc.apply((NumExt)n);
     } else if (n instanceof Integer) {
       return intFunc.apply((Integer)n);
@@ -132,22 +137,22 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public abstract NumExt negate();
 
   public NumExt add(Number n) {
-    return applyByNumType(n, x -> add(x.getVal()), this::add, this::add, this::add, this::add, this::add, this::add);
+    return applyByNumType(n, x -> add(x.getVal()), this::add, this::add, this::add, this::add, this::add, this::add, this::add);
   }
 
   public NumExt subtract(Number n) {
     return applyByNumType(n, x -> subtract(x.getVal()), this::subtract, this::subtract, this::subtract,
-        this::subtract, this::subtract, this::subtract);
+        this::subtract, this::subtract, this::subtract, this::subtract);
   }
 
   public NumExt multiply(Number n) {
     return applyByNumType(n, x -> multiply(x.getVal()), this::multiply, this::multiply, this::multiply,
-        this::multiply, this::multiply, this::multiply);
+        this::multiply, this::multiply, this::multiply, this::multiply);
   }
 
   public NumExt divide(Number n) {
     return applyByNumType(n, x -> divide(x.getVal()), this::divide, this::divide, this::divide,
-        this::divide, this::divide, this::divide);
+        this::divide, this::divide, this::divide, this::divide);
   }
 
   public NumExt abs() {
@@ -209,6 +214,22 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public abstract NumExt subtract(Double t2);
   public abstract NumExt multiply(Double t2);
   public abstract NumExt divide(Double t2);
+
+  public NumExt add(Rational t2) {
+    return t2.add(this);
+  }
+
+  public NumExt subtract(Rational t2) {
+    return t2.subtract(this);
+  }
+
+  public NumExt multiply(Rational t2) {
+    return t2.multiply(this);
+  }
+
+  public NumExt divide(Rational t2) {
+    return t2.divide(this);
+  }
 
   //endregion
 

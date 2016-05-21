@@ -19,7 +19,7 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public static NumExt wrap(Number t) {
 
       return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new,
-          LongExt::new, FloatExt::new, DoubleExt::new, Rational::wrap);
+          LongExt::new, FloatExt::new, DoubleExt::new, Rational::wrap, Real::wrap);
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -42,6 +42,7 @@ public abstract class NumExt extends Number implements Comparable<Number> {
    * @param floatFunc - the function to apply if n is a Float
    * @param doubleFunc - the function to apply if n is a Double
    * @param rationalFunc - the function to apply if n is a Rational
+   * @param realFunc - the function to apply if n is a Real
    * @param <R> - the return type wrap the functions
    * @return - the return wrap the selected function
    * @throws UnsupportedOperationException - if n is not one wrap the above types
@@ -51,10 +52,12 @@ public abstract class NumExt extends Number implements Comparable<Number> {
                                       Function<Byte, R> byteFunc, Function<Short, R> shortFunc,
                                       Function<Integer, R> intFunc, Function<Long, R> longFunc,
                                       Function<Float, R> floatFunc, Function<Double, R> doubleFunc,
-                                      Function<Rational, R> rationalFunc)
+                                      Function<Rational, R> rationalFunc, Function<Real, R> realFunc)
       throws UnsupportedOperationException {
     if (n instanceof Rational){
       return rationalFunc.apply((Rational)n);
+    } else if (n instanceof Real){
+      return realFunc.apply((Real)n);
     } else if (n instanceof NumExt) {
       return numExtFunc.apply((NumExt)n);
     } else if (n instanceof Integer) {
@@ -160,22 +163,23 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public abstract NumExt negate();
 
   public NumExt add(Number n) {
-    return applyByNumType(n, x -> add(x.getVal()), this::add, this::add, this::add, this::add, this::add, this::add, this::add);
+    return applyByNumType(n, x -> add(x.getVal()), this::add, this::add, this::add, this::add,
+        this::add, this::add, this::add, this::add);
   }
 
   public NumExt subtract(Number n) {
     return applyByNumType(n, x -> subtract(x.getVal()), this::subtract, this::subtract, this::subtract,
-        this::subtract, this::subtract, this::subtract, this::subtract);
+        this::subtract, this::subtract, this::subtract, this::subtract, this::subtract);
   }
 
   public NumExt multiply(Number n) {
     return applyByNumType(n, x -> multiply(x.getVal()), this::multiply, this::multiply, this::multiply,
-        this::multiply, this::multiply, this::multiply, this::multiply);
+        this::multiply, this::multiply, this::multiply, this::multiply, this::multiply);
   }
 
   public NumExt divide(Number n) {
     return applyByNumType(n, x -> divide(x.getVal()), this::divide, this::divide, this::divide,
-        this::divide, this::divide, this::divide, this::divide);
+        this::divide, this::divide, this::divide, this::divide, this::divide);
   }
 
   public NumExt abs() {
@@ -241,16 +245,26 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   public NumExt add(Rational t2) {
     return t2.add(this);
   }
-
   public NumExt subtract(Rational t2) {
     return t2.subtract(this);
   }
-
   public NumExt multiply(Rational t2) {
     return t2.multiply(this);
   }
-
   public NumExt divide(Rational t2) {
+    return t2.divide(this);
+  }
+
+  public NumExt add(Real t2) {
+    return t2.add(this);
+  }
+  public NumExt subtract(Real t2) {
+    return t2.subtract(this);
+  }
+  public NumExt multiply(Real t2) {
+    return t2.multiply(this);
+  }
+  public NumExt divide(Real t2) {
     return t2.divide(this);
   }
 

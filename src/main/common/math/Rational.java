@@ -58,7 +58,7 @@ public class Rational extends NumExt implements Comparable<Number>{
 
   public static Rational wrap(Number n) {
     return NumExt.applyByNumType(n, x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),
-                                    x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),x->x);
+                                    x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1), x->x, x->wrap(n,1));
   }
 
   public static Rational wrap(Tuple2<? extends Number, ? extends Number> t) {

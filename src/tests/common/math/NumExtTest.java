@@ -233,4 +233,42 @@ public class NumExtTest {
     assertEquals(0, wrap((short)5).compareTo(wrap(5)));
   }
 
+  @Test
+  public void testRounding(){
+    assertEquals(1, wrap(1).roundUp().intValue());
+    assertEquals(1, wrap(1).roundDown().intValue());
+    assertEquals(1, wrap(1).round().intValue());
+
+    assertEquals(1, wrap(1.0).roundUp().intValue());
+    assertEquals(1, wrap(1.0).roundDown().intValue());
+    assertEquals(1, wrap(1.0).round().intValue());
+
+    assertEquals(2, wrap(1.1).roundUp().intValue());
+    assertEquals(1, wrap(1.1).roundDown().intValue());
+    assertEquals(1, wrap(1.1).round().intValue());
+
+    assertEquals(2, wrap(1.7).roundUp().intValue());
+    assertEquals(1, wrap(1.7).roundDown().intValue());
+    assertEquals(2, wrap(1.7).round().intValue());
+
+    assertEquals(-1, wrap(-1.1).roundUp().intValue());
+    assertEquals(-2, wrap(-1.1).roundDown().intValue());
+    assertEquals(-1, wrap(-1.1).round().intValue());
+
+    assertEquals(-1, wrap(-1.7).roundUp().intValue());
+    assertEquals(-2, wrap(-1.7).roundDown().intValue());
+    assertEquals(-2, wrap(-1.7).round().intValue());
+  }
+
+  @Test
+  public void testLog() {
+    assertEquals(0, wrap(1).log(10).intValue());
+    assertEquals(0, wrap(1).log(2).intValue());
+    assertEquals(1, wrap(10).log(10).intValue());
+    assertEquals(1, wrap(2).log(2).intValue());
+    assertEquals(2, wrap(4).log(2).intValue());
+    assertEquals(1.5, wrap(31.6227766017).log(10).doubleValue());
+    assertEquals(2, wrap(16).log(4).intValue());
+  }
+
 }

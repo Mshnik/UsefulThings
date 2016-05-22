@@ -155,6 +155,23 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     return wrap(doubleValue());
   }
 
+  public NumExt round() {
+    double frac = Math.abs(fractionalValue());
+    int signum = signum();
+    if (frac < 0.5 && signum > 0 || frac > 0.5 && signum < 0) return roundDown();
+    else return roundUp();
+  }
+
+  public NumExt roundUp() {
+    if(isInteger() || intValue() == doubleValue()) return this;
+    return wrap(signum() == 1 ? intValue()+1 : intValue());
+  }
+
+  public NumExt roundDown() {
+    if(isInteger() || intValue() == doubleValue()) return this;
+    return wrap(signum() == 1 ? intValue() : intValue() - 1);
+  }
+
   //endregion
 
   //region Arithmetic
@@ -208,6 +225,10 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     NumExt r = mod(n);
 
     return n.gcd(r);
+  }
+
+  public NumExt log(double base) {
+    return wrap(Math.log(doubleValue())/Math.log(base));
   }
 
   //region Arithmetic-Stubs

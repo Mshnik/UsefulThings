@@ -71,10 +71,6 @@ public class Rational extends NumExt implements Comparable<Number>{
   //region Getters
   //-----------------------------------------------------------------------------------------------
 
-  public int hashCode() {
-    return numWrap.hashCode() + (denomWrap.hashCode() << 16);
-  }
-
   public NumExt getNumerator() {
     return numWrap;
   }
@@ -111,9 +107,48 @@ public class Rational extends NumExt implements Comparable<Number>{
   //-----------------------------------------------------------------------------------------------
   //endregion
 
+  //region Mutators
+
+  public Rational roundUp() {
+    NumExt m = numWrap.mod(denomWrap);
+    if (m.equals(NumExt.ZERO)) return this;
+    if (signum() > 0) {
+      return wrap(numWrap.subtract(m).add(denomWrap), denomWrap);
+    } else {
+      return wrap(numWrap.add(m), denomWrap);
+    }
+  }
+
+  public Rational roundDown() {
+    NumExt m = numWrap.mod(denomWrap);
+    if (m.equals(NumExt.ZERO)) return this;
+    if (signum() > 0) {
+      return wrap(numWrap.subtract(m), denomWrap);
+    } else {
+      return wrap(numWrap.add(m).subtract(denomWrap), denomWrap);
+    }
+  }
+
+  public Rational round() {
+    NumExt m = numWrap.mod(denomWrap);
+    NumExt d = denomWrap.divide(NumExt.TWO);
+    int s = signum();
+    if (m.equals(NumExt.ZERO)) return this;
+    if (s > 0 && m.gte(d)) {
+      return wrap(numWrap.subtract(m).add(denomWrap), denomWrap);
+    } else if (s > 0 && m.lt(d)) {
+      return wrap(numWrap.subtract(m), denomWrap);
+    } else if (s < 0 && m.lte(d)) {
+      return wrap(numWrap.add(m).subtract(denomWrap), denomWrap);
+    } else {
+      return wrap(numWrap.add(m), denomWrap);
+    }
+  }
+
+  //endregion
+
   //region Arithmetic
   //-----------------------------------------------------------------------------------------------
-
 
   public Rational invert() {
     return Rational.wrap(denomWrap, numWrap);
@@ -125,6 +160,10 @@ public class Rational extends NumExt implements Comparable<Number>{
 
   public int signum() {
     return numWrap.signum();
+  }
+
+  public Rational abs() {
+    return wrap(numWrap.abs(), denomWrap);
   }
 
   public Rational add(Rational r) {
@@ -269,21 +308,9 @@ public class Rational extends NumExt implements Comparable<Number>{
   //region Comparison
   //-----------------------------------------------------------------------------------------------
 
-  public boolean isZero() {
-    return numWrap.isZero();
-  }
-
   @Override
   public boolean isInteger() {
     return false;
-  }
-
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (! (o instanceof Rational)) return false;
-
-    Rational r = (Rational)o;
-    return r.numWrap.equals(numWrap) && r.denomWrap.equals(denomWrap);
   }
 
   //-----------------------------------------------------------------------------------------------

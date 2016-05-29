@@ -3,6 +3,9 @@ package common.math;
 import functional.impl.Function1;
 
 import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  *
@@ -20,6 +23,10 @@ import java.util.function.Function;
 public class Real extends NumExt {
 
   private static final int DEFAULT_SIGFIGS = 8;
+
+  public static Real ZERO = new Real((i) -> NumExt.ZERO);
+  public static Real ONE = new Real((i) -> NumExt.ONE);
+  public static Real NEG_ONE = new Real((i) -> NumExt.NEG_ONE);
 
   private final Function1<Integer, NumExt> func;
 
@@ -51,9 +58,33 @@ public class Real extends NumExt {
     return func.apply(sigfigs);
   }
 
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for(int i = 0; i < DEFAULT_SIGFIGS; i++) {
+      sb.append(getVal(i).toString());
+      if (i+1 < DEFAULT_SIGFIGS) sb.append(", ");
+    }
+    return sb.toString();
+  }
+
+  public Stream<Number> toStream() {
+    return IntStream.iterate(0, x -> x+1).mapToObj(this::getVal);
+  }
+
   @Override
   public boolean isInteger() {
     return false;
+  }
+
+  //region Arithmetic
+
+  @Override
+  public Real negate() {
+    return wrap(func.andThen(NumExt::negate));
+  }
+
+  public Real abs() {
+    return wrap(func.andThen(NumExt::abs));
   }
 
   @Override
@@ -84,13 +115,21 @@ public class Real extends NumExt {
   }
 
   @Override
-  public Real divide(Real t2) {
-    throw new UnsupportedOperationException("How to handle div zero?");
-  }
 
-  @Override
-  public Real negate() {
-    return wrap(func.andThen(NumExt::negate));
+  //TODO - not amazing.. needs some fixup because of div zero.
+  //Might not be fixable though
+  public Real divide(Real t2) {
+    if (t2.equals(ZERO)) {
+      throw new ArithmeticException("Divide by Zero");
+    }
+
+    //Max Error of returned function:
+    // Err 1 * Val 2 + Err 2 + Val 1
+    int figs1 = approx0.abs().add(NumExt.ONE).log(10).roundUp().intValue();
+    int invFigs2 = t2.getVal(DEFAULT_SIGFIGS).abs().log(10).roundDown().intValue();
+
+    // 10^(-(i+1+invFigs2)) * val2 + 10^(-(i+1+figs1)) * val1 < 10^-(i+1) * 2 = 10^-1 * 0.1 * 2 = 0.2*10^-i < 10^-1
+    return wrap(i -> getVal(i+1+invFigs2).multiply(t2.getVal(i+1+figs1)));
   }
 
   @Override
@@ -232,4 +271,6 @@ public class Real extends NumExt {
   public Real divide(Rational t2) {
     return wrap(func.andThen(x -> x.divide(t2)));
   }
+
+  //endregion
 }

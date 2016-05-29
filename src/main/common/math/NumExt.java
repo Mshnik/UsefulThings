@@ -11,13 +11,13 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
   public static final NumExt ZERO = new IntExt(0);
   public static final NumExt ONE = new IntExt(1);
+  public static final NumExt TWO = new IntExt(2);
   public static final NumExt NEG_ONE = new IntExt(-1);
 
   //region Creation
   //-----------------------------------------------------------------------------------------------
 
   public static NumExt wrap(Number t) {
-
       return applyByNumType(t, x -> x, ByteExt::new, ShortExt::new, IntExt::new,
           LongExt::new, FloatExt::new, DoubleExt::new, Rational::wrap, Real::wrap);
   }
@@ -115,7 +115,7 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
   public abstract boolean isInteger();
 
-  public int hashCode() {
+  public final int hashCode() {
     return intValue();
   }
 
@@ -153,6 +153,14 @@ public abstract class NumExt extends Number implements Comparable<Number> {
 
   public NumExt asDouble() {
     return wrap(doubleValue());
+  }
+
+  public Rational asRational() {
+    return Rational.wrap(this);
+  }
+
+  public Real asReal() {
+    return Real.wrap(this);
   }
 
   public NumExt round() {
@@ -297,11 +305,11 @@ public abstract class NumExt extends Number implements Comparable<Number> {
   //region Comparison
   //-----------------------------------------------------------------------------------------------
 
-  public boolean equals(NumExt n1) {
+  public final boolean equals(NumExt n1) {
     return this == n1 || n1 != null && Math.abs(n1.doubleValue() - doubleValue()) == 0.0;
   }
 
-  public boolean equals(Object o) {
+  public final boolean equals(Object o) {
     if (this == o) return true;
     if (! (o instanceof NumExt)) return false;
 
@@ -309,15 +317,31 @@ public abstract class NumExt extends Number implements Comparable<Number> {
     return equals(n);
   }
 
-  public int compareTo(Number n) {
+  public final int compareTo(Number n) {
     return subtract(n).signum();
   }
 
-  public boolean isZero() {
-    return equals(wrap(0));
+  public final boolean gt(Number n) {
+    return compareTo(n) > 0;
   }
 
-  public boolean isZero(double tolerance) {
+  public final boolean gte(Number n) {
+    return compareTo(n) >= 0;
+  }
+
+  public final boolean lt(Number n) {
+    return compareTo(n) < 0;
+  }
+
+  public final boolean lte(Number n) {
+    return compareTo(n) <= 0;
+  }
+
+  public final boolean isZero() {
+    return equals(ZERO);
+  }
+
+  public final boolean isZero(double tolerance) {
     return abs().compareTo(tolerance) < 0;
   }
 

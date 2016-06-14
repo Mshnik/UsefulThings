@@ -37,8 +37,8 @@ public class Util {
       for (int i = 0; i < r; i++) {
         iterator.next();
       }
+      return iterator.next();
     }
-    return iterator.next();
   }
 
   /**

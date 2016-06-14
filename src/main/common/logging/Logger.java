@@ -158,7 +158,7 @@ public class Logger {
         methodNameAndTypes = methodNameAndTypes.substring(0, methodNameAndTypes.length() - 2) + ")";
 
         //Add line of code to the method
-        method.insertBefore("Logger.log(\"" + methodNameAndTypes  + "\", $0, $args);");
+        method.insertBefore("common.logging.Logger.log(\"" + methodNameAndTypes  + "\", $0, $args);");
       }
 
       //Class is done being modified; write to class file

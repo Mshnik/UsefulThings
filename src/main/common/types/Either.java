@@ -216,7 +216,7 @@ public class Either<A, B> {
    * Two Eithers are equal iff:
    * <br>- They are both left halves or both right halves.
    * <br>- The objects they store are equivalent using Objects.equals.
-   * Note that the two unused sides of the either can differ, and the
+   * Note that the two unused sides of the either can differ (and can be different types), and the
    * Eithers would still be considered equal.
    */
   @Override
@@ -224,18 +224,30 @@ public class Either<A, B> {
     if(this == o) return true;
     if(o == null || ! (o instanceof Either<?, ?>)) return false;
     Either<?, ?> e = (Either<?, ?>) o;
-    return (isLeft == e.isLeft) && Objects.equals(getVal(), e.getVal());
+    return (isLeft() == e.isLeft()) && Objects.equals(getVal(), e.getVal());
   }
 
   /**
    * Hashes an either based on the value it stores.
    * This maintains the hash invariant (two equal objects have the same hashcode),
    * but is not a perfect hashcode because a Left(a) and Right(a) will have the
-   * same hashcode but are not equivalent.
+   * same hashcode but are not considered equivalent.
    */
   @Override
   public int hashCode() {
     return Objects.hashCode(getVal());
+  }
+
+  /** Returns a string representing this either.
+   * Will either be Left(x) or Right(x), where x is the toString of the value this wraps.
+   */
+  @Override
+  public String toString() {
+    if (isLeft()) {
+      return "Left(" + getVal() + ")";
+    } else {
+      return "Right(" + getVal() + ")";
+    }
   }
 
 }

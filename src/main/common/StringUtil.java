@@ -70,5 +70,13 @@ public class StringUtil {
     public Character next() {
       return sourceArr[index++];
     }
+
+    public String toString() {
+      if (hasNext()) {
+        return source.substring(0, index) + "{" + sourceArr[index] + "}" + source.substring(index);
+      } else {
+        return source + "{}";
+      }
+    }
   }
 }

@@ -115,7 +115,7 @@ public class ConsList<E> implements Iterable<E> {
    * Used to stop iteration before it reaches the NIL terminator
    */
   public boolean isLast() {
-    return isNil() || tail.tail == null && tail.head == null;
+    return isNil() || tail != null && tail.tail == null && tail.head == null;
   }
 
   /**
@@ -132,7 +132,7 @@ public class ConsList<E> implements Iterable<E> {
   public ConsList<E> reverse() {
     ConsList<E> reversed = new ConsList<E>();
     ConsList<E> ptr = this;
-    while (!ptr.isNil()) {
+    while (ptr != null && !ptr.isNil()) {
       reversed = reversed.cons(ptr.head);
       ptr = ptr.tail;
     }
@@ -205,7 +205,7 @@ public class ConsList<E> implements Iterable<E> {
    * list for any input will always return false.
    */
   public boolean contains(Object o) {
-    return !isNil() && (Objects.equals(head, o) || !isLast() && tail.contains(o));
+    return !isNil() && (Objects.equals(head, o) || !isLast() && tail != null && tail.contains(o));
   }
 
   /**
@@ -255,7 +255,7 @@ public class ConsList<E> implements Iterable<E> {
   public Object[] toArray() {
     Object[] arr = new Object[size];
     ConsList<E> current = this;
-    for (int i = 0; i < size; i++, current = current.tail) {
+    for (int i = 0; i < size && current != null; i++, current = current.tail) {
       arr[i] = current.head;
     }
     return arr;
@@ -273,7 +273,7 @@ public class ConsList<E> implements Iterable<E> {
       arr = Arrays.copyOf(arr, size);
     }
     ConsList<E> current = this;
-    for (int i = 0; i < size; i++, current = current.tail) {
+    for (int i = 0; i < size && current != null; i++, current = current.tail) {
       arr[i] = (T) current.head;
     }
     return arr;
@@ -297,7 +297,7 @@ public class ConsList<E> implements Iterable<E> {
    * exception if this is called with any index value on the nil list
    */
   public E get(int index) {
-    if (index < 0 || index >= size)
+    if (index < 0 || index >= size || tail == null)
       throw new IllegalArgumentException("Can't get element at index " + index + " OOB");
 
     if (index == 0) return head;
@@ -318,7 +318,7 @@ public class ConsList<E> implements Iterable<E> {
    */
   private int indexOf(Object o, int x) {
     if (Objects.equals(head, o)) return x;
-    else if (isLast()) return -1;
+    else if (isLast() || tail == null) return -1;
     return tail.indexOf(o, x + 1);
   }
 
@@ -394,7 +394,7 @@ public class ConsList<E> implements Iterable<E> {
       } else {
         ConsList<E> first = next;
         long size = estimateSize();
-        for(int i = 0; i < size / 2; i++) {
+        for(int i = 0; i < size / 2 && next != null; i++) {
           next = next.tail;
         }
         return new ConsSpliterator<>(first, next);

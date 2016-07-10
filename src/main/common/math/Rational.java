@@ -3,6 +3,9 @@ package common.math;
 import common.types.Tuple;
 import common.types.Tuple2;
 
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 /**
  * @author Mshnik
  */
@@ -57,8 +60,7 @@ public class Rational extends NumExt implements Comparable<Number>{
   }
 
   public static Rational wrap(Number n) {
-    return NumExt.applyByNumType(n, x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1),
-                                    x -> wrap(n, 1),x -> wrap(n, 1),x -> wrap(n, 1), x->x, x->wrap(n,1));
+    return NumExt.applyByNumType(n,x -> wrap(n, 1), x->x, x->wrap(n,1));
   }
 
   public static Rational wrap(Tuple2<? extends Number, ? extends Number> t) {
@@ -102,6 +104,11 @@ public class Rational extends NumExt implements Comparable<Number>{
   @Override
   public double doubleValue() {
     return numWrap.asDouble().divide(denomWrap).doubleValue();
+  }
+
+  @Override
+  public double fractionalValue() {
+    return 0;
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -162,8 +169,73 @@ public class Rational extends NumExt implements Comparable<Number>{
     return numWrap.signum();
   }
 
+  @Override
+  public NumExt apply(Function<Number, Number> f) {
+    return null;
+  }
+
+  @Override
+  public NumExt asByte() {
+    return null;
+  }
+
+  @Override
+  public NumExt asShort() {
+    return null;
+  }
+
+  @Override
+  public NumExt asInt() {
+    return null;
+  }
+
+  @Override
+  public NumExt asFloat() {
+    return null;
+  }
+
+  @Override
+  public NumExt asDouble() {
+    return null;
+  }
+
   public Rational abs() {
     return wrap(numWrap.abs(), denomWrap);
+  }
+
+  @Override
+  public NumExt mod(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt gcd(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt log(double base) {
+    return null;
+  }
+
+  @Override
+  public NumExt add(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt subtract(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt multiply(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt divide(Number n) {
+    return null;
   }
 
   public Rational add(Rational r) {
@@ -183,124 +255,38 @@ public class Rational extends NumExt implements Comparable<Number>{
   }
 
   @Override
-  public Rational add(Byte t2) {
-    return add(Rational.wrap(t2,1));
+  public NumExt add(StdNumExt t2) {
+    return null;
   }
 
   @Override
-  public Rational subtract(Byte t2) {
-    return subtract(Rational.wrap(t2,1));
+  public NumExt subtract(StdNumExt t2) {
+    return null;
   }
 
   @Override
-  public Rational multiply(Byte t2) {
-    return multiply(Rational.wrap(t2,1));
+  public NumExt multiply(StdNumExt t2) {
+    return null;
   }
 
   @Override
-  public Rational divide(Byte t2) {
-    return divide(Rational.wrap(t2,1));
+  public NumExt divide(StdNumExt t2) {
+    return null;
   }
 
-  @Override
-  public Rational add(Short t2) {
-    return add(Rational.wrap(t2,1));
+  public NumExt add(Real t2) {
+    return t2.add(this);
+  }
+  public NumExt subtract(Real t2) {
+    return t2.subtract(this);
+  }
+  public NumExt multiply(Real t2) {
+    return t2.multiply(this);
+  }
+  public NumExt divide(Real t2) {
+    return t2.divide(this);
   }
 
-  @Override
-  public Rational subtract(Short t2) {
-    return subtract(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational multiply(Short t2) {
-    return multiply(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational divide(Short t2) {
-    return divide(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational add(Integer t2) {
-    return add(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational subtract(Integer t2) {
-    return subtract(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational multiply(Integer t2) {
-    return multiply(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational divide(Integer t2) {
-    return divide(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational add(Long t2) {
-    return add(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational subtract(Long t2) {
-    return subtract(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational multiply(Long t2) {
-    return multiply(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational divide(Long t2) {
-    return divide(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational add(Float t2) {
-    return add(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational subtract(Float t2) {
-    return subtract(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational multiply(Float t2) {
-    return multiply(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational divide(Float t2) {
-    return divide(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational add(Double t2) {
-    return add(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational subtract(Double t2) {
-    return subtract(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational multiply(Double t2) {
-    return multiply(Rational.wrap(t2,1));
-  }
-
-  @Override
-  public Rational divide(Double t2) {
-    return divide(Rational.wrap(t2,1));
-  }
 
   //-----------------------------------------------------------------------------------------------
   //endregion
@@ -311,6 +297,16 @@ public class Rational extends NumExt implements Comparable<Number>{
   @Override
   public boolean isInteger() {
     return false;
+  }
+
+  @Override
+  public <X extends Number> X getAs(Class<X> clazz) {
+    return null;
+  }
+
+  @Override
+  public Stream<Number> toStream() {
+    return null;
   }
 
   //-----------------------------------------------------------------------------------------------

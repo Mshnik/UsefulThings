@@ -72,8 +72,88 @@ public class Real extends NumExt {
   }
 
   @Override
+  public int intValue() {
+    return 0;
+  }
+
+  @Override
+  public long longValue() {
+    return 0;
+  }
+
+  @Override
+  public float floatValue() {
+    return 0;
+  }
+
+  @Override
+  public double doubleValue() {
+    return 0;
+  }
+
+  @Override
+  public double fractionalValue() {
+    return 0;
+  }
+
+  @Override
+  public int signum() {
+    return 0;
+  }
+
+  @Override
+  public NumExt apply(Function<Number, Number> f) {
+    return null;
+  }
+
+  @Override
+  public NumExt asByte() {
+    return null;
+  }
+
+  @Override
+  public NumExt asShort() {
+    return null;
+  }
+
+  @Override
+  public NumExt asInt() {
+    return null;
+  }
+
+  @Override
+  public NumExt asFloat() {
+    return null;
+  }
+
+  @Override
+  public NumExt asDouble() {
+    return null;
+  }
+
+  @Override
+  public NumExt round() {
+    return null;
+  }
+
+  @Override
+  public NumExt roundUp() {
+    return null;
+  }
+
+  @Override
+  public NumExt roundDown() {
+    return null;
+  }
+
+  @Override
   public boolean isInteger() {
     return false;
+  }
+
+  @Override
+  public <X extends Number> X getAs(Class<X> clazz) {
+    return null;
   }
 
   //region Arithmetic
@@ -85,6 +165,41 @@ public class Real extends NumExt {
 
   public Real abs() {
     return wrap(func.andThen(NumExt::abs));
+  }
+
+  @Override
+  public NumExt mod(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt gcd(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt log(double base) {
+    return null;
+  }
+
+  @Override
+  public NumExt add(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt subtract(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt multiply(Number n) {
+    return null;
+  }
+
+  @Override
+  public NumExt divide(Number n) {
+    return null;
   }
 
   @Override
@@ -133,123 +248,23 @@ public class Real extends NumExt {
   }
 
   @Override
-  public Real add(Byte t2) {
-    return wrap(func.andThen(x -> x.add(t2)));
+  public NumExt add(StdNumExt t2) {
+    return null;
   }
 
   @Override
-  public Real subtract(Byte t2) {
-    return wrap(func.andThen(x -> x.subtract(t2)));
+  public NumExt subtract(StdNumExt t2) {
+    return null;
   }
 
   @Override
-  public Real multiply(Byte t2) {
-    return wrap(func.andThen(x -> x.multiply(t2)));
+  public NumExt multiply(StdNumExt t2) {
+    return null;
   }
 
   @Override
-  public Real divide(Byte t2) {
-    return wrap(func.andThen(x -> x.divide(t2)));
-  }
-
-  @Override
-  public Real add(Short t2) {
-    return wrap(func.andThen(x -> x.add(t2)));
-  }
-
-  @Override
-  public Real subtract(Short t2) {
-    return wrap(func.andThen(x -> x.subtract(t2)));
-  }
-
-  @Override
-  public Real multiply(Short t2) {
-    return wrap(func.andThen(x -> x.multiply(t2)));
-  }
-
-  @Override
-  public Real divide(Short t2) {
-    return wrap(func.andThen(x -> x.divide(t2)));
-  }
-
-  @Override
-  public Real add(Integer t2) {
-    return wrap(func.andThen(x -> x.add(t2)));
-  }
-
-  @Override
-  public Real subtract(Integer t2) {
-    return wrap(func.andThen(x -> x.subtract(t2)));
-  }
-
-  @Override
-  public Real multiply(Integer t2) {
-    return wrap(func.andThen(x -> x.multiply(t2)));
-  }
-
-  @Override
-  public Real divide(Integer t2) {
-    return wrap(func.andThen(x -> x.divide(t2)));
-  }
-
-  @Override
-  public Real add(Long t2) {
-    return wrap(func.andThen(x -> x.add(t2)));
-  }
-
-  @Override
-  public Real subtract(Long t2) {
-    return wrap(func.andThen(x -> x.subtract(t2)));
-  }
-
-  @Override
-  public Real multiply(Long t2) {
-    return wrap(func.andThen(x -> x.multiply(t2)));
-  }
-
-  @Override
-  public Real divide(Long t2) {
-    return wrap(func.andThen(x -> x.divide(t2)));
-  }
-
-  @Override
-  public Real add(Float t2) {
-    return wrap(func.andThen(x -> x.add(t2)));
-  }
-
-  @Override
-  public Real subtract(Float t2) {
-    return wrap(func.andThen(x -> x.subtract(t2)));
-  }
-
-  @Override
-  public Real multiply(Float t2) {
-    return wrap(func.andThen(x -> x.multiply(t2)));
-  }
-
-  @Override
-  public Real divide(Float t2) {
-    return wrap(func.andThen(x -> x.divide(t2)));
-  }
-
-  @Override
-  public Real add(Double t2) {
-    return wrap(func.andThen(x -> x.add(t2)));
-  }
-
-  @Override
-  public Real subtract(Double t2) {
-    return wrap(func.andThen(x -> x.subtract(t2)));
-  }
-
-  @Override
-  public Real multiply(Double t2) {
-    return wrap(func.andThen(x -> x.multiply(t2)));
-  }
-
-  @Override
-  public Real divide(Double t2) {
-    return wrap(func.andThen(x -> x.divide(t2)));
+  public NumExt divide(StdNumExt t2) {
+    return null;
   }
 
   @Override

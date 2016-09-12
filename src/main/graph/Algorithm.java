@@ -6,6 +6,7 @@ import functional.impl.Function2;
 import graph.matching.*;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 import common.Util;
 import common.types.Tuple2;
@@ -345,6 +346,74 @@ public class Algorithm {
   }
 
   /**
+   * Returns a cycle in the graph with summed negative weight. If none are present, returns null.
+   * Implemented using the Bellman Ford Algorithm.
+   */
+  public static <V, E extends Weighted> List<E> getNegativeCycle(Graph<V,E> g, V start) {
+    Map<V, Integer> dist = new HashMap<>();
+    Map<V, V> prev = new HashMap<>();
+    for(V v : g.vertexSet()) {
+      dist.put(v, Integer.MAX_VALUE/2); //Div 2 so there's no overflow when adding, but still effectivly inf
+      prev.put(v, null);
+    }
+    dist.put(start, 0);
+
+    Set<E> edges = g.edgeSet();
+    for(int i = 0; i < g.vertexSize(); i++) {
+      for(E e : edges) {
+        V v1 = g.sourceOf(e);
+        V v2 = g.sinkOf(e);
+        int w = e.getWeight();
+        if (dist.get(v1) + w < dist.get(v2)) {
+          dist.put(v2,dist.get(v1) + w);
+          prev.put(v2,v1);
+        }
+      }
+    }
+
+    for(E e : edges) {
+      V v1 = g.sourceOf(e);
+      V v2 = g.sinkOf(e);
+      int w = e.getWeight();
+      if (dist.get(v1) + w < dist.get(v2)) {
+        return getNegativeCycleHelper(g, v1, v1, new ConsList<>(), 0);
+      }
+    }
+
+    //No negative cycle found
+    return null;
+  }
+
+  /**
+   * Returns a negative weight cycle by iteratively DFS-ing, at the given start node.
+   * This method only works once start is guaranteed to be in at least one cycle,
+   * and there are no self-edges.
+   */
+  private static <V, E extends Weighted> List<E> getNegativeCycleHelper(Graph<V, E> g, V start, V current, ConsList<E> path, int sumWeight) {
+    //Base case - cycle found. Reverse path and return
+    if (start == current && path.size() != 0) {
+      if (sumWeight < 0) {
+        List<E> lst = new ArrayList<>();
+        for (E e : path.reverse()) lst.add(e);
+        return lst;
+      } else {
+        return null; //Cycle found doesn't have negative weight
+      }
+    }
+
+    //Non-base case. Try each out edge in current.
+    for (E e : g.edgeSetOfSource(current)) {
+      //If it's not in the path already, try going that way
+      if (!path.contains(e)) {
+        List<E> cycle = getNegativeCycleHelper(g, start, g.getOther(e, current), path.cons(e), sumWeight + e.getWeight());
+        if (cycle != null) return cycle;
+      }
+    }
+    //No cycle found. This case ends
+    return null;
+  }
+
+  /**
    * Returns true if the given graph is a DAG, using a topological sort
    */
   public static <V, E> boolean isDAG(Graph<V, E> g) {
@@ -435,20 +504,25 @@ public class Algorithm {
    * This simplifies passing around the various hashMaps used in the calculation
    */
   private static class MaxFlow<V, E extends Flowable> {
+    protected final Set<V> vertices;
+    protected final V source;
+    protected final V sink;
+    protected final Graph<V, E> g;
+
     private HashMap<V, Integer> label;
     private HashMap<E, Integer> flow;
     private HashMap<V, Integer> excess;
-    private final Set<V> vertices;
-    private final V source;
-    private final V sink;
-    private final Graph<V, E> g;
-    private final Flow<E> flowObj;
+    protected Flow<E> flowObj;
 
     public MaxFlow(Graph<V, E> g, V source, V sink) {
       this.g = g;
       this.source = source;
       this.sink = sink;
       this.vertices = g.vertexSet();
+    }
+
+    /** Main helper that calculates flowObj. Called in construction */
+    protected Flow<E> computeMaxFlow() {
 
       label = new HashMap<>();
       excess = new HashMap<>();
@@ -486,12 +560,13 @@ public class Algorithm {
               push(v, e, g.sourceOf(e) == v);
           }
           if (excess.get(v) > 0) {
-           relabel(v);
+            relabel(v);
           }
         }
       }
 
       flowObj = new Flow<>(excess.get(sink), flow);
+      return flowObj;
     }
 
     /** Helper method for the maxFlow calculation */
@@ -547,9 +622,25 @@ public class Algorithm {
       label.put(u, minVal + 1);
       return oldVal != minVal + 1;
     }
+  }
 
-    private Flow<E> computeMaxFlow() {
-      return flowObj;
+  private static class MinCostMaxFlow<V, E extends Flowable & Weighted> extends MaxFlow<V,E> {
+
+    public MinCostMaxFlow(Graph<V, E> g, V source, V sink) {
+      super(g, source, sink);
+    }
+
+    /** Helper to compute the mincost max flow */
+    protected Flow<E> computeMinCostMaxFlow() {
+      throw new UnsupportedOperationException("TODO");
+//      computeMaxFlow();
+//
+//      List<E> cycle = getNegativeCycle(g, source);
+//      while(cycle != null) {
+//
+//
+//      }
+//      return flowObj;
     }
   }
 

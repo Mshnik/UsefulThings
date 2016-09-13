@@ -2,11 +2,13 @@ package graph;
 
 import common.IDObject;
 import common.dataStructures.DeArrList;
+import common.types.Tuple;
 import functional.impl.Function2;
 import graph.matching.*;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import common.Util;
 import common.types.Tuple2;
@@ -346,74 +348,6 @@ public class Algorithm {
   }
 
   /**
-   * Returns a cycle in the graph with summed negative weight. If none are present, returns null.
-   * Implemented using the Bellman Ford Algorithm.
-   */
-  public static <V, E extends Weighted> List<E> getNegativeCycle(Graph<V,E> g, V start) {
-    Map<V, Integer> dist = new HashMap<>();
-    Map<V, V> prev = new HashMap<>();
-    for(V v : g.vertexSet()) {
-      dist.put(v, Integer.MAX_VALUE/2); //Div 2 so there's no overflow when adding, but still effectivly inf
-      prev.put(v, null);
-    }
-    dist.put(start, 0);
-
-    Set<E> edges = g.edgeSet();
-    for(int i = 0; i < g.vertexSize(); i++) {
-      for(E e : edges) {
-        V v1 = g.sourceOf(e);
-        V v2 = g.sinkOf(e);
-        int w = e.getWeight();
-        if (dist.get(v1) + w < dist.get(v2)) {
-          dist.put(v2,dist.get(v1) + w);
-          prev.put(v2,v1);
-        }
-      }
-    }
-
-    for(E e : edges) {
-      V v1 = g.sourceOf(e);
-      V v2 = g.sinkOf(e);
-      int w = e.getWeight();
-      if (dist.get(v1) + w < dist.get(v2)) {
-        return getNegativeCycleHelper(g, v1, v1, new ConsList<>(), 0);
-      }
-    }
-
-    //No negative cycle found
-    return null;
-  }
-
-  /**
-   * Returns a negative weight cycle by iteratively DFS-ing, at the given start node.
-   * This method only works once start is guaranteed to be in at least one cycle,
-   * and there are no self-edges.
-   */
-  private static <V, E extends Weighted> List<E> getNegativeCycleHelper(Graph<V, E> g, V start, V current, ConsList<E> path, int sumWeight) {
-    //Base case - cycle found. Reverse path and return
-    if (start == current && path.size() != 0) {
-      if (sumWeight < 0) {
-        List<E> lst = new ArrayList<>();
-        for (E e : path.reverse()) lst.add(e);
-        return lst;
-      } else {
-        return null; //Cycle found doesn't have negative weight
-      }
-    }
-
-    //Non-base case. Try each out edge in current.
-    for (E e : g.edgeSetOfSource(current)) {
-      //If it's not in the path already, try going that way
-      if (!path.contains(e)) {
-        List<E> cycle = getNegativeCycleHelper(g, start, g.getOther(e, current), path.cons(e), sumWeight + e.getWeight());
-        if (cycle != null) return cycle;
-      }
-    }
-    //No cycle found. This case ends
-    return null;
-  }
-
-  /**
    * Returns true if the given graph is a DAG, using a topological sort
    */
   public static <V, E> boolean isDAG(Graph<V, E> g) {
@@ -622,6 +556,14 @@ public class Algorithm {
       label.put(u, minVal + 1);
       return oldVal != minVal + 1;
     }
+
+    protected boolean edgeHasFlow(E e) {
+      return flowObj._2.get(e) > 0;
+    }
+
+    protected boolean edgeHasUnusedCapacity(E e) {
+      return flowObj._2.get(e) < e.getCapacity();
+    }
   }
 
   private static class MinCostMaxFlow<V, E extends Flowable & Weighted> extends MaxFlow<V,E> {
@@ -632,16 +574,107 @@ public class Algorithm {
 
     /** Helper to compute the mincost max flow */
     protected Flow<E> computeMinCostMaxFlow() {
-      throw new UnsupportedOperationException("TODO");
-//      computeMaxFlow();
-//
-//      List<E> cycle = getNegativeCycle(g, source);
-//      while(cycle != null) {
-//
-//
-//      }
-//      return flowObj;
+      computeMaxFlow();
+
+      List<Tuple2<E, Boolean>> cycle = getNegativeCycle(g, source);
+      while(cycle != null) {
+        int maxFlowAmongEdges = cycle.stream().mapToInt((t) -> t._2 ? flowObj._2.get(t._1) : t._1.getCapacity() - flowObj._2.get(t._1)).max().getAsInt();
+        if (maxFlowAmongEdges <= 0) throw new RuntimeException("Cycle has max flow 0, infinite looping would result");
+        for(Tuple2<E, Boolean> t : cycle) {
+          int flow = flowObj._2.get(t._1);
+          if (t._2) {
+            flowObj._2.put(t._1, flow - maxFlowAmongEdges);
+          } else {
+            flowObj._2.put(t._1, flow + maxFlowAmongEdges);
+          }
+        }
+        cycle = getNegativeCycle(g, source);
+      }
+      return flowObj;
     }
+
+    /**
+     * Returns a cycle in the graph with summed negative weight and non-zero flow.
+     * If none are present, returns null. Implemented using the Bellman Ford Algorithm.
+     * Returned list is of tuples[E,Bool]. The bool is true iff forward edge (false for residual)
+     */
+    private List<Tuple2<E, Boolean>> getNegativeCycle(Graph<V,E> g, V start) {
+      Map<V, Integer> dist = new HashMap<>();
+      for(V v : g.vertexSet()) {
+        dist.put(v, Integer.MAX_VALUE/2); //Div 2 so there's no overflow when adding, but still effectively inf
+      }
+      dist.put(start, 0);
+
+      Set<E> edges = g.edgeSet();
+      for(int i = 0; i < g.vertexSize(); i++) {
+        for(E e : edges) {
+          V v1 = g.sourceOf(e);
+          V v2 = g.sinkOf(e);
+          int w = e.getWeight();
+          //forward edge
+          if (dist.get(v1) + w < dist.get(v2) && edgeHasFlow(e)) {
+            dist.put(v2,dist.get(v1) + w);
+          }
+          //backward edge
+          if (dist.get(v2) + w < dist.get(v1) && edgeHasUnusedCapacity(e)) {
+            dist.put(v1,dist.get(v2) + w);
+          }
+        }
+      }
+
+      for(E e : edges) {
+        V v1 = g.sourceOf(e);
+        V v2 = g.sinkOf(e);
+        int w = e.getWeight();
+        //Forward edge
+        if (dist.get(v1) + w < dist.get(v2) && edgeHasFlow(e)) {
+          return getNegativeCycleHelper(g, v1, v1, new ConsList<>(), 0);
+        }
+        //Backward edge
+        if (dist.get(v2) + w < dist.get(v1) && edgeHasUnusedCapacity(e)) {
+          return getNegativeCycleHelper(g, v2, v2, new ConsList<>(), 0);
+        }
+      }
+
+      //No negative cycle found
+      return null;
+    }
+
+    /**
+     * Returns a negative weight cycle by iteratively DFS-ing, at the given start node.
+     * This method only works once start is guaranteed to be in at least one cycle,
+     * and there are no self-edges.
+     */
+    private List<Tuple2<E,Boolean>> getNegativeCycleHelper(Graph<V, E> g, V start, V current, ConsList<Tuple2<E,Boolean>> path, int sumWeight) {
+      //Base case - cycle found. Reverse path and return
+      if (start == current && path.size() != 0) {
+        if (sumWeight < 0) {
+          return path.reverse().stream().collect(Collectors.toList());
+        } else {
+          return null; //Cycle found doesn't have negative weight
+        }
+      }
+
+      //Non-base case. Try each out edge in current.
+      for (E e : g.edgeSetOfSource(current)) {
+        //If it's not in the path already and has non-zero flow, try going that way
+        if (!path.contains(e) && edgeHasFlow(e)) {
+          List<Tuple2<E, Boolean>> cycle = getNegativeCycleHelper(g, start, g.getOther(e, current), path.cons(Tuple.of(e, true)), sumWeight - e.getWeight());
+          if (cycle != null) return cycle;
+        }
+      }
+      //Non-base case. Try each in edge to current (As residual edges).
+      for (E e : g.edgeSetOfSink(current)) {
+        //If it's not in the path already and has non-full flow, try going that way
+        if (!path.contains(e) && edgeHasUnusedCapacity(e)) {
+          List<Tuple2<E, Boolean>> cycle = getNegativeCycleHelper(g, start, g.getOther(e, current), path.cons(Tuple.of(e, false)), sumWeight + e.getWeight());
+          if (cycle != null) return cycle;
+        }
+      }
+      //No cycle found. This case ends
+      return null;
+    }
+
   }
 
   /**
@@ -652,7 +685,7 @@ public class Algorithm {
    * @param g      - the graph to find the flow on
    * @param source - the vertex to treat as the source of all flow
    * @param sink   - the vertex to treat as the sink of all flow
-   * @return - a flow object, contianing the value of the max flow and the placement of all flow
+   * @return - a flow object, containing the value of the max flow and the placement of all flow
    * @throws IllegalArgumentException if source or sink is null, or if they are the same node, or if undirected
    */
   public static <V, E extends Flowable> Flow<E> maxFlow(Graph<V, E> g, V source, V sink)
@@ -666,6 +699,28 @@ public class Algorithm {
     return new MaxFlow<>(g, source, sink).computeMaxFlow();
   }
 
+  /**
+   * Returns the min cost max flow maximum flow possible on graph g.
+   * Uses the preflow push algorithm to compute the max flow.
+   * Uses Bellman ford cycle elimination for min-cost
+   * Only valid on directed graphs.
+   *
+   * @param g      - the graph to find the flow on
+   * @param source - the vertex to treat as the source of all flow
+   * @param sink   - the vertex to treat as the sink of all flow
+   * @return - a flow object, containing the value of the max flow and the placement of all flow
+   * @throws IllegalArgumentException if source or sink is null, or if they are the same node, or if undirected
+   */
+  public static <V, E extends Flowable & Weighted> Flow<E> minCostMaxFlow(Graph<V, E> g, V source, V sink)
+      throws IllegalArgumentException {
+    if (source == null || sink == null || source.equals(sink))
+      throw new IllegalArgumentException("Source and Sink must be non-null and distinct");
+    if (!g.isDirected()) {
+      throw new IllegalArgumentException("Can only compute maxflow on directed graphs");
+    }
+
+    return new MinCostMaxFlow<>(g, source, sink).computeMinCostMaxFlow();
+  }
 
 
   //TODO - SPEC

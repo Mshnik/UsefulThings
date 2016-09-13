@@ -280,7 +280,51 @@ public class AlgorithmTest {
 
   @Test
   public void testMinCostMaxFlow() {
+    //First test that it still calculates max flow, if all weights are 0
+    Graph<String, SuperEdge> g = new Graph<>();
+    g.addVertex("SOURCE");
+    g.addVertex("SINK");
+    g.addVertex("A");
+    g.addVertex("B");
+    g.addVertex("C");
 
+    g.addEdge("SOURCE", "A", new SuperEdge("a").setCapacity(10));
+    g.addEdge("SOURCE", "B", new SuperEdge("b").setCapacity(10));
+    g.addEdge("SOURCE", "C", new SuperEdge("c").setCapacity(5));
+
+    g.addEdge("A", "SINK", new SuperEdge("a-").setCapacity(10));
+    g.addEdge("B", "SINK", new SuperEdge("b-").setCapacity(10));
+    g.addEdge("C", "SINK", new SuperEdge("c-").setCapacity(5));
+
+    assertEquals(25, Algorithm.minCostMaxFlow(g, "SOURCE", "SINK")._1);
+
+    //Test that increasing costs of edges still results in same flow if no other max flow exists.
+    g.getConnection("SOURCE","A").setWeight(10);
+    g.getConnection("A","SINK").setWeight(10);
+    assertEquals(25, Algorithm.minCostMaxFlow(g, "SOURCE", "SINK")._1);
+
+    //Test cost avoidance - create alternative path with lower cost.
+    Graph<String, SuperEdge> g2 = new Graph<>();
+    g2.addVertex("SOURCE");
+    g2.addVertex("SINK");
+    g2.addVertex("A");
+    g2.addVertex("A2");
+
+    g2.addEdge("SOURCE","A", new SuperEdge("WEIGHTED").setCapacity(5).setWeight(-1));
+    g2.addEdge("SOURCE","A2", new SuperEdge("UNWEIGHTED").setCapacity(5));
+    g2.addEdge("A2","A", new SuperEdge("bridge").setCapacity(5));
+    g2.addEdge("A", "SINK", new SuperEdge("toSink").setCapacity(5));
+    Algorithm.Flow<SuperEdge> f = Algorithm.minCostMaxFlow(g2, "SOURCE", "SINK");
+    assertEquals(5, f._1);
+    assertEquals(5, f._2.get(g2.getConnection("SOURCE","A")));
+    assertEquals(0, f._2.get(g2.getConnection("SOURCE","A2")));
+
+    //Change weight, check again
+    g2.getConnection("SOURCE","A").setWeight(1);
+    Algorithm.Flow<SuperEdge> f2 = Algorithm.minCostMaxFlow(g2, "SOURCE", "SINK");
+    assertEquals(5, f2._1);
+    assertEquals(0, f2._2.get(g2.getConnection("SOURCE","A")));
+    assertEquals(5, f2._2.get(g2.getConnection("SOURCE","A2")));
   }
 
   private <V, E> void testIsValidCycle(Graph<V, E> g, List<E> path) {

@@ -55,7 +55,9 @@ class SuperEdge implements Weighted, Flowable, Copyable<SuperEdge> {
     }
   }
 
+  //Only hash by name so changing capacity/weight doesn't move location in hash data structures.
+  //Still require equality for equality, though.
   public int hashCode() {
-    return Objects.hash(name, w,c);
+    return Objects.hash(name);
   }
 }

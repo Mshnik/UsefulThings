@@ -94,9 +94,9 @@ public class AlgorithmTest {
     g.addVertex('C');
     g.addVertex('D');
 
-    g.addEdge('A', 'B', new SuperEdge("ab", 5));
-    g.addEdge('B', 'C', new SuperEdge("bc", 10));
-    g.addEdge('C', 'D', new SuperEdge("cd", 15));
+    g.addEdge('A', 'B', new SuperEdge("ab").setWeight(5));
+    g.addEdge('B', 'C', new SuperEdge("bc").setWeight(10));
+    g.addEdge('C', 'D', new SuperEdge("cd").setWeight(15));
 
     Set<SuperEdge> edgeSet = new HashSet<>();
     edgeSet.add(g.getConnection('A', 'B'));
@@ -105,13 +105,13 @@ public class AlgorithmTest {
 
     assertEquals(edgeSet, Algorithm.minimumSpanningTree(g));
 
-    g.addEdge('A', 'C', new SuperEdge("ac", 4));
+    g.addEdge('A', 'C', new SuperEdge("ac").setWeight(4));
 
     edgeSet.remove(g.getConnection('B', 'C'));
     edgeSet.add(g.getConnection('A', 'C'));
     assertEquals(edgeSet, Algorithm.minimumSpanningTree(g));
 
-    g.addEdge('A','D', new SuperEdge("ad", 20));
+    g.addEdge('A','D', new SuperEdge("ad").setWeight(20));
     assertEquals(edgeSet, Algorithm.minimumSpanningTree(g));
 
     g.addVertex('E');
@@ -129,13 +129,13 @@ public class AlgorithmTest {
     shouldFail(Algorithm::shortestPath, NotInCollectionException.class, g, 'X', 'A');
     shouldFail(Algorithm::shortestPath, NotInCollectionException.class, g, 'A', 'X');
 
-    g.addEdge('A', 'B', new SuperEdge("ab", -1));
+    g.addEdge('A', 'B', new SuperEdge("ab").setWeight(-1));
 
     shouldFail(Algorithm::shortestPath, Exception.class, g, 'A', 'B');
 
     g.removeEdge(g.getConnection('A', 'B'));
 
-    g.addEdge('A', 'B', new SuperEdge("ab", 10));
+    g.addEdge('A', 'B', new SuperEdge("ab").setWeight(10));
     path.clear();
 
     Function2<Character, Character, Integer> heuristic = (v1, v2) -> Math.abs(v2 - v1);
@@ -154,7 +154,7 @@ public class AlgorithmTest {
     assertEquals(null, Algorithm.shortestPath(g, 'B', 'A', heuristic));
     assertEquals(null, Algorithm.shortestPath(g, 'A', 'C', heuristic));
 
-    g.addEdge('A', 'C', new SuperEdge("ac", 4));
+    g.addEdge('A', 'C', new SuperEdge("ac").setWeight(4));
     assertEquals(path, Algorithm.shortestPath(g, 'A', 'B'));
     assertEquals(null, Algorithm.shortestPath(g, 'B', 'A'));
     assertEquals(path, Algorithm.shortestPath(g, 'A', 'B', heuristic));
@@ -166,13 +166,13 @@ public class AlgorithmTest {
     assertEquals(path, Algorithm.shortestPath(g, 'A', 'C'));
     assertEquals(path, Algorithm.shortestPath(g, 'A', 'C', heuristic));
 
-    g.addEdge('C', 'B', new SuperEdge("cb", 4));
+    g.addEdge('C', 'B', new SuperEdge("cb").setWeight(4));
     path.add('B');
     assertEquals(path, Algorithm.shortestPath(g, 'A', 'B'));
     assertEquals(path, Algorithm.shortestPath(g, 'A', 'B', heuristic));
 
 
-    g.addEdge('B', 'A', new SuperEdge("ba", 5));
+    g.addEdge('B', 'A', new SuperEdge("ba").setWeight(5));
     path.removeFirst();
     path.add('A');
     assertEquals(path, Algorithm.shortestPath(g, 'C', 'A'));
@@ -188,37 +188,37 @@ public class AlgorithmTest {
     g.addVertex("B");
     g.addVertex("C");
 
-    g.addEdge("SOURCE", "A", new SuperEdge("a", 10));
-    g.addEdge("SOURCE", "B", new SuperEdge("b", 5));
-    g.addEdge("SOURCE", "C", new SuperEdge("c", 10));
+    g.addEdge("SOURCE", "A", new SuperEdge("a").setCapacity(10));
+    g.addEdge("SOURCE", "B", new SuperEdge("b").setCapacity(5));
+    g.addEdge("SOURCE", "C", new SuperEdge("c").setCapacity(10));
 
-    g.addEdge("A", "SINK", new SuperEdge("a2", 10));
-    g.addEdge("B", "SINK", new SuperEdge("b2", 10));
-    g.addEdge("C", "SINK", new SuperEdge("c2", 5));
+    g.addEdge("A", "SINK", new SuperEdge("a2").setCapacity(10));
+    g.addEdge("B", "SINK", new SuperEdge("b2").setCapacity(10));
+    g.addEdge("C", "SINK", new SuperEdge("c2").setCapacity(5));
 
     assertEquals(new Integer(20), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-    g.addEdge("SOURCE", "SINK", new SuperEdge("direct", 30));
+    g.addEdge("SOURCE", "SINK", new SuperEdge("direct").setCapacity(30));
     assertEquals(new Integer(50), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-    g.addEdge("C", "B", new SuperEdge("cb", 5));
+    g.addEdge("C", "B", new SuperEdge("cb").setCapacity(5));
     assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-    g.addEdge("B", "C", new SuperEdge("bc", 200));
+    g.addEdge("B", "C", new SuperEdge("bc").setCapacity(200));
     assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
     g.addVertex("D");
-    g.addEdge("SOURCE", "D", new SuperEdge("d", 200));
+    g.addEdge("SOURCE", "D", new SuperEdge("d").setCapacity(200));
     assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-    g.addEdge("SINK", "A", new SuperEdge("rA", 100));
+    g.addEdge("SINK", "A", new SuperEdge("rA").setCapacity(100));
     assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-    g.addEdge("B", "B", new SuperEdge("bb", 200));
+    g.addEdge("B", "B", new SuperEdge("bb").setCapacity(200));
     assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
-    g.addEdge("SINK", "SINK", new SuperEdge("sink2", 200));
-    g.addEdge("SOURCE", "SOURCE", new SuperEdge("source2", 200));
+    g.addEdge("SINK", "SINK", new SuperEdge("sink2").setCapacity(200));
+    g.addEdge("SOURCE", "SOURCE", new SuperEdge("source2").setCapacity(200));
 
     assertEquals(new Integer(55), Algorithm.maxFlow(g, "SOURCE", "SINK")._1);
 
@@ -229,7 +229,7 @@ public class AlgorithmTest {
 
     assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
 
-    g3.addEdge("SINK", "SOURCE", new SuperEdge("directReverse", 100));
+    g3.addEdge("SINK", "SOURCE", new SuperEdge("directReverse").setCapacity(100));
     assertEquals(new Integer(0), Algorithm.maxFlow(g3, "SOURCE", "SINK")._1);
 
     //Test non-unique answers, on reduction problem
@@ -241,40 +241,45 @@ public class AlgorithmTest {
     g4.addVertex("P2");
     g4.addVertex("P3");
 
-    g4.addEdge("SOURCE", "P1", new SuperEdge("p1", 1));
-    g4.addEdge("SOURCE", "P2", new SuperEdge("p2", 1));
-    g4.addEdge("SOURCE", "P3", new SuperEdge("p3", 1));
+    g4.addEdge("SOURCE", "P1", new SuperEdge("p1").setCapacity(1));
+    g4.addEdge("SOURCE", "P2", new SuperEdge("p2").setCapacity(1));
+    g4.addEdge("SOURCE", "P3", new SuperEdge("p3").setCapacity(1));
 
     g4.addVertex("E1");
     g4.addVertex("E2");
     g4.addVertex("E3");
 
-    g4.addEdge("E1", "SINK", new SuperEdge("e1", 1));
-    g4.addEdge("E2", "SINK", new SuperEdge("e2", 1));
-    g4.addEdge("E3", "SINK", new SuperEdge("e3", 1));
+    g4.addEdge("E1", "SINK", new SuperEdge("e1").setCapacity(1));
+    g4.addEdge("E2", "SINK", new SuperEdge("e2").setCapacity(1));
+    g4.addEdge("E3", "SINK", new SuperEdge("e3").setCapacity(1));
 
     assertEquals(new Integer(0), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
 
-    g4.addEdge("P1", "E1", new SuperEdge("p1-e1", 1));
+    g4.addEdge("P1", "E1", new SuperEdge("p1-e1").setCapacity(1));
     assertEquals(new Integer(1), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
 
-    g4.addEdge("P2",  "E1", new SuperEdge("p2-e1", 1));
+    g4.addEdge("P2",  "E1", new SuperEdge("p2-e1").setCapacity(1));
     assertEquals(new Integer(1), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
 
-    g4.addEdge("P1", "E2", new SuperEdge("p1-e2", 1));
+    g4.addEdge("P1", "E2", new SuperEdge("p1-e2").setCapacity(1));
     assertEquals(new Integer(2), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
 
-    g4.addEdge("P3", "E3", new SuperEdge("p3-e3", 1));
+    g4.addEdge("P3", "E3", new SuperEdge("p3-e3").setCapacity(1));
     assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
 
-    g4.addEdge("P1", "E3", new SuperEdge("p1-e3", 1));
+    g4.addEdge("P1", "E3", new SuperEdge("p1-e3").setCapacity(1));
     assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
 
-    g4.addEdge("P3", "E1", new SuperEdge("p3-e1", 1));
+    g4.addEdge("P3", "E1", new SuperEdge("p3-e1").setCapacity(1));
     assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
 
-    g4.addEdge("P3", "E2", new SuperEdge("p3-e2", 1));
+    g4.addEdge("P3", "E2", new SuperEdge("p3-e2").setCapacity(1));
     assertEquals(new Integer(3), Algorithm.maxFlow(g4, "SOURCE", "SINK")._1);
+
+  }
+
+  @Test
+  public void testMinCostMaxFlow() {
 
   }
 

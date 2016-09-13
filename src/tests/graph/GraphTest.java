@@ -478,28 +478,28 @@ public class GraphTest {
     g.addVertex("B");
     g.addVertex("C");
     g.addVertex("D");
-    g.addEdge("A", "B", new SuperEdge("ab", 1));
-    g.addEdge("A", "C", new SuperEdge("ac", 2));
-    g.addEdge("C", "D", new SuperEdge("cd", 3));
+    g.addEdge("A", "B", new SuperEdge("ab").setWeight(1));
+    g.addEdge("A", "C", new SuperEdge("ac").setWeight(2));
+    g.addEdge("C", "D", new SuperEdge("cd").setWeight(3));
 
     //Make sure self edges are handled correctly
-    g.addEdge("D", "D", new SuperEdge("dd", 4));
+    g.addEdge("D", "D", new SuperEdge("dd").setWeight(4));
 
     assertEquals(g, Algorithm.makeDirectedGraph(g));
 
-    g.addEdge("B", "A", new SuperEdge("ab-copy", 1));
-    g.addEdge("C", "A", new SuperEdge("ac-copy", 2));
-    g.addEdge("D", "C", new SuperEdge("cd-copy", 3));
+    g.addEdge("B", "A", new SuperEdge("ab-copy").setWeight(1));
+    g.addEdge("C", "A", new SuperEdge("ac-copy").setWeight(2));
+    g.addEdge("D", "C", new SuperEdge("cd-copy").setWeight(3));
 
     Graph<String, SuperEdge> gU = new Graph<String, SuperEdge>(false);
     gU.addVertex("A");
     gU.addVertex("B");
     gU.addVertex("C");
     gU.addVertex("D");
-    gU.addEdge("A", "B", new SuperEdge("ab", 1));
-    gU.addEdge("A", "C", new SuperEdge("ac", 2));
-    gU.addEdge("C", "D", new SuperEdge("cd", 3));
-    gU.addEdge("D", "D", new SuperEdge("dd", 4));
+    gU.addEdge("A", "B", new SuperEdge("ab").setWeight(1));
+    gU.addEdge("A", "C", new SuperEdge("ac").setWeight(2));
+    gU.addEdge("C", "D", new SuperEdge("cd").setWeight(3));
+    gU.addEdge("D", "D", new SuperEdge("dd").setWeight(4));
 
     Graph<String, SuperEdge> directedG = Algorithm.makeDirectedGraph(gU);
     assertEquals(g, directedG);

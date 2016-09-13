@@ -149,6 +149,26 @@ public class Matching<A, B> {
     return true;
   }
 
+  /** Returns the size of the current matching. Equal to getMatching().size(), getFlippedMatching().size(), etc */
+  public int size() {
+    return matching.size();
+  }
+
+  /** Returns the number of currently unmatched items, both A and B */
+  public int unmatchedSizeTotal() {
+    return aObjects.size() + bObjects.size() - size()*2;
+  }
+
+  /** Returns the number of currently unmatched As */
+  public int unmatchedSizeA() {
+    return aObjects.size() - size();
+  }
+
+  /** Returns the number of currently unmatched Bs */
+  public int unmatchedSizeB() {
+    return bObjects.size() - size();
+  }
+
   /**
    * Returns a Map of As to their current matchings B. Unmatched elements
    * will not be included
@@ -281,6 +301,10 @@ public class Matching<A, B> {
    */
   @Override
   public String toString() {
+    if (unmatchedSizeTotal() == 0) {
+      return matching.toString();
+    }
+    
     String unmatched = "[";
 
     for (Either<A, B> e : getUnmatched()) {

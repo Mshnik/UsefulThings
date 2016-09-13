@@ -304,7 +304,7 @@ public class Matching<A, B> {
     if (unmatchedSizeTotal() == 0) {
       return matching.toString();
     }
-    
+
     String unmatched = "[";
 
     for (Either<A, B> e : getUnmatched()) {

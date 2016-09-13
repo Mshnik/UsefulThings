@@ -738,19 +738,22 @@ public class Algorithm {
   }
 
   //TODO - SPEC
-  //TODO - TEST
   public static <A extends Agent<I>, I> Matching<A, I> maxMatching(Set<A> agents, Set<I> items) {
     return maxMatchingHelper(agents, items, (a,i) -> 0);
   }
 
   //TODO - SPEC
   //TODO - TEST
-  public static <A extends RankedAgent<I>, I> Matching<A, I> minCostMaxMatching(Set<A> agents, Set<I> items, Function<Integer, Integer> costFunction) {
-    return maxMatchingHelper(agents, items, (a,i) -> costFunction.apply(a.getPreference(i)));
+  public static <A extends RankedAgent<I>, I> Matching<A, I> minCostMaxMatching(Set<A> agents, Set<I> items, Function<Integer, Integer> valueFunction) {
+    if (valueFunction == null ){
+      return maxMatchingHelper(agents, items, RankedAgent::getPreference);
+    } else {
+      return maxMatchingHelper(agents, items, (a,i) -> valueFunction.apply(a.getPreference(i)));
+    }
   }
 
   //TODO - SPEC
-  private static <A extends Agent<I>, I> Matching<A,I> maxMatchingHelper(Set<A> agents, Set<I> items, BiFunction<A, I, Integer> costFunction) {
+  private static <A extends Agent<I>, I> Matching<A,I> maxMatchingHelper(Set<A> agents, Set<I> items, BiFunction<A, I, Integer> valueFunction) {
     Graph<Object, FlowEdge> g = new Graph<>();
 
     Object source = "SUPERSOURCE";
@@ -766,21 +769,25 @@ public class Algorithm {
     for(A a : agents) {
       g.addVertex(a);
       g.addEdge(source, a, new FlowEdge().setCapacity(1));
-      for(I i : a.getAcceptableItems()) {
-        g.addEdge(a, i, new FlowEdge().setCapacity(1).setWeight(costFunction.apply(a, i)));
+      for(I i : items) {
+        if (a.isAcceptable(i)) {
+          g.addEdge(a, i, new FlowEdge().setCapacity(1).setWeight(-valueFunction.apply(a, i)));
+        }
       }
     }
 
-    Flow<FlowEdge> flow = maxFlow(g, source, sink);
+    Flow<FlowEdge> flow = minCostMaxFlow(g, source, sink);
     Matching<A, I> m = new Matching<>();
     m.addAllA(agents);
     m.addAllB(items);
 
     for(A a : agents) {
-      for(I i : a.getAcceptableItems()) {
-        FlowEdge e = g.getConnection(a, i);
-        if(flow._2.get(e) > 0) {
-          m.match(a, i);
+      for(I i : items) {
+        if (a.isAcceptable(i)) {
+          FlowEdge e = g.getConnection(a, i);
+          if (flow._2.get(e) > 0) {
+            m.match(a, i);
+          }
         }
       }
     }

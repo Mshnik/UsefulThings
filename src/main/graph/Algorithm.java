@@ -8,6 +8,7 @@ import graph.matching.*;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import common.Util;
@@ -27,17 +28,31 @@ public class Algorithm {
   private Algorithm() {}
 
   //TODO - SPEC
-  private static class FlowEdge extends IDObject implements Flowable {
+  private static class FlowEdge extends IDObject implements Flowable, Weighted {
 
     private int capacity;
+    private int weight;
 
-    private FlowEdge(int capacity) {
-      this.capacity = capacity;
+    private FlowEdge() {}
+
+    public FlowEdge setCapacity(int c) {
+      this.capacity = c;
+      return this;
+    }
+
+    public FlowEdge setWeight(int w) {
+      this.weight = w;
+      return this;
     }
 
     @Override
     public int getCapacity() {
       return capacity;
+    }
+
+    @Override
+    public int getWeight() {
+      return weight;
     }
   }
 
@@ -722,10 +737,20 @@ public class Algorithm {
     return new MinCostMaxFlow<>(g, source, sink).computeMinCostMaxFlow();
   }
 
-
   //TODO - SPEC
   //TODO - TEST
   public static <A extends Agent<I>, I> Matching<A, I> maxMatching(Set<A> agents, Set<I> items) {
+    return maxMatchingHelper(agents, items, (a,i) -> 0);
+  }
+
+  //TODO - SPEC
+  //TODO - TEST
+  public static <A extends RankedAgent<I>, I> Matching<A, I> minCostMaxMatching(Set<A> agents, Set<I> items, Function<Integer, Integer> costFunction) {
+    return maxMatchingHelper(agents, items, (a,i) -> costFunction.apply(a.getPreference(i)));
+  }
+
+  //TODO - SPEC
+  private static <A extends Agent<I>, I> Matching<A,I> maxMatchingHelper(Set<A> agents, Set<I> items, BiFunction<A, I, Integer> costFunction) {
     Graph<Object, FlowEdge> g = new Graph<>();
 
     Object source = "SUPERSOURCE";
@@ -736,13 +761,13 @@ public class Algorithm {
 
     for(I i : items) {
       g.addVertex(i);
-      g.addEdge(i, sink, new FlowEdge(1));
+      g.addEdge(i, sink, new FlowEdge().setCapacity(1));
     }
     for(A a : agents) {
       g.addVertex(a);
-      g.addEdge(source, a, new FlowEdge(1));
+      g.addEdge(source, a, new FlowEdge().setCapacity(1));
       for(I i : a.getAcceptableItems()) {
-        g.addEdge(a, i, new FlowEdge(1));
+        g.addEdge(a, i, new FlowEdge().setCapacity(1).setWeight(costFunction.apply(a, i)));
       }
     }
 

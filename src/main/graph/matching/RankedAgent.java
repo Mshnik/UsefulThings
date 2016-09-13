@@ -20,12 +20,20 @@ public interface RankedAgent<X> extends Agent<X> {
    */
   public Map<X, Integer> getPreferences();
 
+
+
   /**
    * Return the set of items that this agent finds acceptable.
    * The returned set is unalterable.
    */
   default Set<X> getAcceptableItems() {
     return Collections.unmodifiableSet(getPreferences().keySet());
+  }
+
+  /** Returns the preference (as an int) of the given item. Returns MIN_VALUE if not acceptable */
+  default int getPreference(X x) {
+    Map<X, Integer> pref = getPreferences();
+    return pref.getOrDefault(x, Integer.MIN_VALUE);
   }
 
   /**

@@ -167,7 +167,7 @@ public class Algorithm {
 
     final HashMap<V, Integer> distance = new HashMap<>();
     Comparator<V> distanceComparator = (o1, o2) ->
-       (distance.get(o1) + heuristic.apply(start, o1)) - (distance.get(o2) + heuristic.apply(start, o2));
+        (distance.get(o1) + heuristic.apply(start, o1)) - (distance.get(o2) + heuristic.apply(start, o2));
 
     final HashMap<V, V> previous = new HashMap<>();
 
@@ -714,12 +714,12 @@ public class Algorithm {
   }
 
   //TODO - SPEC
-  public static <A extends Agent<I>, I> Matching<A, I> maxMatching(Set<A> agents, Set<I> items) {
+  public static <A extends Agent<I>, I> Matching<A, I> maxMatching(Collection<A> agents, Collection<I> items) {
     return maxMatchingHelper(agents, items, (a,i) -> 0);
   }
 
   //TODO - SPEC
-  public static <A extends RankedAgent<I>, I> Matching<A, I> maxValueMaxMatching(Set<A> agents, Set<I> items, Function<Integer, Integer> valueFunction) {
+  public static <A extends RankedAgent<I>, I> Matching<A, I> maxValueMaxMatching(Collection<A> agents, Collection<I> items, Function<Integer, Integer> valueFunction) {
     if (valueFunction == null ){
       return maxMatchingHelper(agents, items, RankedAgent::getPreference);
     } else {
@@ -728,8 +728,10 @@ public class Algorithm {
   }
 
   //TODO - SPEC
-  private static <A extends Agent<I>, I> Matching<A,I> maxMatchingHelper(Set<A> agents, Set<I> items, BiFunction<A, I, Integer> valueFunction) {
+  private static <A extends Agent<I>, I> Matching<A,I> maxMatchingHelper(Collection<A> agents, Collection<I> items, BiFunction<A, I, Integer> valueFunction) {
     Graph<Object, FlowEdge> g = new Graph<>();
+    agents = new HashSet<>(agents);
+    items = new HashSet<>(items);
 
     Object source = "SUPERSOURCE";
     Object sink = "SUPERSINK";
@@ -744,7 +746,7 @@ public class Algorithm {
     for(A a : agents) {
       g.addVertex(a);
       g.addEdge(source, a, new FlowEdge().setCapacity(1));
-      for(I i : items) {
+      for (I i : items) {
         if (a.isAcceptable(i)) {
           g.addEdge(a, i, new FlowEdge().setCapacity(1).setWeight(-valueFunction.apply(a, i)));
         }

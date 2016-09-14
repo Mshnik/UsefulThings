@@ -47,15 +47,15 @@ public class MaxMatchingTest  {
     TestAgent bob = new TestAgent("bob").withPref("B").withPref("C");
     TestAgent charlie = new TestAgent("charlie").withPref("C");
 
-    Matching<TestAgent, String> m = Algorithm.maxMatching(new HashSet<>(Arrays.asList(alice, bob, charlie)),
-                                                          new HashSet<>(Arrays.asList("A","B","C")));
+    Matching<TestAgent, String> m = Algorithm.maxMatching(Arrays.asList(alice, bob, charlie),
+                                                          Arrays.asList("A","B","C"));
     assertEquals(3, m.size());
     assertEquals("A", m.getMatchedB(alice));
     assertEquals("B", m.getMatchedB(bob));
     assertEquals("C", m.getMatchedB(charlie));
 
-    Matching<TestAgent, String> m2 = Algorithm.maxMatching(new HashSet<>(Arrays.asList(alice, bob, charlie)),
-        new HashSet<>(Arrays.asList("A","B","D")));
+    Matching<TestAgent, String> m2 = Algorithm.maxMatching(Arrays.asList(alice, bob, charlie),
+        Arrays.asList("A","B","D"));
 
     assertEquals(2, m2.size());
     assertEquals("A", m2.getMatchedB(alice));
@@ -63,8 +63,8 @@ public class MaxMatchingTest  {
     assertTrue(m2.isUnmatched(charlie));
 
     charlie.withPref("B");
-    Matching<TestAgent, String> m3 = Algorithm.maxMatching(new HashSet<>(Arrays.asList(alice, bob, charlie)),
-        new HashSet<>(Arrays.asList("A","B","D")));
+    Matching<TestAgent, String> m3 = Algorithm.maxMatching(Arrays.asList(alice, bob, charlie),
+        Arrays.asList("A","B","D"));
     assertEquals(2, m2.size());
     assertEquals("A", m2.getMatchedB(alice));
     if (m2.isMatched(bob)) {
@@ -81,8 +81,8 @@ public class MaxMatchingTest  {
     TestAgent alice = new TestAgent("alice").withPref("A",2).withPref("B",1);
     TestAgent bob = new TestAgent("bob").withPref("B",2).withPref("C",1);
     TestAgent charlie = new TestAgent("charlie").withPref("C",2);
-    Set<TestAgent> agents = new HashSet<>(Arrays.asList(alice, bob, charlie));
-    Set<String> items = new HashSet<>(Arrays.asList("A","B","C"));
+    Collection<TestAgent> agents = Arrays.asList(alice, bob, charlie);
+    Collection<String> items = Arrays.asList("A","B","C");
 
     Matching<TestAgent, String> m = Algorithm.maxValueMaxMatching(agents,items,null);
     assertEquals(3, m.size());

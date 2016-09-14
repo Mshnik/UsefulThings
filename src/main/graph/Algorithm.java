@@ -1,5 +1,6 @@
 package graph;
 
+import common.Copyable;
 import common.IDObject;
 import common.dataStructures.DeArrList;
 import common.types.Tuple;
@@ -81,31 +82,6 @@ public class Algorithm {
     }
 
     return s;
-  }
-
-  /**
-   * Returns a new directed graph that is a copy of g
-   * If g is directed, merely clones g and returns that clone.
-   * If g is undirected, creates a new directed graph that is a copy of g.
-   * Each undirected edge in g is copied to two directed edges. Self edges
-   * are only copied once to avoid redundancy.
-   */
-  public static <V, E extends Copyable<E>> Graph<V, E> makeDirectedGraph(Graph<V, E> g) {
-    if (g.isDirected()) return g.clone();
-
-    Graph<V, E> g2 = new Graph<>(true);
-    g.vertexSet().forEach(g2::addVertex);
-
-    for (E e : g.edgeSet()) {
-      if (g.isSelfEdge(e)) {
-        g2.addEdge(g.sourceOf(e), g.sinkOf(e), e);
-      } else {
-        g2.addEdge(g.sourceOf(e), g.sinkOf(e), e);
-        E e2 = e.copy();
-        g2.addEdge(g.sinkOf(e), g.sourceOf(e), e2);
-      }
-    }
-    return g2;
   }
 
   /**

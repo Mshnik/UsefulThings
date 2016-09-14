@@ -1,5 +1,7 @@
 package graph;
 
+import common.Copyable;
+
 import java.util.Objects;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Objects;
  *
  * @author Mshnik
  */
-class SuperEdge implements Weighted, Flowable, Copyable<SuperEdge> {
+class SuperEdge implements Weighted, Flowable {
   public final String name;
   private int w;
   private int c;
@@ -32,14 +34,6 @@ class SuperEdge implements Weighted, Flowable, Copyable<SuperEdge> {
 
   public int getCapacity() {
     return c;
-  }
-
-  public SuperEdge copy() {
-    return new SuperEdge(name + "-copy").setWeight(w).setCapacity(c);
-  }
-
-  public String getID() {
-    return name;
   }
 
   public String toString() {

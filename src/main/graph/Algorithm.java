@@ -743,8 +743,7 @@ public class Algorithm {
   }
 
   //TODO - SPEC
-  //TODO - TEST
-  public static <A extends RankedAgent<I>, I> Matching<A, I> minCostMaxMatching(Set<A> agents, Set<I> items, Function<Integer, Integer> valueFunction) {
+  public static <A extends RankedAgent<I>, I> Matching<A, I> maxValueMaxMatching(Set<A> agents, Set<I> items, Function<Integer, Integer> valueFunction) {
     if (valueFunction == null ){
       return maxMatchingHelper(agents, items, RankedAgent::getPreference);
     } else {

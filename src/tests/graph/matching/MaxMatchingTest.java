@@ -3,10 +3,7 @@ package graph.matching;
 import graph.Algorithm;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 import static common.JUnitUtil.*;
 
@@ -45,7 +42,7 @@ public class MaxMatchingTest  {
   }
 
   @Test
-  public void testMinMaxMatching() {
+  public void testMaxMatching() {
     TestAgent alice = new TestAgent("alice").withPref("A").withPref("B");
     TestAgent bob = new TestAgent("bob").withPref("B").withPref("C");
     TestAgent charlie = new TestAgent("charlie").withPref("C");
@@ -77,5 +74,37 @@ public class MaxMatchingTest  {
       assertEquals("B", m2.getMatchedB(charlie));
       assertTrue(m2.isUnmatched(bob));
     }
+  }
+
+  @Test
+  public void testMaxValueMaxMatching() {
+    TestAgent alice = new TestAgent("alice").withPref("A",2).withPref("B",1);
+    TestAgent bob = new TestAgent("bob").withPref("B",2).withPref("C",1);
+    TestAgent charlie = new TestAgent("charlie").withPref("C",2);
+    Set<TestAgent> agents = new HashSet<>(Arrays.asList(alice, bob, charlie));
+    Set<String> items = new HashSet<>(Arrays.asList("A","B","C"));
+
+    Matching<TestAgent, String> m = Algorithm.maxValueMaxMatching(agents,items,null);
+    assertEquals(3, m.size());
+    assertEquals("A", m.getMatchedB(alice));
+    assertEquals("B", m.getMatchedB(bob));
+    assertEquals("C", m.getMatchedB(charlie));
+
+    //Check that changing values with only one max matching still gives that matching
+    bob = bob.withPref("C",1000);
+    Matching<TestAgent, String> m2 = Algorithm.maxValueMaxMatching(agents,items,null);
+    assertEquals(3, m2.size());
+    assertEquals("A", m2.getMatchedB(alice));
+    assertEquals("B", m2.getMatchedB(bob));
+    assertEquals("C", m2.getMatchedB(charlie));
+
+    //Check that if two max matchings available, the better is chosen.
+    bob = bob.withPref("C",1);
+    charlie = charlie.withPref("B",1);
+    Matching<TestAgent, String> m3 = Algorithm.maxValueMaxMatching(agents,items,null);
+    assertEquals(3, m3.size());
+    assertEquals("A", m3.getMatchedB(alice));
+    assertEquals("B", m3.getMatchedB(bob));
+    assertEquals("C", m3.getMatchedB(charlie));
   }
 }

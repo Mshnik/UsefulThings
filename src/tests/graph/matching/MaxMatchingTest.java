@@ -123,5 +123,16 @@ public class MaxMatchingTest  {
       assertEquals("A", m4.getMatchedB(charlie2));
       assertTrue(m4.isUnmatched(alice2));
     }
+
+    //Something funky is up
+    alice.withPref("A",3).withPref("B",2).withPref("C",1);
+    bob.withPref("B",3).withPref("A",2).withPref("C",1);
+    charlie.withPref("B",3).withPref("C",2).withPref("A",1);
+    agents = Arrays.asList(alice, bob, charlie);
+    items = Arrays.asList("A","B","C");
+    Matching<TestAgent, String> m5 = Algorithm.maxValueMaxMatching(agents, items, null);
+    assertEquals("A", m5.getMatchedB(alice));
+    assertEquals("B", m5.getMatchedB(bob));
+    assertEquals("C", m5.getMatchedB(charlie));
   }
 }

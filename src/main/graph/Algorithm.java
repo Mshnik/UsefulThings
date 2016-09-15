@@ -444,6 +444,11 @@ public class Algorithm {
       this.source = source;
       this.sink = sink;
       this.vertices = g.vertexSet();
+
+      label = null;
+      flow = null;
+      excess = null;
+      flowObj = null;
     }
 
     /** Main helper that calculates flowObj. Called in construction */
@@ -728,24 +733,60 @@ public class Algorithm {
   }
 
   //TODO - SPEC
-  public static <A extends Agent<I>, I> Matching<A, I> maxMatching(Collection<A> agents, Collection<I> items) {
-    return maxMatchingHelper(agents, items, (a,i) -> 0);
+  public static <A extends Agent<I>, I> Matching<A,I> maxMatching(Collection<A> agents, Collection<I> items) {
+    Map<I, Integer> itemsAndCounts = items.stream().collect(Collectors.toMap((i) -> i, (a) -> 1));
+    Matching<A,Copyable<I>> m = maxMatchingHelper(agents, itemsAndCounts, (a,i) -> 0);
+    Matching<A,I> m2 = new Matching<>();
+    m2.addAllA(agents);
+    m2.addAllB(items);
+    for(A a : m.getMatchedA()) {
+      m2.match(a, m.getMatchedB(a).get());
+    }
+    return m2;
+  }
+
+  public static <A extends Agent<I>, I> Matching<A, Copyable<I>> maxMatching(Collection<A> agents, Map<I,Integer> itemsAndCounts) {
+    return maxMatchingHelper(agents, itemsAndCounts, (a,i) -> 0);
   }
 
   //TODO - SPEC
   public static <A extends RankedAgent<I>, I> Matching<A, I> maxValueMaxMatching(Collection<A> agents, Collection<I> items, Function<Integer, Integer> valueFunction) {
+    Matching<A, Copyable<I>> m;
+    Map<I, Integer> itemsAndCounts = items.stream().collect(Collectors.toMap((i) -> i, (a) -> 1));
     if (valueFunction == null ){
-      return maxMatchingHelper(agents, items, RankedAgent::getPreference);
+      m = maxMatchingHelper(agents, itemsAndCounts, RankedAgent::getPreference);
     } else {
-      return maxMatchingHelper(agents, items, (a,i) -> valueFunction.apply(a.getPreference(i)));
+      m = maxMatchingHelper(agents, itemsAndCounts, (a,i) -> valueFunction.apply(a.getPreference(i)));
+    }
+    Matching<A,I> m2 = new Matching<>();
+    m2.addAllA(agents);
+    m2.addAllB(items);
+    for(A a : m.getMatchedA()) {
+      m2.match(a, m.getMatchedB(a).get());
+    }
+    return m2;
+  }
+
+  //TODO - SPEC
+  public static <A extends RankedAgent<I>, I> Matching<A, Copyable<I>> maxValueMaxMatching(Collection<A> agents, Map<I,Integer> itemsAndCounts, Function<Integer, Integer> valueFunction) {
+    if (valueFunction == null ){
+      return maxMatchingHelper(agents, itemsAndCounts, RankedAgent::getPreference);
+    } else {
+      return maxMatchingHelper(agents, itemsAndCounts, (a,i) -> valueFunction.apply(a.getPreference(i)));
     }
   }
 
   //TODO - SPEC
-  private static <A extends Agent<I>, I> Matching<A,I> maxMatchingHelper(Collection<A> agents, Collection<I> items, BiFunction<A, I, Integer> valueFunction) {
+  private static <A extends Agent<I>, I> Matching<A,Copyable<I>> maxMatchingHelper(Collection<A> agents, Map<I, Integer> itemsAndCounts, BiFunction<A, I, Integer> valueFunction) {
     Graph<Object, FlowEdge> g = new Graph<>();
     agents = new HashSet<>(agents);
-    items = new HashSet<>(items);
+
+    HashSet<Copyable<I>> items = new HashSet<>();
+    for(Map.Entry<I,Integer> e : itemsAndCounts.entrySet()) {
+      for(int i = 0; i < e.getValue(); i++) {
+        items.add(Copyable.of(e.getKey()));
+      }
+    }
 
     Object source = "SUPERSOURCE";
     Object sink = "SUPERSINK";
@@ -753,28 +794,28 @@ public class Algorithm {
     g.addVertex(source);
     g.addVertex(sink);
 
-    for(I i : items) {
+    for(Copyable<I> i : items) {
       g.addVertex(i);
       g.addEdge(i, sink, new FlowEdge().setCapacity(1));
     }
     for(A a : agents) {
       g.addVertex(a);
       g.addEdge(source, a, new FlowEdge().setCapacity(1));
-      for (I i : items) {
-        if (a.isAcceptable(i)) {
-          g.addEdge(a, i, new FlowEdge().setCapacity(1).setWeight(-valueFunction.apply(a, i)));
+      for (Copyable<I> i : items) {
+        if (a.isAcceptable(i.get())) {
+          g.addEdge(a, i, new FlowEdge().setCapacity(1).setWeight(-valueFunction.apply(a, i.get())));
         }
       }
     }
 
     Flow<FlowEdge> flow = minCostMaxFlow(g, source, sink);
-    Matching<A, I> m = new Matching<>();
+    Matching<A, Copyable<I>> m = new Matching<>();
     m.addAllA(agents);
     m.addAllB(items);
 
     for(A a : agents) {
-      for(I i : items) {
-        if (a.isAcceptable(i)) {
+      for(Copyable<I> i : items) {
+        if (a.isAcceptable(i.get())) {
           FlowEdge e = g.getConnection(a, i);
           if (flow._2.get(e) > 0) {
             m.match(a, i);

@@ -204,15 +204,15 @@ public class ConsList<E> implements Iterable<E> {
    * NIL lists do not contain any elements, thus calling contains on a NIL
    * list for any input will always return false.
    */
-  public boolean contains(Object o) {
+  public boolean contains(E o) {
     return !isNil() && (Objects.equals(head, o) || !isLast() && tail.contains(o));
   }
 
   /**
    * Returns true iff, for all {@code Object o : c}, this.contains(o)
    */
-  public boolean containsAll(Collection<?> c) {
-    for (Object o : c) {
+  public boolean containsAll(Collection<? extends E> c) {
+    for (E o : c) {
       if (!contains(o)) return false;
     }
     return true;

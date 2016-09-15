@@ -106,5 +106,22 @@ public class MaxMatchingTest  {
     assertEquals("A", m3.getMatchedB(alice));
     assertEquals("B", m3.getMatchedB(bob));
     assertEquals("C", m3.getMatchedB(charlie));
+
+    //Test collision of preferences
+    TestAgent alice2 = new TestAgent("alice2").withPref("A",2).withPref("B",1);
+    TestAgent bob2 = new TestAgent("bob2").withPref("B",2).withPref("A",1);
+    TestAgent charlie2 = new TestAgent("charlie2").withPref("A",2).withPref("B",1);
+    Collection<TestAgent> agents2 = Arrays.asList(alice2, bob2, charlie2);
+
+    Matching<TestAgent, String> m4 = Algorithm.maxValueMaxMatching(agents2,items,null);
+    assertEquals(2, m4.size());
+    assertEquals("B", m4.getMatchedB(bob2));
+    if (m4.isMatched(alice2)) {
+      assertEquals("A", m4.getMatchedB(alice2));
+      assertTrue(m4.isUnmatched(charlie2));
+    } else {
+      assertEquals("A", m4.getMatchedB(charlie2));
+      assertTrue(m4.isUnmatched(alice2));
+    }
   }
 }

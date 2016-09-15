@@ -623,12 +623,13 @@ public class Algorithm {
         V v2 = g.sinkOf(e);
         int w = e.getWeight();
         //Forward edge
-        if (dist.get(v1) + w < dist.get(v2) && edgeHasFlow(e)) {
-          return getNegativeCycleHelper(g, new ConsList<>(), v1, new ConsList<>(), new ConsList<>(), 0);
-        }
-        //Backward edge
-        if (dist.get(v2) + w < dist.get(v1) && edgeHasUnusedCapacity(e)) {
-          return getNegativeCycleHelper(g, new ConsList<>(), v2, new ConsList<>(), new ConsList<>(), 0);
+        if (dist.get(v1) + w < dist.get(v2) && edgeHasFlow(e) || dist.get(v2) + w < dist.get(v1) && edgeHasUnusedCapacity(e)) {
+          List<Tuple2<E,Boolean>> lst = getNegativeCycleHelper(g, v1, v1, new ConsList<>(), new ConsList<>(), 0);
+          if (lst != null) return lst;
+          else {
+            lst = getNegativeCycleHelper(g, v2, v2, new ConsList<>(), new ConsList<>(), 0);
+            if (lst != null) return lst;
+          }
         }
       }
 
@@ -641,23 +642,11 @@ public class Algorithm {
      * This method only works once start is guaranteed to be in at least one cycle,
      * and there are no self-edges.
      */
-    private List<Tuple2<E,Boolean>> getNegativeCycleHelper(Graph<V, E> g, ConsList<V> seen, V current, ConsList<E> path, ConsList<Boolean> reversed, int sumWeight) {
+    private List<Tuple2<E,Boolean>> getNegativeCycleHelper(Graph<V, E> g, V start, V current, ConsList<E> path, ConsList<Boolean> reversed, int sumWeight) {
       //Base case - cycle found. Reverse path and return
-      if (seen.contains(current) && path.size() != 0) {
-        seen = seen.reverse();
+      if (start == current && path.size() != 0) {
         path = path.reverse();
         reversed = reversed.reverse();
-        while(! seen.head.equals(current)) {
-          seen = seen.tail;
-          if (reversed.head) {
-            sumWeight += path.head.getWeight();
-          } else {
-            sumWeight -= path.head.getWeight();
-          }
-          path = path.tail;
-          reversed = reversed.tail;
-        }
-
         if (sumWeight < 0) {
           return Tuple.zip(path.stream(), reversed.stream()).collect(Collectors.toList());
         } else {
@@ -669,7 +658,7 @@ public class Algorithm {
       for (E e : g.edgeSetOfSource(current)) {
         //If it's not in the path already and has non-zero flow, try going that way
         if (!path.contains(e) && edgeHasFlow(e)) {
-          List<Tuple2<E, Boolean>> cycle = getNegativeCycleHelper(g, seen.cons(current), g.getOther(e, current), path.cons(e), reversed.cons(true), sumWeight - e.getWeight());
+          List<Tuple2<E, Boolean>> cycle = getNegativeCycleHelper(g, start, g.getOther(e, current), path.cons(e), reversed.cons(true), sumWeight - e.getWeight());
           if (cycle != null) return cycle;
         }
       }
@@ -677,7 +666,7 @@ public class Algorithm {
       for (E e : g.edgeSetOfSink(current)) {
         //If it's not in the path already and has non-full flow, try going that way
         if (!path.contains(e) && edgeHasUnusedCapacity(e)) {
-          List<Tuple2<E, Boolean>> cycle = getNegativeCycleHelper(g, seen.cons(current), g.getOther(e, current), path.cons(e), reversed.cons(false), sumWeight + e.getWeight());
+          List<Tuple2<E, Boolean>> cycle = getNegativeCycleHelper(g, start, g.getOther(e, current), path.cons(e), reversed.cons(false), sumWeight + e.getWeight());
           if (cycle != null) return cycle;
         }
       }

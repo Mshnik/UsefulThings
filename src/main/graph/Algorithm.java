@@ -739,13 +739,13 @@ public class Algorithm {
   }
 
   //TODO - SPEC
-  public static <A extends RankedAgent<I>, I> Matching<A, I> maxValueMaxMatching(Collection<A> agents, Collection<I> items, Function<Integer, Integer> valueFunction) {
+  public static <A extends RankedAgent<I>, I> Matching<A, I> maxValueMaxMatching(Collection<A> agents, Collection<I> items, BiFunction<? super A, ? super I, Integer> valueFunction) {
     Matching<A, Copyable<I>> m;
     Map<I, Integer> itemsAndCounts = items.stream().collect(Collectors.toMap((i) -> i, (a) -> 1));
     if (valueFunction == null ){
       m = maxMatchingHelper(agents, itemsAndCounts, RankedAgent::getPreference);
     } else {
-      m = maxMatchingHelper(agents, itemsAndCounts, (a,i) -> valueFunction.apply(a.getPreference(i)));
+      m = maxMatchingHelper(agents, itemsAndCounts, valueFunction);
     }
     Matching<A,I> m2 = new Matching<>();
     m2.addAllA(agents);
@@ -757,16 +757,16 @@ public class Algorithm {
   }
 
   //TODO - SPEC
-  public static <A extends RankedAgent<I>, I> Matching<A, Copyable<I>> maxValueMaxMatching(Collection<A> agents, Map<I,Integer> itemsAndCounts, Function<Integer, Integer> valueFunction) {
+  public static <A extends RankedAgent<I>, I> Matching<A, Copyable<I>> maxValueMaxMatching(Collection<A> agents, Map<I,Integer> itemsAndCounts, BiFunction<? super A, ? super I, Integer> valueFunction) {
     if (valueFunction == null ){
       return maxMatchingHelper(agents, itemsAndCounts, RankedAgent::getPreference);
     } else {
-      return maxMatchingHelper(agents, itemsAndCounts, (a,i) -> valueFunction.apply(a.getPreference(i)));
+      return maxMatchingHelper(agents, itemsAndCounts, valueFunction);
     }
   }
 
   //TODO - SPEC
-  private static <A extends Agent<I>, I> Matching<A,Copyable<I>> maxMatchingHelper(Collection<A> agents, Map<I, Integer> itemsAndCounts, BiFunction<A, I, Integer> valueFunction) {
+  private static <A extends Agent<I>, I> Matching<A,Copyable<I>> maxMatchingHelper(Collection<A> agents, Map<I, Integer> itemsAndCounts, BiFunction<? super A, ? super I, Integer> valueFunction) {
     Graph<Object, FlowEdge> g = new Graph<>();
     agents = new HashSet<>(agents);
 

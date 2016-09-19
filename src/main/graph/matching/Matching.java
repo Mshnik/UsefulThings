@@ -121,6 +121,16 @@ public class Matching<A, B> {
     return (aObjects.contains(o) || bObjects.contains(o)) && !isMatched(o);
   }
 
+  /** Returns an unmodifiable set of the A objects contained in this matching, matched or not */
+  public Set<A> getA() {
+    return Collections.unmodifiableSet(aObjects);
+  }
+
+  /** Returns an unmodifiable set of the B objects contained in this matching, matched or not */
+  public Set<B> getB() {
+    return Collections.unmodifiableSet(bObjects);
+  }
+
   /**
    * Returns the A that the given b is matched to. Returns null if b is unmatched
    */
@@ -152,6 +162,16 @@ public class Matching<A, B> {
   /** Returns the size of the current matching. Equal to getMatching().size(), getFlippedMatching().size(), etc */
   public int size() {
     return matching.size();
+  }
+
+  /** Returns the count of As in this Matching, matched or not */
+  public int totalSizeA() {
+    return aObjects.size();
+  }
+
+  /** Returns the count of bs in this Matching, matched or not */
+  public int totalSizeB() {
+    return bObjects.size();
   }
 
   /** Returns the number of currently unmatched items, both A and B */

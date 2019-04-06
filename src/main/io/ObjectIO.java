@@ -67,7 +67,7 @@ public class ObjectIO {
    * @return - The selected object, loaded from memory
    * @throws RuntimeException - If the user selects the wrong class of object, or if null somehow results
    */
-  public static Object read(Class objectClass, File objectFileToLoad) throws RuntimeException, IOException {
+  public static <T> T read(Class<T> objectClass, File objectFileToLoad) throws RuntimeException, IOException {
     Object g = null;
     FileInputStream fileIn = null;
     ObjectInputStream in = null;
@@ -88,7 +88,7 @@ public class ObjectIO {
     }
 
     if (objectClass.isInstance(g))
-      return g;
+      return objectClass.cast(g);
 
     throw new RuntimeException("Invalid Object Selection - found instance of " + (g == null ? "null " : g.getClass())
         + " required " + objectClass);
@@ -100,7 +100,7 @@ public class ObjectIO {
    * @return - The selected object, loaded from memory
    * @throws RuntimeException - If the user selects the wrong class of object.
    */
-  public static Object chooseAndRead(Class objectClass, String directory) throws RuntimeException, IOException {
+  public static <T> T chooseAndRead(Class<T> objectClass, String directory) throws RuntimeException, IOException {
     JFileChooser chooser = new JFileChooser(directory);
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     FileNameExtensionFilter filter = new FileNameExtensionFilter(objectClass.getSimpleName() + " Objects", EXTENSION);

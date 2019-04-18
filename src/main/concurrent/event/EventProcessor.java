@@ -85,7 +85,7 @@ public abstract class EventProcessor<E extends Event, L extends EventListener<E>
   }
 
   /** Process the given event. */
-  protected abstract void process(E event);
+  protected abstract void process(E event) throws Exception;
 
   /**
    * Called when the running thread is interrupted. Expected when this is shutting down, so can be
@@ -122,6 +122,8 @@ public abstract class EventProcessor<E extends Event, L extends EventListener<E>
       }
     } catch (InterruptedException e) {
       threadInterrupted(e);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     } finally {
       synchronized (shutdownMutex) {
         shutdown = true;

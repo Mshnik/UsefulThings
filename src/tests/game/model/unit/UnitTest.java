@@ -9,6 +9,7 @@ import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /** @author Mshnik */
 @RunWith(JUnit4.class)
@@ -38,6 +39,7 @@ public final class UnitTest {
                         .addProperty(FakeProperty.ATTACK, UNIT_TWO_ATTACK)
                         .addProperty(FakeProperty.DEFENSE, UNIT_TWO_DEFENSE)
                         .addProperty(FakeProperty.HEALTH, UNIT_TWO_HEALTH)
+                        .freezePropertiesAtStart()
                         .build())
                 .build())
         .injectMembers(this);
@@ -55,5 +57,14 @@ public final class UnitTest {
     assertEquals(fakeUnit.getProperty(FakeProperty.ATTACK).get(), UNIT_ONE_ATTACK);
     assertEquals(fakeUnit.getProperty(FakeProperty.DEFENSE).get(), UNIT_ONE_DEFENSE);
     assertEquals(fakeUnit.getProperty(FakeProperty.HEALTH).get(), UNIT_ONE_HEALTH);
+  }
+
+  @Test
+  public void createsUnitWithFrozenValues() {
+    FakeUnit fakeUnit = unitFactory.createUnit(FakeUnit.FakeUnitTemplateId.UNIT_TWO);
+
+    assertTrue(fakeUnit.getProperty(FakeProperty.ATTACK).isFrozen());
+    assertTrue(fakeUnit.getProperty(FakeProperty.DEFENSE).isFrozen());
+    assertTrue(fakeUnit.getProperty(FakeProperty.HEALTH).isFrozen());
   }
 }

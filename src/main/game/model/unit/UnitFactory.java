@@ -35,6 +35,10 @@ public final class UnitFactory {
                     Map.Entry::getKey,
                     e -> propertyFactory.createProperty(e.getKey(), e.getValue())));
 
+    if (template.getFreezeAtStart()) {
+      properties.values().forEach(Property::freeze);
+    }
+
     return templateId.constructor().construct(ImmutableMap.copyOf(properties));
   }
 }

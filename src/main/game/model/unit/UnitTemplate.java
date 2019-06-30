@@ -8,10 +8,15 @@ import java.util.HashMap;
 final class UnitTemplate<U extends Unit> {
   private final UnitTemplateId<U> templateId;
   private final ImmutableMap<PropertyId, Object> properties;
+  private final boolean freezeAtStart;
 
-  private UnitTemplate(UnitTemplateId<U> templateId, ImmutableMap<PropertyId, Object> properties) {
+  private UnitTemplate(
+      UnitTemplateId<U> templateId,
+      ImmutableMap<PropertyId, Object> properties,
+      boolean freezeAtStart) {
     this.templateId = templateId;
     this.properties = properties;
+    this.freezeAtStart = freezeAtStart;
   }
 
   UnitTemplateId<U> getId() {
@@ -22,6 +27,10 @@ final class UnitTemplate<U extends Unit> {
     return properties;
   }
 
+  boolean getFreezeAtStart() {
+    return freezeAtStart;
+  }
+
   static <U extends Unit> Builder<U> newBuilder(UnitTemplateId<U> templateId) {
     return new Builder<>(templateId);
   }
@@ -29,9 +38,11 @@ final class UnitTemplate<U extends Unit> {
   static final class Builder<U extends Unit> {
     private final UnitTemplateId<U> templateId;
     private final HashMap<PropertyId, Object> properties = new HashMap<>();
+    private boolean freezeAtStart;
 
     private Builder(UnitTemplateId<U> templateId) {
       this.templateId = templateId;
+      this.freezeAtStart = false;
     }
 
     Builder<U> addProperty(PropertyId propertyId, Object value) {
@@ -47,8 +58,13 @@ final class UnitTemplate<U extends Unit> {
       return this;
     }
 
+    Builder<U> freezePropertiesAtStart() {
+      this.freezeAtStart = true;
+      return this;
+    }
+
     UnitTemplate<U> build() {
-      return new UnitTemplate<>(templateId, ImmutableMap.copyOf(properties));
+      return new UnitTemplate<>(templateId, ImmutableMap.copyOf(properties), freezeAtStart);
     }
   }
 

@@ -120,4 +120,50 @@ public final class DecisionTest {
     decision.select();
     assertEquals(choiceList, ImmutableList.of(FakeChoice.CHOICE_1));
   }
+
+  @Test
+  public void throwOnSelectBehaviorAllowsSelectButThrows() {
+    Decision decision =
+        Decision.newBuilder()
+            .addChoice(FakeChoice.CHOICE_NOT_SELECTABLE)
+            .withBehavior(SelectableBehavior.THROW_ON_SELECT)
+            .build();
+
+    try {
+      decision.select();
+      fail("Expected failure");
+    } catch (UnselectableException e) {
+    }
+  }
+
+  @Test
+  public void skipBehaviorSkips() {
+    Decision decision =
+        Decision.newBuilder()
+            .addChoice(FakeChoice.CHOICE_SELECTABLE)
+            .addChoice(FakeChoice.CHOICE_NOT_SELECTABLE)
+            .addChoice(FakeChoice.CHOICE_NOT_SELECTABLE)
+            .withBehavior(SelectableBehavior.SKIP_OVER)
+            .build();
+
+    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
+    assertTrue(decision.next());
+    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
+  }
+
+  @Test
+  public void skipBehaviorDoesNotAdvanceIfNoWrap() {
+    Decision decision =
+        Decision.newBuilder()
+            .addChoice(FakeChoice.CHOICE_SELECTABLE)
+            .addChoice(FakeChoice.CHOICE_NOT_SELECTABLE)
+            .addChoice(FakeChoice.CHOICE_NOT_SELECTABLE)
+            .withAllowWrap(false)
+            .withBehavior(SelectableBehavior.SKIP_OVER)
+            .build();
+
+    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
+    assertFalse(decision.next());
+    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
+  }
 }

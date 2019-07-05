@@ -1,5 +1,9 @@
 package game.model.unit;
 
+import com.google.common.collect.ImmutableMap;
+import game.model.unit.property.Property;
+import game.model.unit.property.PropertyId;
+
 import java.util.Map;
 
 /** @author Mshnik */
@@ -11,8 +15,8 @@ final class FakeUnit implements Unit {
   }
 
   @Override
-  public Property<?> getProperty(PropertyId id) {
-    return properties.get(id);
+  public ImmutableMap<PropertyId, Property<?>> getProperties() {
+    return ImmutableMap.copyOf(properties);
   }
 
   static enum FakeUnitTemplateId implements UnitTemplateId<FakeUnit> {

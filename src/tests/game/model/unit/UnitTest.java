@@ -2,6 +2,7 @@ package game.model.unit;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import game.model.unit.property.FakeProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

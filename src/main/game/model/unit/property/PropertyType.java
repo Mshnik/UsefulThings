@@ -1,4 +1,4 @@
-package game.model.unit;
+package game.model.unit.property;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;

@@ -1,4 +1,4 @@
-package game.model.unit;
+package game.model.unit.property;
 
 /** @author Mshnik */
 final class FrozenPropertyException extends RuntimeException {

@@ -3,6 +3,9 @@ package game.model.unit;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import game.model.unit.property.Property;
+import game.model.unit.property.PropertyFactory;
+import game.model.unit.property.PropertyId;
 
 import java.util.Map;
 import java.util.stream.Collectors;

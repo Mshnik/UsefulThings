@@ -1,5 +1,8 @@
 package game.model.unit;
 
+import game.model.unit.property.Property;
+import game.model.unit.property.PropertyId;
+
 import java.util.Map;
 
 /** @author Mshnik */

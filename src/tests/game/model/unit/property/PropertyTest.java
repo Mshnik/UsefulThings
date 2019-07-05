@@ -1,4 +1,4 @@
-package game.model.unit;
+package game.model.unit.property;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;

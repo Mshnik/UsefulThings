@@ -1,6 +1,7 @@
 package game.model.unit;
 
 import com.google.common.collect.ImmutableMap;
+import game.model.unit.property.PropertyId;
 
 import java.util.HashMap;
 

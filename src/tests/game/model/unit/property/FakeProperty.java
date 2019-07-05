@@ -1,14 +1,14 @@
-package game.model.unit;
+package game.model.unit.property;
 
 /** @author Mshnik */
-enum FakeProperty implements PropertyId {
+public enum FakeProperty implements PropertyId {
   ATTACK(Double.class),
   DEFENSE(Double.class),
   HEALTH(Integer.class);
 
   private final Class<?> expectedClass;
 
-  FakeProperty(Class<?> expectedClass) {
+  private FakeProperty(Class<?> expectedClass) {
     this.expectedClass = expectedClass;
   }
 

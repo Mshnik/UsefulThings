@@ -3,6 +3,8 @@ package game.model.unit;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import game.model.unit.property.PropertyId;
+import game.model.unit.property.PropertyModule;
 
 /** @author Mshnik */
 public final class UnitModule extends AbstractModule {

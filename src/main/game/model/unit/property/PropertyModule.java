@@ -1,17 +1,17 @@
-package game.model.unit;
+package game.model.unit.property;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
 /** @author Mshnik */
-final class PropertyModule extends AbstractModule {
+public final class PropertyModule extends AbstractModule {
   private final Class<? extends PropertyId> propertyClass;
 
   private PropertyModule(Class<? extends PropertyId> propertyClass) {
     this.propertyClass = propertyClass;
   }
 
-  static PropertyModule forClass(Class<? extends PropertyId> propertyClass) {
+  public static PropertyModule forClass(Class<? extends PropertyId> propertyClass) {
     return new PropertyModule(propertyClass);
   }
 

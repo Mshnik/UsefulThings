@@ -1,6 +1,5 @@
 package game.decision;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -8,10 +7,8 @@ import org.junit.runners.JUnit4;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static asserts.Asserts.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 
 /** @author Mshnik */
 @RunWith(JUnit4.class)
@@ -19,11 +16,7 @@ public final class DecisionTest {
 
   @Test
   public void throwsOnNoChoices() {
-    try {
-      Decision.newBuilder().build();
-      fail("Expected failure");
-    } catch (Exception e) {
-    }
+    assertThrows(Exception.class, Decision.newBuilder()::build);
   }
 
   @Test
@@ -35,36 +28,35 @@ public final class DecisionTest {
             .addChoice(FakeChoice.CHOICE_3)
             .build();
 
-    assertEquals(
-        decision.getChoices(),
-        ImmutableList.of(FakeChoice.CHOICE_1, FakeChoice.CHOICE_2, FakeChoice.CHOICE_3));
+    assertThat(decision.getChoices())
+        .containsExactly(FakeChoice.CHOICE_1, FakeChoice.CHOICE_2, FakeChoice.CHOICE_3);
   }
 
   @Test
   public void selectReturnsFirstElementByDefault() {
     Decision decision =
         Decision.newBuilder().addChoice(FakeChoice.CHOICE_1).addChoice(FakeChoice.CHOICE_2).build();
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
   }
 
   @Test
   public void nextReturnsTrueAndWraps() {
     Decision decision =
         Decision.newBuilder().addChoice(FakeChoice.CHOICE_1).addChoice(FakeChoice.CHOICE_2).build();
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
-    assertTrue(decision.next());
-    assertTrue(decision.next());
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
+    assertThat(decision.next()).isTrue();
+    assertThat(decision.next()).isTrue();
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
   }
 
   @Test
   public void previousReturnsTrueAndWraps() {
     Decision decision =
         Decision.newBuilder().addChoice(FakeChoice.CHOICE_1).addChoice(FakeChoice.CHOICE_2).build();
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
-    assertTrue(decision.prev());
-    assertTrue(decision.prev());
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
+    assertThat(decision.prev()).isTrue();
+    assertThat(decision.prev()).isTrue();
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
   }
 
   @Test
@@ -75,10 +67,10 @@ public final class DecisionTest {
             .addChoice(FakeChoice.CHOICE_2)
             .withAllowWrap(false)
             .build();
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
-    assertTrue(decision.next());
-    assertFalse(decision.next());
-    assertEquals(decision.select(), FakeChoice.CHOICE_2);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
+    assertThat(decision.next()).isTrue();
+    assertThat(decision.next()).isFalse();
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_2);
   }
 
   @Test
@@ -89,9 +81,9 @@ public final class DecisionTest {
             .addChoice(FakeChoice.CHOICE_2)
             .withAllowWrap(false)
             .build();
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
-    assertFalse(decision.prev());
-    assertEquals(decision.select(), FakeChoice.CHOICE_1);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
+    assertThat(decision.prev()).isFalse();
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_1);
   }
 
   @Test
@@ -103,7 +95,7 @@ public final class DecisionTest {
             .addChoice(FakeChoice.CHOICE_3)
             .withSelectedIndex(1)
             .build();
-    assertEquals(decision.select(), FakeChoice.CHOICE_2);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_2);
   }
 
   @Test
@@ -118,7 +110,7 @@ public final class DecisionTest {
             .withChoiceConsumer(choiceList::add)
             .build();
     decision.select();
-    assertEquals(choiceList, ImmutableList.of(FakeChoice.CHOICE_1));
+    assertThat(choiceList).containsExactly(FakeChoice.CHOICE_1);
   }
 
   @Test
@@ -129,11 +121,7 @@ public final class DecisionTest {
             .withBehavior(SelectableBehavior.THROW_ON_SELECT)
             .build();
 
-    try {
-      decision.select();
-      fail("Expected failure");
-    } catch (UnselectableException e) {
-    }
+    assertThrows(Exception.class, decision::select);
   }
 
   @Test
@@ -146,9 +134,9 @@ public final class DecisionTest {
             .withBehavior(SelectableBehavior.SKIP_OVER)
             .build();
 
-    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
-    assertTrue(decision.next());
-    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_SELECTABLE);
+    assertThat(decision.next()).isFalse();
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_SELECTABLE);
   }
 
   @Test
@@ -162,8 +150,8 @@ public final class DecisionTest {
             .withBehavior(SelectableBehavior.SKIP_OVER)
             .build();
 
-    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
-    assertFalse(decision.next());
-    assertEquals(decision.select(), FakeChoice.CHOICE_SELECTABLE);
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_SELECTABLE);
+    assertThat(decision.next()).isFalse();
+    assertThat(decision.select()).isEqualTo(FakeChoice.CHOICE_SELECTABLE);
   }
 }

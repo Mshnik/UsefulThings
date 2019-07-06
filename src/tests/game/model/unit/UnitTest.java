@@ -8,9 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 /** @author Mshnik */
 @RunWith(JUnit4.class)
@@ -48,24 +46,24 @@ public final class UnitTest {
 
   @Test
   public void injectsFactory() {
-    assertNotNull(unitFactory);
+    assertThat(unitFactory).isNotNull();
   }
 
   @Test
   public void createsUnitWithDefaultValues() {
     FakeUnit fakeUnit = unitFactory.createUnit(FakeUnit.FakeUnitTemplateId.UNIT_ONE);
 
-    assertEquals(fakeUnit.getProperty(FakeProperty.ATTACK).get(), UNIT_ONE_ATTACK);
-    assertEquals(fakeUnit.getProperty(FakeProperty.DEFENSE).get(), UNIT_ONE_DEFENSE);
-    assertEquals(fakeUnit.getProperty(FakeProperty.HEALTH).get(), UNIT_ONE_HEALTH);
+    assertThat(fakeUnit.getProperty(FakeProperty.ATTACK).get()).isEqualTo(UNIT_ONE_ATTACK);
+    assertThat(fakeUnit.getProperty(FakeProperty.DEFENSE).get()).isEqualTo(UNIT_ONE_DEFENSE);
+    assertThat(fakeUnit.getProperty(FakeProperty.HEALTH).get()).isEqualTo(UNIT_ONE_HEALTH);
   }
 
   @Test
   public void createsUnitWithFrozenValues() {
     FakeUnit fakeUnit = unitFactory.createUnit(FakeUnit.FakeUnitTemplateId.UNIT_TWO);
 
-    assertTrue(fakeUnit.getProperty(FakeProperty.ATTACK).isFrozen());
-    assertTrue(fakeUnit.getProperty(FakeProperty.DEFENSE).isFrozen());
-    assertTrue(fakeUnit.getProperty(FakeProperty.HEALTH).isFrozen());
+    assertThat(fakeUnit.getProperty(FakeProperty.ATTACK).isFrozen()).isTrue();
+    assertThat(fakeUnit.getProperty(FakeProperty.DEFENSE).isFrozen()).isTrue();
+    assertThat(fakeUnit.getProperty(FakeProperty.HEALTH).isFrozen()).isTrue();
   }
 }

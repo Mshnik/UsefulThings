@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.assertEquals;
+import static asserts.Asserts.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /** @author Mshnik */
 @RunWith(JUnit4.class)
@@ -29,27 +29,19 @@ public final class PropertyTest {
   @Test
   public void createsProperty() {
     Property<Double> property = factory.createProperty(FakeProperty.ATTACK, 10.0);
-    assertNotNull(property);
-    assertEquals(property.id(), FakeProperty.ATTACK);
-    assertEquals(property.get(), Double.valueOf(10));
+    assertThat(property).isNotNull();
+    assertThat(property.id()).isEqualTo(FakeProperty.ATTACK);
+    assertThat(property.get()).isEqualTo(10.0);
   }
 
   @Test
   public void throwsOnOtherEnum() {
-    try {
-      factory.createProperty(OtherProperty.NONE, null);
-      fail("Expected failure.");
-    } catch (Exception e) {
-    }
+    assertThrows(Exception.class, () -> factory.createProperty(OtherProperty.NONE, null));
   }
 
   @Test
   public void throwsOnInvalidType() {
-    try {
-      factory.createProperty(FakeProperty.ATTACK, "Foo");
-      fail("Expected failure.");
-    } catch (Exception e) {
-    }
+    assertThrows(Exception.class, () -> factory.createProperty(FakeProperty.ATTACK, "Foo"));
   }
 
   private enum OtherProperty implements PropertyId {
